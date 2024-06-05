@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
+body {
+  font-family: 'Satisfy', cursive;
+}
+
+.info-barras-container {
+  margin: 0 auto;
+  width: 85%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-bottom: 1px solid #000;
+  padding: 25px 0;
+}
+
+.text-title h1 {
+  font-family: 'Dancing Script', cursive;
+}
+
+.botones-ejemplo {
+  display: flex;
+  align-items: center;
+}
+
+.boton-votar-ej {
+  margin: 0 5px;
+  padding: 10px 15px;
+  background-color: #ccc;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.boton-votar-ej:hover {
+  background: #1b7248;
+}
+
+.boton-votar-ej.active {
+  background: #1b7248;
+}
+
+.main-container {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  grid-template-rows: 90% 5% 5%;
+}
+
+.reinas-container {
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-row-gap: 7vh;
+  padding-top: 4px;
+  place-items: center;
+  width: 100%;
+  margin: auto;
+}
+
+.reina {
+  height: 42vh;
+  width: 80%;
+  align-items: center;
+  align-content: center;
+}
+
+.reinas-cuadro {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  background-color: #1b7248;
+  border-radius: 40px;
+  color: white;
+  grid-row-gap: 3vh;
+  place-items: center;
+  width: 100%;
+  height: 70%;
+  padding-top: 0;
+  padding-left: 3%;
+  padding-bottom: 2.7%;
+}
+
+.reina-informacion {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  grid-template-rows: 50% 20% 30%;
+}
+
+.cuadroAmarillo {
+  display: grid;
+  place-items: center;
+  margin-top: 1.2vh;
+  margin-left: 10.3vh;
+  width: 130%;
+  height: 90%;
+  color : black;
+  background-color: #e4a42d;
+  border-radius: 0px 0px 0px 25px;
+}
+
+.reina-foto {
+  display: grid;
+  margin-left: 7.9vh;
+  place-items: center;
+  width: 100%;
+  height: -15vh;
+  padding: 0;
+}
+
+.reina-foto img {
+  border-radius: 40px;
+  max-width: 11.6vw;
+  max-height: 33vh;
+  padding-top: 0.2px;
+  padding-left: 4vw;
+  object-fit: cover;
+}
+
+.botones-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-left: 50px;
+}
+
+.boton-votar {
+  margin: 0 5px;
+  padding: 10px 17px;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #ccc;
+  border: none;
+  color: #000000;
+  box-shadow: 5px 0px 5px black;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.boton-votar:hover {
+  background-color: green;
+  color:#ccc;
+  box-shadow: 5px 0px 5px green;
+}
+
+.boton-votar.selected {
+  background-color: green;
+}
