@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -8,18 +7,14 @@ import Popup from "reactjs-popup";
 import "./popup.scss";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "../components/Navbar";
-//import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Dropdown from 'react-bootstrap/Dropdown';
 
 function Traje() {
     const cat = useLocation().search;
     const navigate = useNavigate();
     const location = useLocation();
     const { currentUser } = useContext(AuthContext);
-    const [listaCandidatas, setListaCandidatas] = useState([]);
     const [allJudgesVoted, setAllJudgesVoted] = useState(false);
     const [listaReinas, setListaReinas] = useState([]);
     const [listaUsuarios, setListaUsuarios] = useState([]);
@@ -30,18 +25,6 @@ function Traje() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const puntuacionMax = 10;
     const puntuacion = [];
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await Axios.get(`${API_BASE_URL}/barra`);
-                setListaCandidatas(res.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        fetchData();
-    }, [cat + "1"]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -131,29 +114,6 @@ function Traje() {
         puntuacion.push(i + 1);
     }
 
-
-    // Function to handle sending data to the database
-    const handleSendData = async () => {
-        // Loop through the selectedScores state object
-        for (let candidateIndex in selectedScores) {
-            // Get the score for the current candidate
-            let score = selectedScores[candidateIndex];
-
-            // Send the data to the database
-            try {
-                await Axios.post(`${API_BASE_URL}/cali`, {
-                    EVENTO_ID: 1,
-                    CANDIDATA_ID: candidateIndex,
-                    CALIFICACION_NOMBRE: "Traje Tipico",
-                    CALIFICACION_PESO: 100,
-                    CALIFICACION_VALOR: score,
-                });
-            } catch (err) {
-                console.log(err)
-            }
-        }
-    }
-
     const Enviar = () => {
         /*Control para que esten llenas las 2 notas*/
         if (nota1 === "" || nota2 === "") {
@@ -173,32 +133,6 @@ function Traje() {
         setPopAlerta(false);
     };
 
-    const [selectedScores, setSelectedScores] = useState({});
-    const [votes, setVotes] = useState({
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-    });
-
-    const handleVote = (candidate, score) => {
-        setVotes((prevVotes) => ({
-            ...prevVotes,
-            [score]: prevVotes[score] + 1,
-        }));
-    };
-
-    const handleScoreSelect = (candidateIndex, score) => {
-        setSelectedScores((prevSelectedScores) => ({
-            ...prevSelectedScores,
-            [candidateIndex]: score,
-        }));
-        handleVote(candidateIndex, score);
-    };
-
-    
-
     if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
         return (
             <div className="App">
@@ -214,48 +148,56 @@ function Traje() {
             <>
                 <Navbar texto="Etapa 1 - Traje Tradicional" />
                 {pop === true && <Espera />}
-                <div className="panelVotacion">
+                <div className="gridCentrao">
                     {listaReinas.length > 0 ? (
-                        <div className="candidates">
-                            {listaReinas.map((candidate, index) => (
-                                <div key={index} className="candidate">
-                                    <img
-                                        className="candidate-image"
-                                        src={'/reinas/' + cortarParteDerecha(listaReinas[index].FOTO_URL)}
-                                        alt={`Candidate ${index + 1}`}
-                                    />
+                        <React.Fragment>
+                            <div class="datos">
+                                <br></br>
+                                <h3 className="Nombres-heading">{"Candidata " + listaReinas[0].CANDIDATA_ID + ": " + listaReinas[0].CAND_NOMBRE1 + " " + listaReinas[0].CAND_APELLIDOPATERNO}</h3>
 
-                                    <div className="candidate-info">
-                                        <span className="candidate-name">{candidate.CANDIDATA_ID}. {candidate.CAND_NOMBRE1 + " " + candidate.CAND_APELLIDOPATERNO}</span>
-                                        <span className="candidate-career">{listaCandidatas[index].DEPARTMENTO_NOMBRE.replace("Departamento de ", "")}</span>
-                                    </div>
+                            </div>
+                            <div class="foto">
+                                <br></br>
 
-                                    <div className="vote-button">
-                                        <Dropdown onSelect={(eventKey) => handleScoreSelect(index + 1, eventKey)}>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                {selectedScores[index + 1] || "Votar"}
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu>
-                                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
-                                                    <Dropdown.Item
-                                                        eventKey={score}
-                                                        key={score}
-                                                    >
-                                                        {score}
-                                                    </Dropdown.Item>
-                                                ))}
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                <img src={'/reinas/' + cortarParteDerecha(listaReinas[0].FOTO_URL)} width="350px" alt="chica"></img>
+                            </div>
+
+                        </React.Fragment>
                     ) : (
                         <div>Loading...</div>
                     )}
-
+                    <div class="caja_botones">
+                        <div class="nota">
+                            <h2 class="titulo-puntuacion">Puntuación de TRAJE</h2>
+                            {puntuacion.map((i) => (
+                                <>
+                                    <button
+                                        className={`btn-nota1 ${nota1 === i ? "click" : ""}`}
+                                        name="btn-nota1"
+                                        onClick={(e) => setNota1(i)}
+                                    >
+                                        {i}
+                                    </button>
+                                </>
+                            ))}
+                        </div>
+                        <div class="nota">
+                            <h2 class="titulo-puntuacion">Puntuación de ACTITUD</h2>
+                            {puntuacion.map((i) => (
+                                <>
+                                    <button
+                                        className={`btn-nota2 ${nota2 === i ? "click" : ""}`}
+                                        name="btn-nota2"
+                                        onClick={(e) => setNota2(i)}
+                                    >
+                                        {i}
+                                    </button>
+                                </>
+                            ))}
+                        </div>
+                    </div>
                     <div id='enviarTT' className="enviar">
-                        <button id="enviarTT" type="button" className="btn-enviar" onClick={handleSendData}>
+                        <button id="enviarTT" type="button" className="btn-enviar" onClick={(e) => Enviar()}>
                             ENVIAR
                         </button>
 
