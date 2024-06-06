@@ -4,11 +4,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Axios, { all } from 'axios';
 import ReactModal from "react-modal";
 import Popup from "reactjs-popup";
-import "./popup.scss";
+import './TrajeTipico.scss';
+import './PanelVotacion.jsx';
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
-
+import Dropdown from 'react-bootstrap/Dropdown';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import PanelVotacion from "./PanelVotacion.jsx";
 
 function Traje() {
     const cat = useLocation().search;
@@ -25,6 +28,8 @@ function Traje() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const puntuacionMax = 10;
     const puntuacion = [];
+
+   
 
     useEffect(() => {
         const fetchData = async () => {
@@ -135,107 +140,58 @@ function Traje() {
 
     if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
         return (
-            <div className="App">
-                <main>
-                    <div>
-                        <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
-                    </div>
-                </main>
-            </div>
+            <>
+                <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
+            </>
         );
     } else {
         return (
             <>
-                <Navbar texto="Etapa 1 - Traje Tradicional" />
-                {pop === true && <Espera />}
-                <div className="gridCentrao">
-                    {listaReinas.length > 0 ? (
-                        <React.Fragment>
-                            <div class="datos">
-                                <br></br>
-                                <h3 className="Nombres-heading">{"Candidata " + listaReinas[0].CANDIDATA_ID + ": " + listaReinas[0].CAND_NOMBRE1 + " " + listaReinas[0].CAND_APELLIDOPATERNO}</h3>
-
-                            </div>
-                            <div class="foto">
-                                <br></br>
-
-                                <img src={'/reinas/' + cortarParteDerecha(listaReinas[0].FOTO_URL)} width="350px" alt="chica"></img>
-                            </div>
-
-                        </React.Fragment>
-                    ) : (
-                        <div>Loading...</div>
-                    )}
-                    <div class="caja_botones">
-                        <div class="nota">
-                            <h2 class="titulo-puntuacion">Puntuación de TRAJE</h2>
-                            {puntuacion.map((i) => (
-                                <>
-                                    <button
-                                        className={`btn-nota1 ${nota1 === i ? "click" : ""}`}
-                                        name="btn-nota1"
-                                        onClick={(e) => setNota1(i)}
-                                    >
-                                        {i}
-                                    </button>
-                                </>
-                            ))}
-                        </div>
-                        <div class="nota">
-                            <h2 class="titulo-puntuacion">Puntuación de ACTITUD</h2>
-                            {puntuacion.map((i) => (
-                                <>
-                                    <button
-                                        className={`btn-nota2 ${nota2 === i ? "click" : ""}`}
-                                        name="btn-nota2"
-                                        onClick={(e) => setNota2(i)}
-                                    >
-                                        {i}
-                                    </button>
-                                </>
-                            ))}
-                        </div>
-                    </div>
-                    <div id='enviarTT' className="enviar">
-                        <button id="enviarTT" type="button" className="btn-enviar" onClick={(e) => Enviar()}>
-                            ENVIAR
-                        </button>
-
-                        <Popup open={modalIsOpen} onClose={handleModalClose}>
-                            <div className="modal">
-                                <h2 className="modal-title">¿Desea enviar las calificaciones?</h2>
-                                <h2 className="modal-title">
-                                    Traje: {nota1} Actitud: {nota2}
-                                </h2>
-                                <div className="botones-modal">
-                                    <button onClick={handleModalClose} className="btn-cancelar">
-                                        Cancelar
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            handleModalClose();
-                                            handleClick1();
-                                        }}
-                                        className="btn-confirmar"
-                                    >
-                                        Aceptar
-                                    </button>
-                                </div>
-                            </div>
-                        </Popup>
-                        <Popup open={popupAlerta} onClose={handlePopupAlertaClose}>
-                            <div className="modal">
-                                <h2 className="modal-title">¡Alerta!</h2>
-                                <h2 className="modal-title">Debe ingresar todas las calificaciones correspondientes antes de enviar.</h2>
-                                <div className="botones-modal">
-                                    <button onClick={handlePopupAlertaClose} className="btn-cancelar">
-                                        Cerrar
-                                    </button>
-                                </div>
-                            </div>
-                        </Popup>
-                    </div>
+            <Navbar texto="Etapa 1 - Traje Tradicional" />
+            {pop === true && <Espera />}
+            <div className="container">
+                <div className="candidates">
+                <PanelVotacion />
                 </div>
+                <div id='enviarTT' className="enviar">
+                <button id="enviarTT" type="button" className="btn-enviar" onClick={(e) => Enviar()}>
+                    ENVIAR
+                </button>
+                <Popup open={modalIsOpen} onClose={handleModalClose}>
+                    <div className="modal">
+                    <h2 className="modal-title">¿Desea enviar las calificaciones?</h2>
+                    <h2 className="modal-title">
+                        Traje: {nota1} Actitud: {nota2}
+                    </h2>
+                    <div className="botones-modal">
+                        <button onClick={handleModalClose} className="btn-cancelar">
+                        Cancelar
+                        </button>
+                        <button
+                        onClick={() => {
+                            handleModalClose();
+                            handleClick1();
+                        }}
+                        className="btn-confirmar"
+                        >
+                        Aceptar
+                        </button>
+                    </div>
+                    </div>
+                </Popup>
+                <Popup open={popupAlerta} onClose={handlePopupAlertaClose}>
+                    <div className="modal">
+                    <h2 className="modal-title">¡Alerta!</h2>
+                    <h2 className="modal-title">Debe ingresar todas las calificaciones correspondientes antes de enviar.</h2>
+                    <div className="botones-modal">
+                        <button onClick={handlePopupAlertaClose} className="btn-cancelar">
+                        Cerrar
+                        </button>
+                    </div>
+                    </div>
+                </Popup>
+                </div>
+            </div>
             </>
         );
     }
