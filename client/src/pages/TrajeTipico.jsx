@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -7,6 +8,7 @@ import Popup from "reactjs-popup";
 import "./popup.scss";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "../components/Navbar";
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -114,6 +116,29 @@ function Traje() {
         puntuacion.push(i + 1);
     }
 
+
+    // Function to handle sending data to the database
+    const handleSendData = async () => {
+        // Loop through the selectedScores state object
+        for (let candidateIndex in selectedScores) {
+            // Get the score for the current candidate
+            let score = selectedScores[candidateIndex];
+
+            // Send the data to the database
+            try {
+                await Axios.post(`${API_BASE_URL}/cali`, {
+                    EVENTO_ID: 1,
+                    CANDIDATA_ID: candidateIndex,
+                    CALIFICACION_NOMBRE: "Traje Tipico",
+                    CALIFICACION_PESO: 100,
+                    CALIFICACION_VALOR: score,
+                });
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    }
+
     const Enviar = () => {
         /*Control para que esten llenas las 2 notas*/
         if (nota1 === "" || nota2 === "") {
@@ -145,9 +170,9 @@ function Traje() {
         { name: 'Barbara Regil', career: 'Ciencias Exactas' },
         { name: 'Maria Perez', career: 'Ciencias de la Computación' },
         { name: 'Laura Gomez', career: 'Ciencias de Energía' },
-        { name: 'Ana Sanchez', career: 'Ciencias de la Tierra'},
-        { name: 'Sofia Rodriguez', career: 'Ciencias de la Vida'},
-        { name: 'Carla Morales', career: 'Ciencias Económicas'},
+        { name: 'Ana Sanchez', career: 'Ciencias de la Tierra' },
+        { name: 'Sofia Rodriguez', career: 'Ciencias de la Vida' },
+        { name: 'Carla Morales', career: 'Ciencias Económicas' },
         { name: 'Luisa Fernández', career: 'Ciencias Humanas' },
         { name: 'Paula Martínez', career: 'Seguridad y Defensa' },
         { name: 'Teresa Jimenez', career: 'Telecomunicaciones' },
@@ -186,7 +211,7 @@ function Traje() {
                 {pop === true && <Espera />}
                 <div className="panelVotacion">
                     {listaReinas.length > 0 ? (
-                            <div className="candidates">
+                        <div className="candidates">
                             {candidates.map((candidate, index) => (
                                 <div key={index} className="candidate">
                                     <img
@@ -195,7 +220,7 @@ function Traje() {
                                         alt={`Candidate ${index + 1}`}
                                     />
                                     <div className="candidate-info">
-                                       <span className="candidate-name">{index + 1}. {candidate.name}</span>
+                                        <span className="candidate-name">{index + 1}. {candidate.name}</span>
                                         <span className="candidate-career">{candidate.career}</span>
                                     </div>
                                     <div className="vote-button">
@@ -221,9 +246,9 @@ function Traje() {
                     ) : (
                         <div>Loading...</div>
                     )}
-                    
+
                     <div id='enviarTT' className="enviar">
-                        <button id="enviarTT" type="button" className="btn-enviar" onClick={(e) => Enviar()}>
+                        <button id="enviarTT" type="button" className="btn-enviar" onClick={handleSendData}>
                             ENVIAR
                         </button>
 
