@@ -835,12 +835,12 @@ $ligthOrange: #e7d0b9;
 .candidate-name {
     font-size: 18px;
     font-weight: bold;
-    color: white; /* Add this line to set the text color to white */
+    color: white; 
 }
 
 .candidate-career {
     font-size: 18px;
-    color: white; /* Add this line to set the text color to white */
+    color: white;
 }
 
 
@@ -856,7 +856,7 @@ $ligthOrange: #e7d0b9;
     flex: 1 1 calc((100% / 5) - 20px);
     min-width: 200px;
     width: 50vh; 
-    height: 35vh; 
+    height: 40vh; 
   }
 
 

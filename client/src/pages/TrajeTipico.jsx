@@ -8,9 +8,9 @@ import Popup from "reactjs-popup";
 import "./popup.scss";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "../components/Navbar";
-import 'bootstrap/dist/css/bootstrap.min.css';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Dropdown from 'react-bootstrap/Dropdown';
 
