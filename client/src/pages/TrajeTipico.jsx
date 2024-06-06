@@ -19,6 +19,7 @@ function Traje() {
     const navigate = useNavigate();
     const location = useLocation();
     const { currentUser } = useContext(AuthContext);
+    const [listaCandidatas, setListaCandidatas] = useState([]);
     const [allJudgesVoted, setAllJudgesVoted] = useState(false);
     const [listaReinas, setListaReinas] = useState([]);
     const [listaUsuarios, setListaUsuarios] = useState([]);
@@ -29,6 +30,18 @@ function Traje() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const puntuacionMax = 10;
     const puntuacion = [];
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await Axios.get(`${API_BASE_URL}/barra`);
+                setListaCandidatas(res.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, [cat + "1"]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -168,18 +181,6 @@ function Traje() {
         4: 0,
         5: 0,
     });
-    const candidates = [
-        { name: 'Barbara Regil', career: 'Ciencias Exactas' },
-        { name: 'Maria Perez', career: 'Ciencias de la Computación' },
-        { name: 'Laura Gomez', career: 'Ciencias de Energía' },
-        { name: 'Ana Sanchez', career: 'Ciencias de la Tierra' },
-        { name: 'Sofia Rodriguez', career: 'Ciencias de la Vida' },
-        { name: 'Carla Morales', career: 'Ciencias Económicas' },
-        { name: 'Luisa Fernández', career: 'Ciencias Humanas' },
-        { name: 'Paula Martínez', career: 'Seguridad y Defensa' },
-        { name: 'Teresa Jimenez', career: 'Telecomunicaciones' },
-        { name: 'Isabel Ortiz', career: 'Ciencias Médicas' },
-    ];
 
     const handleVote = (candidate, score) => {
         setVotes((prevVotes) => ({
@@ -195,6 +196,8 @@ function Traje() {
         }));
         handleVote(candidateIndex, score);
     };
+
+    
 
     if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
         return (
@@ -214,17 +217,17 @@ function Traje() {
                 <div className="panelVotacion">
                     {listaReinas.length > 0 ? (
                         <div className="candidates">
-                            {candidates.map((candidate, index) => (
+                            {listaReinas.map((candidate, index) => (
                                 <div key={index} className="candidate">
                                     <img
                                         className="candidate-image"
-                                        src={require(`../candidatas/candidate${index + 1}.jpg`)}
+                                        src={'/reinas/' + cortarParteDerecha(listaReinas[index].FOTO_URL)}
                                         alt={`Candidate ${index + 1}`}
                                     />
 
                                     <div className="candidate-info">
-                                        <span className="candidate-name">{index + 1}. {candidate.name}</span>
-                                        <span className="candidate-career">{candidate.career}</span>
+                                        <span className="candidate-name">{candidate.CANDIDATA_ID}. {candidate.CAND_NOMBRE1 + " " + candidate.CAND_APELLIDOPATERNO}</span>
+                                        <span className="candidate-career">{listaCandidatas[index].DEPARTMENTO_NOMBRE.replace("Departamento de ", "")}</span>
                                     </div>
 
                                     <div className="vote-button">
