@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Dropdown from 'react-bootstrap/Dropdown';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './PanelVotacion.scss';
+
 const PanelVotacion = () => {
     const [votes, setVotes] = useState({
         1: 0,
@@ -11,6 +12,8 @@ const PanelVotacion = () => {
         4: 0,
         5: 0,
     });
+
+    const [selectedScores, setSelectedScores] = useState({});
 
     const candidates = [
         { name: 'Barbara Regil', career: 'Ciencias Exactas' },
@@ -32,6 +35,14 @@ const PanelVotacion = () => {
         }));
     };
 
+    const handleScoreSelect = (candidateIndex, score) => {
+        setSelectedScores((prevSelectedScores) => ({
+            ...prevSelectedScores,
+            [candidateIndex]: score,
+        }));
+        handleVote(candidateIndex, score);
+    };
+
     return (
         <div className="candidates">
             {candidates.map((candidate, index) => (
@@ -41,20 +52,21 @@ const PanelVotacion = () => {
                         src={require(`../candidatas/candidate${index + 1}.jpg`)}
                         alt={`Candidate ${index + 1}`}
                     />
-
                     <div className="candidate-info">
-                        <span className="candidate-name">{candidate.name}</span>
+                       <span className="candidate-name">{index + 1}. {candidate.name}</span>
                         <span className="candidate-career">{candidate.career}</span>
                     </div>
-
                     <div className="vote-button">
-                        <Dropdown onSelect={(eventKey) => handleVote(index + 1, eventKey)}>
+                        <Dropdown onSelect={(eventKey) => handleScoreSelect(index + 1, eventKey)}>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                Votar
+                                {selectedScores[index + 1] || "Votar"}
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
-                                    <Dropdown.Item eventKey={score} key={score}>
+                                    <Dropdown.Item
+                                        eventKey={score}
+                                        key={score}
+                                    >
                                         {score}
                                     </Dropdown.Item>
                                 ))}

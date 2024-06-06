@@ -5,9 +5,11 @@ import Axios, { all } from 'axios';
 import ReactModal from "react-modal";
 import Popup from "reactjs-popup";
 import "./popup.scss";
+import "./PanelVotacion.jsx";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
+import PanelVotacion from "./PanelVotacion.jsx";
 
 
 function Traje() {
@@ -148,54 +150,13 @@ function Traje() {
             <>
                 <Navbar texto="Etapa 1 - Traje Tradicional" />
                 {pop === true && <Espera />}
-                <div className="gridCentrao">
+                <div className="panelVotacion">
                     {listaReinas.length > 0 ? (
-                        <React.Fragment>
-                            <div class="datos">
-                                <br></br>
-                                <h3 className="Nombres-heading">{"Candidata " + listaReinas[0].CANDIDATA_ID + ": " + listaReinas[0].CAND_NOMBRE1 + " " + listaReinas[0].CAND_APELLIDOPATERNO}</h3>
-
-                            </div>
-                            <div class="foto">
-                                <br></br>
-
-                                <img src={'/reinas/' + cortarParteDerecha(listaReinas[0].FOTO_URL)} width="350px" alt="chica"></img>
-                            </div>
-
-                        </React.Fragment>
+                    <PanelVotacion/>
                     ) : (
                         <div>Loading...</div>
                     )}
-                    <div class="caja_botones">
-                        <div class="nota">
-                            <h2 class="titulo-puntuacion">Puntuación de TRAJE</h2>
-                            {puntuacion.map((i) => (
-                                <>
-                                    <button
-                                        className={`btn-nota1 ${nota1 === i ? "click" : ""}`}
-                                        name="btn-nota1"
-                                        onClick={(e) => setNota1(i)}
-                                    >
-                                        {i}
-                                    </button>
-                                </>
-                            ))}
-                        </div>
-                        <div class="nota">
-                            <h2 class="titulo-puntuacion">Puntuación de ACTITUD</h2>
-                            {puntuacion.map((i) => (
-                                <>
-                                    <button
-                                        className={`btn-nota2 ${nota2 === i ? "click" : ""}`}
-                                        name="btn-nota2"
-                                        onClick={(e) => setNota2(i)}
-                                    >
-                                        {i}
-                                    </button>
-                                </>
-                            ))}
-                        </div>
-                    </div>
+                    
                     <div id='enviarTT' className="enviar">
                         <button id="enviarTT" type="button" className="btn-enviar" onClick={(e) => Enviar()}>
                             ENVIAR
