@@ -10,6 +10,8 @@ import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbar from "../components/Navbar";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Dropdown from 'react-bootstrap/Dropdown';
 
 function Traje() {
@@ -219,10 +221,12 @@ function Traje() {
                                         src={require(`../candidatas/candidate${index + 1}.jpg`)}
                                         alt={`Candidate ${index + 1}`}
                                     />
+
                                     <div className="candidate-info">
                                         <span className="candidate-name">{index + 1}. {candidate.name}</span>
                                         <span className="candidate-career">{candidate.career}</span>
                                     </div>
+
                                     <div className="vote-button">
                                         <Dropdown onSelect={(eventKey) => handleScoreSelect(index + 1, eventKey)}>
                                             <Dropdown.Toggle variant="success" id="dropdown-basic">

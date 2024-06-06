@@ -844,7 +844,6 @@ $ligthOrange: #e7d0b9;
 }
 
 
-
   .candidate {
     display: flex;
     flex-direction: column;
@@ -857,8 +856,10 @@ $ligthOrange: #e7d0b9;
     flex: 1 1 calc((100% / 5) - 20px);
     min-width: 200px;
     width: 50vh; 
-    height: 45vh; 
+    height: 35vh; 
   }
+
+
   .candidate {
     display: flex;
     flex-direction: column;
@@ -1002,14 +1003,15 @@ $ligthOrange: #e7d0b9;
         }
 
         .btn-enviar {
-            padding: 3% 7% 3% 7%;
+            padding: 1% 2% 1% 2%;
             position: relative;
-            top: -3vw;
+            top: 1vh;
             font-size: 20px;
             background-color: green;
             color: white;
             border-radius: 10px;
             font-family: 'Poppins';
+            border: none; 
         }
 
         .btn-enviar:hover {
