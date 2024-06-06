@@ -5,12 +5,10 @@ import Axios, { all } from 'axios';
 import ReactModal from "react-modal";
 import Popup from "reactjs-popup";
 import "./popup.scss";
-import "./PanelVotacion.jsx";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
-import PanelVotacion from "./PanelVotacion.jsx";
-
+import Dropdown from 'react-bootstrap/Dropdown';
 
 function Traje() {
     const cat = useLocation().search;
@@ -135,6 +133,42 @@ function Traje() {
         setPopAlerta(false);
     };
 
+    const [selectedScores, setSelectedScores] = useState({});
+    const [votes, setVotes] = useState({
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+    });
+    const candidates = [
+        { name: 'Barbara Regil', career: 'Ciencias Exactas' },
+        { name: 'Maria Perez', career: 'Ciencias de la Computación' },
+        { name: 'Laura Gomez', career: 'Ciencias de Energía' },
+        { name: 'Ana Sanchez', career: 'Ciencias de la Tierra'},
+        { name: 'Sofia Rodriguez', career: 'Ciencias de la Vida'},
+        { name: 'Carla Morales', career: 'Ciencias Económicas'},
+        { name: 'Luisa Fernández', career: 'Ciencias Humanas' },
+        { name: 'Paula Martínez', career: 'Seguridad y Defensa' },
+        { name: 'Teresa Jimenez', career: 'Telecomunicaciones' },
+        { name: 'Isabel Ortiz', career: 'Ciencias Médicas' },
+    ];
+
+    const handleVote = (candidate, score) => {
+        setVotes((prevVotes) => ({
+            ...prevVotes,
+            [score]: prevVotes[score] + 1,
+        }));
+    };
+
+    const handleScoreSelect = (candidateIndex, score) => {
+        setSelectedScores((prevSelectedScores) => ({
+            ...prevSelectedScores,
+            [candidateIndex]: score,
+        }));
+        handleVote(candidateIndex, score);
+    };
+
     if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
         return (
             <div className="App">
@@ -152,7 +186,38 @@ function Traje() {
                 {pop === true && <Espera />}
                 <div className="panelVotacion">
                     {listaReinas.length > 0 ? (
-                    <PanelVotacion/>
+                            <div className="candidates">
+                            {candidates.map((candidate, index) => (
+                                <div key={index} className="candidate">
+                                    <img
+                                        className="candidate-image"
+                                        src={require(`../candidatas/candidate${index + 1}.jpg`)}
+                                        alt={`Candidate ${index + 1}`}
+                                    />
+                                    <div className="candidate-info">
+                                       <span className="candidate-name">{index + 1}. {candidate.name}</span>
+                                        <span className="candidate-career">{candidate.career}</span>
+                                    </div>
+                                    <div className="vote-button">
+                                        <Dropdown onSelect={(eventKey) => handleScoreSelect(index + 1, eventKey)}>
+                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                                {selectedScores[index + 1] || "Votar"}
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((score) => (
+                                                    <Dropdown.Item
+                                                        eventKey={score}
+                                                        key={score}
+                                                    >
+                                                        {score}
+                                                    </Dropdown.Item>
+                                                ))}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     ) : (
                         <div>Loading...</div>
                     )}
