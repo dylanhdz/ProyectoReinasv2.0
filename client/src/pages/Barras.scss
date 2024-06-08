@@ -56,55 +56,55 @@ body {
 .reinas-container {
   display: flex;
   flex-wrap: wrap; 
-  padding: 1vh;
   justify-content: center; 
   align-items: center; 
-  gap: 7vh; 
 }
 
-.reinas-cuadro {
-  display: grid;
-  grid-template-columns: 60% 40%;
-  background-color: #1b7248;
-  border-radius: 40px;
-  color: white;
-  grid-row-gap: 3vh;
-  place-items: center;
+.item-reina {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1vh;
+  border: 1px solid #393838;
+  border-radius: 10px;
   width: 100%;
-  height: 70%;
-  padding-top: 0;
-  padding-left: 3%;
-  padding-bottom: 2.7%;
+  max-width: 20vh; 
 }
 
-.reina-informacion {
-  display: grid;
-  place-items: center;
+.foto-candidata {
+  width: auto;
+  max-width: 100px; /* Tamaño máximo de la imagen */
+  height: auto; /* Mantener proporción de aspecto */
+  padding: 10px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.datos {
   width: 100%;
-  height: 100%;
-  grid-template-rows: 50% 20% 30%;
+  text-align: left;
+  margin-top: 10px;
 }
 
-.cuadroAmarillo {
-  display: grid;
-  place-items: center;
-  margin-top: 1.2vh;
-  margin-left: 10.3vh;
-  width: 130%;
-  height: 90%;
-  color : black;
-  background-color: #e4a42d;
-  border-radius: 0px 0px 0px 25px;
-}
 
-.reina-foto {
-  display: grid;
-  margin-left: 7.9vh;
-  place-items: center;
+.datos {
   width: 100%;
-  height: -15vh;
-  padding: 0;
+  text-align: left;
+  margin-top: 10px;
 }
+
+.menu-dropdown {
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.menu-dropdown select {
+  width: 50%;
+}
+
+
 
 .reina-foto img {
   border-radius: 40px;
@@ -115,21 +115,91 @@ body {
   object-fit: cover;
 }
 
-.botones-container {
+
+.dropdown {
+  min-width: 15em;
+  position: relative;
+  margin: 2em;
+}
+
+.dropdown * {
+  box-sizing: border-box;
+  }
+
+
+  .select {
+  background: #1a5b28;
+  color: #fff;
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  margin-left: 50px;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px #e1e7e2 solid;
+  border-radius: 0.5em;
+  padding: 1em;
+  cursor: pointer;
+  transition: 0.3s;
+  }
+
+.select-clicked {
+border: 2px #26489a solid;
+box-shadow: 0 0 0.8em #26489a;
 }
 
-
-
-.boton-votar:hover {
-  background-color: green;
-  color:#ccc;
-  box-shadow: 5px 0px 5px green;
+.select:hover{
+background: #00420f;
 }
 
-.boton-votar.selected {
-  background-color: green;
+.caret{
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #fff;
+  transition: 0.35;
+}
+
+.caret-rotate{
+  transform: rotate(180deg);
+}
+
+.menu {
+  list-style: none;
+  padding: 0.2em 0.5em;
+  background: #058a45;
+  border: 1px #3a7555 solid;
+  box-shadow: 0 0.5em 0.5em rgba(0, 0, 0, 0.2);
+  border-radius: 0.5em;
+  color: #d7e0f5;
+  position: absolute;
+  top: 3em;
+  left: 50%;
+  transform: translate(-50%);
+  opacity: 0;
+  display: none;
+  transition: 0.25s;
+  z-index: 1;
+  /* Cambios para desplegar horizontalmente */
+  white-space: nowrap;
+}
+
+.menu li {
+  padding: 0.7em 0.5em;
+  margin: 0.3em 0;
+  border-radius: 0.5em;
+  cursor: pointer;
+  display: inline-block; /* Cambia de bloque a en línea */
+  margin: 0 0.3em; /* Ajusta el margen horizontalmente */
+}
+
+.menu li:hover {
+  background: #075d2c;
+}
+
+.active {
+  background: #027f23;
+}
+
+.menu-open {
+  display: block;
+  opacity: 1;
 }

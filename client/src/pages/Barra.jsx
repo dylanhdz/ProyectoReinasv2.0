@@ -9,45 +9,17 @@ import Espera from "../components/Espera.jsx";
 import Navbar from "../components/Navbar";
 import { API_BASE_URL } from "./ip.js";
 import "./Barras.scss";
-import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
-import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
+import { Image } from "@nextui-org/react";
 
 const Barra = () => {
   const cat = useLocation().search;
   const { currentUser } = useContext(AuthContext);
-  const [nota1, setnota1] = useState("");
-  const [voto, setVoto] = useState([]);
+  const [elements, setElements] = useState(Array.from({ length: 10 }, () => 0));
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
-  const [elements, setElements] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-  const setValue = (index, value) => {
-    console.log(elements);
-    setElements(prevElements => {
-      const newElements = [...prevElements]; // Create a copy of the array
-      newElements[index] = value; // Update the value at the specified index
-      return newElements; // Set the updated array as the new state
+  const navigate = useNavigate();
 
-    });
-    console.log(elements);
-  }
-  const votacion = (valor) => {
-    setVoto(valor);
-    recuperarvoto(valor); // aaaaaaaaaaaaaaaaaaaa
-  };
-
-  const recuperarvoto = (valor) => {
-    console.log(valor);
-  };
-
-
-  const buttons = document.querySelectorAll(".boton-votar-ej");
-
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      buttons.forEach((btn) => btn.classList.remove("active"));
-      button.classList.add("active");
-    });
-  });
-  //fucnion cortar URL
   const cortarParteDerecha = (cadena) => {
     let parteDerecha = "";
     let i = cadena.length - 1;
@@ -59,41 +31,51 @@ const Barra = () => {
 
     return parteDerecha;
   };
-  //
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [vacioIsOpen, setVacioIsOpen] = useState(false);
-  const hasZero = () => {
-    for (const element of elements) {
-      if (element === 0) {
-        return true;
-      }
+
+  const handleClick = async () => {
+    try {
+      await Axios.post(`${API_BASE_URL}/barra/1`, {
+        notas: elements,
+        EVENTO_ID: 3,
+        CALIFICACION_NOMBRE: "Barras",
+        CALIFICACION_PESO: 100,
+      });
+      setPop(true);
+    } catch (err) {
+      console.log(err);
     }
-    return false;
   };
+
   const Enviar = () => {
-    /*Control para que esten llenas las 2 notas*/
-    if (hasZero()) {
+    if (elements.includes(0)) {
       setVacioIsOpen(true);
-      //alert("Debe ingresar todas las calificaciones ");
     } else {
       setModalIsOpen(true);
-      /* Aqui es donde tengo las dos calificaciones para mandar*/
-      console.log(elements);
     }
   };
-  /* Para cerrar el Modal*/
+
   const handleModalClose = () => {
     setModalIsOpen(false);
   };
+
   const handleVacioClose = () => {
     setVacioIsOpen(false);
   };
+
+  const setValue = (index, value) => {
+    setElements((prevElements) => {
+      const newElements = [...prevElements];
+      newElements[index] = value;
+      return newElements;
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`,);
+        const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`);
         if (response1.data[0].total === 0) {
-
+          // Do something
         } else {
           navigate("/Gracias");
         }
@@ -110,38 +92,9 @@ const Barra = () => {
       clearInterval(interval);
     };
   }, [cat + "ck3"]);
-  const navigate = useNavigate();
-  const handleClick = async e => {
-    //e.preventDefault()
-    //await handleModalClose();
-    try {
-      //console.log("entrooooo");
-      await Axios.post(`${API_BASE_URL}/barra/1`, {
-        notas: elements,
-        EVENTO_ID: 3,
-        CALIFICACION_NOMBRE: "Barras",
-        CALIFICACION_PESO: 100,
-      });
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  const handleSend = () => {
-    handleModalClose();
-    handleClick();
-  }
-
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set(["1"]));
-
-  const selectedValue = React.useMemo(
-    () => Array.from(selectedKeys).join(", "),
-    [selectedKeys]
-  );
-
-
 
   const [listaCandidatas, setListaCandidatas] = useState([]);
-  const [listaNotas, setListaNotas] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -153,6 +106,35 @@ const Barra = () => {
     };
     fetchData();
   }, [cat + "1"]);
+
+  
+  let currentDropdown = null;
+
+  const handleSelectClick = (e) => {
+    e.stopPropagation(); 
+    if (currentDropdown && currentDropdown !== e.currentTarget) {
+      currentDropdown.querySelector(".menu").classList.remove("menu-open");
+    }
+
+    const dropdown = e.currentTarget.querySelector(".menu");
+    dropdown.classList.toggle("menu-open");
+
+   
+    currentDropdown = dropdown.classList.contains("menu-open") ? e.currentTarget : null;
+
+    const handleClickOutside = (event) => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove("menu-open");
+        window.removeEventListener('click', handleClickOutside);
+       
+        if (currentDropdown === e.currentTarget) {
+          currentDropdown = null;
+        }
+      }
+    };
+
+    window.addEventListener('click', handleClickOutside);
+  };
 
   if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
     return (
@@ -168,80 +150,74 @@ const Barra = () => {
     return (
       <>
         <Navbar texto="Etapa 3 - Barras" />
-        {pop === true && <Espera />}
-        <br></br>
+        {pop && <Espera />}
+        <br />
         <div className="main-container">
           <div className="reinas-container">
-            {listaCandidatas.map((listaCandidatas) => (
-                  <div className="item-reina">
-                    <div className="">
-                      <Image
-                        alt="Foto candidata"
-                        className="object-cover rounded-xl"
-                        src={"/reinas/" + cortarParteDerecha(listaCandidatas.FOTO_URL)}
-                        width={270}
-                        height={160} 
-                      />
-
-                    <div className="datos-candidata">
-                      <p>{listaCandidatas.DEPARTAMENTO_NOMBRE}</p>
-                      <h4>
-                        Candidata {listaCandidatas.CANDIDATA_ID}: {listaCandidatas.CAND_NOMBRE1} {listaCandidatas.CAND_APELLIDOPATERNO}
-                      </h4>
-                    </div>
-                    </div>
-                    <div className="botones-container">
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button
-                            variant="bordered"
-                            className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] !== 0 ? "selected" : ""}`}
-                          >
-                            {elements[listaCandidatas.CANDIDATA_ID - 1] !== 0 ? elements[listaCandidatas.CANDIDATA_ID - 1] : "Seleccionar"}
-                          </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu
-                          aria-label="Action event example" 
-                          variant="flat"
-                          disallowEmptySelection
-                          selectionMode="single"
-                          selectedKeys={[elements[listaCandidatas.CANDIDATA_ID - 1].toString()]}
-                          onSelectionChange={(selectedKeys) => setValue(listaCandidatas.CANDIDATA_ID - 1, parseInt(selectedKeys.values().next().value))}
-                        >
-                          {Array.from({ length: 10 }, (_, i) => (
-                            <DropdownItem key={i + 1}>{i + 1}</DropdownItem>
-                          ))}
-                        </DropdownMenu>
-                      </Dropdown>
+            {listaCandidatas.map((candidata) => (
+              <div className="item-reina" key={candidata.CANDIDATA_ID}>
+                <div>
+                  <img
+                    alt="Foto candidata"
+                    className="foto-candidata"
+                    src={"/reinas/" + cortarParteDerecha(candidata.FOTO_URL)}
+                    width={270}
+                    height={160}
+                  />
+                  <div className="datos-candidata">
+                    <h3>{candidata.DEPARTAMENTO_NOMBRE}</h3>
+                    <h4>
+                     {candidata.CANDIDATA_ID}. {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
+                    </h4>
                   </div>
                 </div>
-      
+                <div className="dropdown" onClick={handleSelectClick}>
+                  <div className="botones-container">
+                    <div className="select">
+                      <span className="selected">
+                        {elements[candidata.CANDIDATA_ID - 1] !== 0 ? elements[candidata.CANDIDATA_ID - 1] : "Votar"}
+                      </span>
+                      
+                    </div>
+                    <ul className="menu" aria-label="Action event example">
+                      {Array.from({ length: 10 }, (_, i) => (
+                        <li
+                          key={i + 1}
+                          onClick={() => {
+                            setValue(candidata.CANDIDATA_ID - 1, i + 1);
+                          }}
+                          className={elements[candidata.CANDIDATA_ID - 1] === i + 1 ? "active" : ""}
+                        >
+                          {i + 1}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
-          <div id='enviarbarra' className="enviar" >
-            <button type="button" className="btn-enviar" onClick={(e) => Enviar()}>
+          <div id="enviarbarra" className="enviar">
+            <button type="button" className="btn-enviar" onClick={Enviar}>
               ENVIAR
             </button>
 
             <Popup open={modalIsOpen} onClose={handleModalClose}>
               <div className="modal">
                 <h2 className="modal-title">¿Desea enviar las calificaciones?</h2>
-
                 <div className="botones-modal">
                   <button onClick={handleModalClose} className="btn-cancelar">
                     Cancelar
                   </button>
-                  <button onClick={() => { handleModalClose(); handleClick(); setPop(true); }} className="btn-confirmar">
+                  <button onClick={handleClick} className="btn-confirmar">
                     Aceptar
                   </button>
                 </div>
               </div>
             </Popup>
-            {/*Popup de Alerta*/}
             <Popup open={vacioIsOpen} onClose={handleVacioClose}>
               <div className="modal">
                 <h2 className="modal-title">Por favor, ingrese todas las calificaciones.</h2>
-
                 <div className="botones-modal">
                   <button onClick={handleVacioClose} className="btn-confirmar">
                     Aceptar
