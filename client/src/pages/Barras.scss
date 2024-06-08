@@ -54,17 +54,17 @@ body {
 }
 
 .reinas-container {
-  display: flex;
-  flex-wrap: wrap; 
-  justify-content: center; 
-  align-items: center; 
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px; /* Ajusta este valor según sea necesario */
 }
+
 
 .item-reina {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; // Esto ahora controla el alineamiento vertical
+  align-items: center; // Esto ahora controla el alineamiento horizontal
   margin: 1vh;
   border: 1px solid #393838;
   border-radius: 10px;
@@ -73,14 +73,14 @@ body {
 }
 
 .foto-candidata {
-  width: auto;
+  width: 100px;
   max-width: 100px; /* Tamaño máximo de la imagen */
-  height: auto; /* Mantener proporción de aspecto */
+  height: 100px; /* Mantener proporción de aspecto */
   padding: 10px;
   border-radius: 10px;
   object-fit: cover;
+  margin: auto; /* Esto centrará la imagen */
 }
-
 .datos {
   width: 100%;
   text-align: left;

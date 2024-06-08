@@ -161,8 +161,7 @@ const Barra = () => {
                     alt="Foto candidata"
                     className="foto-candidata"
                     src={"/reinas/" + cortarParteDerecha(candidata.FOTO_URL)}
-                    width={270}
-                    height={160}
+                    
                   />
                   <div className="datos-candidata">
                   <h3>{candidata.DEPARTMENTO_NOMBRE}</h3>
@@ -181,7 +180,7 @@ const Barra = () => {
                       
                     </div>
                     <ul className="menu" aria-label="Action event example">
-                      {Array.from({ length: 12 }, (_, i) => (
+                      {Array.from({ length: 10 }, (_, i) => (
                         <li
                           key={i + 1}
                           onClick={() => {
