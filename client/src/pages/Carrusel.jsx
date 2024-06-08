@@ -32,6 +32,18 @@ function Carrusel() {
         const hoyFormato = fechaDate.toLocaleDateString('es-ES', formato);
         return hoyFormato;
     }
+    //Cortar URL
+    const cortarParteDerecha = (cadena) => {
+        let parteDerecha = "";
+        let i = cadena.length - 1;
+    
+        while (i >= 0 && cadena[i] !== "\\") {
+          parteDerecha = cadena[i] + parteDerecha;
+          i--;
+        }
+    
+        return parteDerecha;
+      };
 
     const next = () => {
         setIndex((prevIndex) => (prevIndex + 1) % 10);
@@ -44,7 +56,7 @@ function Carrusel() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await Axios.get(`${API_BASE_URL}/candidatas/carruselCandidatas`);
+                const res = await Axios.get(`${API_BASE_URL}/candidatas/tt`);
                 setListaReinas(res.data);
                 //console.log(listaReinas);
             } catch (err) {
@@ -106,14 +118,14 @@ function Carrusel() {
                                 <h3 className="circuloReferencia">{reina.CANDIDATA_ID}</h3>
                                 <h3 className="carrusel-heading">{reina.CAND_NOMBRE1} {reina.CAND_APELLIDOPATERNO}</h3>
                                 <b><p className="carrusel-paragraph-dep">{reina.DEPARTMENTO_NOMBRE}</p></b>
-                                <p className="carrusel-paragraph"><b>Fecha de Nacimiento:</b> {fechaFormato(reina.CAND_FECHANACIMIENTO.split('T')[0])} </p>
+                                <p className="carrusel-paragraph"><b>Fecha de Nacimiento:</b> {fechaFormato('T'.split('T')[0])} </p>
                                 <p className="carrusel-paragraph"><b>Estatura:</b> {reina.CAND_ESTATURA}</p>
                                 <p className="carrusel-paragraph"><b>Idiomas:</b> {reina.CAND_IDIOMAS}</p>
                                 <p className="carrusel-paragraph"><b>Color de ojos:</b> {reina.CAND_COLOROJOS}</p>
                                 <p className="carrusel-paragraph"><b>Color de cabello:</b> {reina.CAND_COLORCABELLO}</p><p className='carrusel-paragraph'> </p>
                                 <p className="carrusel-paragraph"><b>Hobbies:</b></p><div className="carrusel-paragraph" dangerouslySetInnerHTML={{ __html: reina.CAND_HOBBIES }}></div>
                             </div>
-                            <img src={imagenArray[reinaIndex]} alt="" />
+                            <img src={"/reinas/" + cortarParteDerecha(reina.FOTO_URL)} alt="" />
                         </div>
                         {listaEvento.map((evento, eventoIndex) => {
                             if (evento.EVENTO_ID === 1 && evento.EVENTO_ESTADO === "si") {
