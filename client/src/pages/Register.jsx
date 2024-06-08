@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import axios from "axios";
-import Edit from "../img/logo3.png";
 import "./styleRegister.css";
 import { API_BASE_URL } from "./ip.js";
 const Register = () => {
