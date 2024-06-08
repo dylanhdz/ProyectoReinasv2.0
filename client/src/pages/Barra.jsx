@@ -9,6 +9,8 @@ import Espera from "../components/Espera.jsx";
 import Navbar from "../components/Navbar";
 import { API_BASE_URL } from "./ip.js";
 import "./Barras.scss";
+import {Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button} from "@nextui-org/react";
+import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
 
 const Barra = () => {
   const cat = useLocation().search;
@@ -89,7 +91,7 @@ const Barra = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${10}`,);
+        const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`,);
         if (response1.data[0].total === 0) {
 
         } else {
@@ -128,6 +130,16 @@ const Barra = () => {
     handleModalClose();
     handleClick();
   }
+
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set(["1"]));
+
+  const selectedValue = React.useMemo(
+    () => Array.from(selectedKeys).join(", "),
+    [selectedKeys]
+  );
+
+
+
   const [listaCandidatas, setListaCandidatas] = useState([]);
   const [listaNotas, setListaNotas] = useState([]);
   useEffect(() => {
@@ -159,83 +171,51 @@ const Barra = () => {
         {pop === true && <Espera />}
         <br></br>
         <div className="main-container">
-
           <div className="reinas-container">
             {listaCandidatas.map((listaCandidatas) => (
-              <div className="reina">
-                <div className="reinas-cuadro">
-                  <div className="reina-informacion">
-                    <h3>
-                      {listaCandidatas.DEPARTMENTO_NOMBRE}
-                    </h3>
-                    <h4>
-                      <center>
-                        Candidata {+ " " + listaCandidatas.CANDIDATA_ID + " : " + listaCandidatas.CAND_NOMBRE1 +
-                          " " +
-                          listaCandidatas.CAND_APELLIDOPATERNO}
-                      </center>
-                    </h4>
-                    <div className="cuadroAmarillo">
-                      <h3>
-                        <center>
-                          Sede : {listaCandidatas.DEPARTAMENTO_SEDE}
-                        </center>
-                      </h3>
+                  <div className="item-reina">
+                    <div className="">
+                      <Image
+                        alt="Foto candidata"
+                        className="object-cover rounded-xl"
+                        src={"/reinas/" + cortarParteDerecha(listaCandidatas.FOTO_URL)}
+                        width={270}
+                        height={160} 
+                      />
+
+                    <div className="datos-candidata">
+                      <p>{listaCandidatas.DEPARTAMENTO_NOMBRE}</p>
+                      <h4>
+                        Candidata {listaCandidatas.CANDIDATA_ID}: {listaCandidatas.CAND_NOMBRE1} {listaCandidatas.CAND_APELLIDOPATERNO}
+                      </h4>
                     </div>
-                  </div>
-                  <div className="reina-foto">
-                    <img src={"/reinas/" + cortarParteDerecha(listaCandidatas.FOTO_URL)} alt="Foto candidata" />
+                    </div>
+                    <div className="botones-container">
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button
+                            variant="bordered"
+                            className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] !== 0 ? "selected" : ""}`}
+                          >
+                            {elements[listaCandidatas.CANDIDATA_ID - 1] !== 0 ? elements[listaCandidatas.CANDIDATA_ID - 1] : "Seleccionar"}
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Action event example" 
+                          variant="flat"
+                          disallowEmptySelection
+                          selectionMode="single"
+                          selectedKeys={[elements[listaCandidatas.CANDIDATA_ID - 1].toString()]}
+                          onSelectionChange={(selectedKeys) => setValue(listaCandidatas.CANDIDATA_ID - 1, parseInt(selectedKeys.values().next().value))}
+                        >
+                          {Array.from({ length: 10 }, (_, i) => (
+                            <DropdownItem key={i + 1}>{i + 1}</DropdownItem>
+                          ))}
+                        </DropdownMenu>
+                      </Dropdown>
                   </div>
                 </div>
-                <div className="botones-container">
-                  Elige una calificación para esta Barra:
-                  <button
-                    className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] == 1 ? "selected" : ""}`}
-                    value={1}
-                    onClick={(e) => setValue(listaCandidatas.CANDIDATA_ID - 1, e.target.value)}
-                    key={1}
-                    id={listaCandidatas.CANDIDATA_ID}
-                  >
-                    1
-                  </button>
-                  <button
-                    className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] == 2 ? "selected" : ""}`}
-                    onClick={(e) => setValue(listaCandidatas.CANDIDATA_ID - 1, e.target.value)}
-                    key={2}
-                    id={listaCandidatas.CANDIDATA_ID}
-                    value={2}
-                  >
-                    2
-                  </button>
-                  <button
-                    className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] == 3 ? "selected" : ""}`}
-                    onClick={(e) => setValue(listaCandidatas.CANDIDATA_ID - 1, e.target.value)}
-                    key={3}
-                    id={listaCandidatas.CANDIDATA_ID}
-                    value={3}
-                  >
-                    3
-                  </button>
-                  <button
-                    className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] == 4 ? "selected" : ""}`}
-                    onClick={(e) => setValue(listaCandidatas.CANDIDATA_ID - 1, e.target.value)}
-                    key={4}
-                    id={listaCandidatas.CANDIDATA_ID}
-                    value={4}
-                  >
-                    4
-                  </button>
-                  <button
-                    className={`boton-votar ${elements[listaCandidatas.CANDIDATA_ID - 1] == 5 ? "selected" : ""}`}
-                    onClick={(e) => setValue(listaCandidatas.CANDIDATA_ID - 1, e.target.value)}
-                    key={5}
-                    id={listaCandidatas.CANDIDATA_ID}
-                    value={5}
-                  >
-                    5
-                  </button>
-                </div>
-              </div>
+      
             ))}
           </div>
           <div id='enviarbarra' className="enviar" >
