@@ -14,7 +14,7 @@ import { Image } from "@nextui-org/react";
 const Barra = () => {
   const cat = useLocation().search;
   const { currentUser } = useContext(AuthContext);
-  const [elements, setElements] = useState(Array.from({ length: 10 }, () => 0));
+  const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
@@ -154,7 +154,7 @@ const Barra = () => {
         <br />
         <div className="main-container">
           <div className="reinas-container">
-            {listaCandidatas.map((candidata) => (
+            {listaCandidatas.map((candidata,index) => (
               <div className="item-reina" key={candidata.CANDIDATA_ID}>
                 <div>
                   <img
@@ -165,7 +165,8 @@ const Barra = () => {
                     height={160}
                   />
                   <div className="datos-candidata">
-                    <h3>{candidata.DEPARTAMENTO_NOMBRE}</h3>
+                  <h3>{candidata.DEPARTMENTO_NOMBRE}</h3>
+
                     <h4>
                      {candidata.CANDIDATA_ID}. {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
                     </h4>
@@ -180,7 +181,7 @@ const Barra = () => {
                       
                     </div>
                     <ul className="menu" aria-label="Action event example">
-                      {Array.from({ length: 10 }, (_, i) => (
+                      {Array.from({ length: 12 }, (_, i) => (
                         <li
                           key={i + 1}
                           onClick={() => {
