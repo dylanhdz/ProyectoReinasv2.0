@@ -5,6 +5,7 @@ import Write from "./pages/Write";
 import Home from "./pages/Home";
 import Single from "./pages/Single";
 import TrajeTipico from "./pages/TrajeTipico";
+import TTipico from "./pages/TTipico";
 import TrajeGala from "./pages/TrajeGala";
 import Barra from "./pages/Barra";
 import Carrusel from "./pages/Carrusel";
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/TrajeTipico",
-        element: <TrajeTipico />,
+        element: <TTipico />,
       },
       {
         path: "/TrajeGala",
