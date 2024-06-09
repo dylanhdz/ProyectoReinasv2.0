@@ -108,8 +108,8 @@ const TablaNotario = () => {
                                                     <ul>
                                                         <li>Juez</li>
                                                         <li>Traje Típico</li>
-                                                        <li>Traje Gala</li>
-                                                        <li>Barra</li>
+                                                        <li>Traje de Gala</li>
+                                                        <li>Preguntas</li>
                                                     </ul>
                                                 </main>
 

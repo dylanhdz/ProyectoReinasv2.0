@@ -1,11 +1,34 @@
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { API_BASE_URL } from './ip.js';
+import Axios from 'axios';
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import "./CRG_Tipico.scss";
 import logoTipico from "../img/logoespereina.png";
 
 const CRG_Tipico = () => {
+  const cat = useLocation().search;
+  const [listaEvento, setListaEvento] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await Axios.get(`${API_BASE_URL}/barra/2`);
+        setListaEvento(res.data);
+        //console.log(listaEvento);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [cat + '2']);
+
   const { currentUser } = useContext(AuthContext);
   if (
     currentUser === null ||
@@ -31,11 +54,19 @@ const CRG_Tipico = () => {
             <h1 className="tituloTipico" contenteditable data-heading="Traje Típico">
               Traje Típico
             </h1>
-            <div className="boton-crg" id="btn-crg">
-              <Link to="/TrajeTipico">
-                <button className="btn" >INICIAR VOTACIÓN</button>
-              </Link>
-            </div>
+            {listaEvento.map((evento, eventoIndex) => {
+              if (evento.EVENTO_ID === 1 && evento.EVENTO_ESTADO === "si") {
+                return (
+                  <div class="boton-crg" id="btn-crg">
+                    <Link to="/TrajeTipico">
+                      <button className='btn'>Iniciar Votación</button>
+                    </Link>
+                  </div>
+                );
+              } else {
+                return null; // O puedes devolver un componente vacío (<></>)
+              }
+            })}
           </div>
         }
       </>

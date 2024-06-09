@@ -108,12 +108,12 @@ function Reporte() {
         imageFoto: {
             marginVertical: 15,
             marginHorizontal: 100,
-            width: 80,
+            width: 100,
             borderRadius: 10
         },
         imageGanadoras: {
             marginHorizontal: 155,
-            width: 180,
+            width: 220,
         },
         contenedorColumna: {
             flexDirection: 'row',
@@ -149,7 +149,7 @@ function Reporte() {
                             <Page size="A4" style={styles.page}>
                                 <View>
                                     <Text style={styles.header} fixed>
-                                        Sistema de Votación - Reina ESPE 2023 - {horaFormato}
+                                        Sistema de Votación - Reina ESPE 2024 - {horaFormato}
                                     </Text>
                                     <Text style={styles.text}>Sangolquí, {hoyFormato}</Text>
                                     <Image
@@ -181,21 +181,25 @@ function Reporte() {
                                                         )};
                                                         <Text style={styles.text}>Lugar {index + 1}: {reina.CAND_NOMBRE1 + " " + reina.CAND_APELLIDOPATERNO}</Text>
                                                         <Text style={styles.text}>Puntuación Ponderada: </Text>
-                                                        <Text style={styles.text}>{(reina.CAND_NOTA_FINAL*10).toFixed(3)}/100</Text>
+                                                        <Text style={styles.text}>{(reina.CAND_NOTA_FINAL*10).toFixed(2)}/100</Text>
                                                     </View>
                                                     <View style={styles.columna}>
                                                         {reina.CAND_NOMBRE1 === "Stefany" && (
                                                             <Image
                                                                 style={styles.imageFoto}
-                                                                src={"/reinas/" + reina.CAND_NOMBRE2.substr(0, 1).toUpperCase()
-                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase() + "FX.jpg"}
+                                                                src={"/reinas/" + reina.CAND_NOMBRE1.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_NOMBRE2.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOMATERNO.substr(0, 1).toUpperCase() + "H.jpg"}
                                                             />
                                                         )};
                                                         {reina.CAND_NOMBRE1 !== "Stefany" && (
                                                             <Image
                                                                 style={styles.imageFoto}
                                                                 src={"/reinas/" + reina.CAND_NOMBRE1.substr(0, 1).toUpperCase()
-                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase() + "FX.jpg"}
+                                                                    + reina.CAND_NOMBRE2.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOMATERNO.substr(0, 1).toUpperCase() + "H.jpg"}
                                                             />
                                                         )};
                                                     </View>
@@ -227,7 +231,7 @@ function Reporte() {
                             <Page size="A4" style={styles.page}>
                                 <View>
                                     <Text style={styles.header} fixed>
-                                        Sistema de Votación - Reina ESPE 2023 - {horaFormato}
+                                        Sistema de Votación - Reina ESPE 2024 - {horaFormato}
                                     </Text>
                                     <Text style={styles.text}>Sangolquí, {hoyFormato}</Text>
                                     <Image
@@ -246,7 +250,7 @@ function Reporte() {
                                                 <View style={styles.section_ganadoras} key={reina.CANDIDATA_ID} break={index > 1 ? 'page' : undefined}>
                                                     <View>
                                                         {index === 0 && (
-                                                            <Text style={styles.title}>Reina 2023</Text>
+                                                            <Text style={styles.title}>Reina 2024</Text>
                                                         )}
                                                         {index === 1 && (
                                                             <Text style={styles.title}>Candidata Confraternidad</Text>
@@ -259,21 +263,25 @@ function Reporte() {
                                                         )};
                                                         <Text style={styles.title}>{reina.CAND_NOMBRE1 + " " + reina.CAND_APELLIDOPATERNO}</Text>
                                                         <Text style={styles.subtitle}>{reina.DEPARTMENTO_NOMBRE}</Text>
-                                                        <Text style={styles.tituloreina}>Puntuación Final de: {(reina.CAND_NOTA_FINAL*10).toFixed(3)}/100</Text>
+                                                        <Text style={styles.tituloreina}>Puntuación Final de: {(reina.CAND_NOTA_FINAL*10).toFixed(2)}/100</Text>
                                                     </View>
                                                     <View style={styles.section_ganadoras}>
                                                         {reina.CAND_NOMBRE1 === "Stefany" && (
                                                             <Image
                                                                 style={styles.imageGanadoras}
-                                                                src={"/reinas/" + reina.CAND_NOMBRE2.substr(0, 1).toUpperCase()
-                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase() + "FX.jpg"}
+                                                                src={"/reinas/" + reina.CAND_NOMBRE1.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_NOMBRE2.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOMATERNO.substr(0, 1).toUpperCase() + "H.jpg"}
                                                             />
                                                         )};
                                                         {reina.CAND_NOMBRE1 !== "Stefany" && (
                                                             <Image
                                                                 style={styles.imageGanadoras}
                                                                 src={"/reinas/" + reina.CAND_NOMBRE1.substr(0, 1).toUpperCase()
-                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase() + "FX.jpg"}
+                                                                    + reina.CAND_NOMBRE2.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOPATERNO.substr(0, 1).toUpperCase()
+                                                                    + reina.CAND_APELLIDOMATERNO.substr(0, 1).toUpperCase() + "H.jpg"}
                                                             />
                                                         )};
                                                     </View>

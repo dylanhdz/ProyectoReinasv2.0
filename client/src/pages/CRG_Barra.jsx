@@ -62,7 +62,7 @@ const CRG_Barra = () => {
               if (evento.EVENTO_ID === 3 && evento.EVENTO_ESTADO === "si" ) {
                 return (
                   <div className="boton-crg" id="btn-crg">
-                    <Link to="/Barra">
+                    <Link to="/Preguntas">
                       <button className="btn" >INICIAR VOTACIÓN</button>
                     </Link>
                   </div>
