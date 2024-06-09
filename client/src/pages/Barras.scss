@@ -63,14 +63,10 @@ body {
 .item-reina {
   display: flex;
   flex-direction: column;
-  justify-content: center; // Esto ahora controla el alineamiento vertical
-  align-items: center; // Esto ahora controla el alineamiento horizontal
-  margin: 0.8vh;
-  padding: 0.5em;
-  //border: 1px solid #393838;
-  //width: 190px;
-  //height: 254px;
-  border-radius: 1rem;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  margin: 0 auto;
   background-color: #FDFFE2;
   //background-image: linear-gradient(30deg, #B3E2A7 0%, #80B9AD 52%, #6295A2 100%);
   box-shadow: rgba(0, 0, 0, 0.15) 0px -23px 25px 0px inset,
@@ -83,13 +79,13 @@ body {
          rgba(0, 0, 0, 0.09) 0px 32px 16px;
   border-radius: 10px;
   width: 100%;
-  max-width: 30vh; 
+  max-width: 25vh; 
   h3 {
     font-size: 1em;
+    padding-bottom: -0.5em;
   }
   h4 {
     font-size: 0.8em;
-    margin: 0.5em;
     font-weight: normal;
   }
 }
@@ -101,8 +97,8 @@ body {
 
 .foto-candidata {
   width: 100px;
-  max-width: 100px; /* Tamaño máximo de la imagen */
-  height: 100px; /* Mantener proporción de aspecto */
+  max-width: 200px; /* Tamaño máximo de la imagen */
+  height: 150px; /* Mantener proporción de aspecto */
   padding: 10px;
   border-radius: 10px;
   object-fit: cover;
@@ -132,8 +128,6 @@ body {
   width: 50%;
 }
 
-
-
 .reina-foto img {
   border-radius: 40px;
   max-width: 11.6vw;
@@ -147,14 +141,7 @@ body {
 .dropdown {
   min-width: 15em;
   position: relative;
-  margin: 2em;
 }
-
-.dropdown * {
-  box-sizing: border-box;
-  }
-
-
   .select {
   background: #1a5b28;
   color: #fff;
@@ -163,7 +150,7 @@ body {
   align-items: center;
   border: 2px #e1e7e2 solid;
   border-radius: 0.5em;
-  padding: 1em;
+  padding: 0.75em;
   cursor: pointer;
   transition: 0.3s;
   }
