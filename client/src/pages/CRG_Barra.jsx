@@ -56,7 +56,7 @@ const CRG_Barra = () => {
             <figure className="cortina_derecha"></figure>
             <img src={logoBarra} alt="logo" className="logoespereinaBarra" />
             <h1 className="tituloBarra" contenteditable data-heading="Barras">
-              Barras
+              Preguntas
             </h1>
             {listaEvento.map((evento, eventoIndex) => {
               if (evento.EVENTO_ID === 3 && evento.EVENTO_ESTADO === "si" ) {

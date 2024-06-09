@@ -17,26 +17,23 @@ export const addCali = (req, res) => {
 
     jwt.verify(token, "jwtkey", (err, userInfo) => {
         if (err) return res.status(403).json("Token no es valido!");
-        const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`, `CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES (?)";
-        const values = [
-            req.body.EVENTO_ID,
-            userInfo.id,
-            req.body.CANDIDATA_ID,
-            req.body.CALIFICACION_NOMBRE,
-            req.body.CALIFICACION_PESO,
-            req.body.CALIFICACION_VALOR,
-        ]
 
-        db.query(q, [values], (err, data) => {
-            if (err) return console.log(err);
-            return res.json("El comentario ha sido creado")
-
-        });
-
-
+        const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`,`CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES (?)";
+        for (var i = 0; i < 12; i++) {
+            const values = [
+                req.body.EVENTO_ID,
+                userInfo.id,
+                1 + i,
+                req.body.CALIFICACION_NOMBRE,
+                req.body.CALIFICACION_PESO,
+                Number(req.body.notas[i]), //Hay que multiplicar por 2 para que sea sobre 10
+            ]
+            db.query(q, [values], (err, data) => {
+                if (err) return res.status(500).json(err);
+            });
+        }
     });
 }
-
 
 export const getCalificacionCandidatas = (req, res) => {
     const sqlSelect = "SELECT c.CANDIDATA_ID, c.USUARIO_ID, c.EVENTO_ID from calificacion c WHERE CANDIDATA_ID = ? AND USUARIO_ID = ? AND EVENTO_ID = ?;";

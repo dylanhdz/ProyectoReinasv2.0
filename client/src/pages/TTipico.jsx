@@ -12,147 +12,148 @@ import Navbar from "../components/Navbar";
 
 function TTipico() {
 
-    const cat = useLocation().search;
-    const { currentUser } = useContext(AuthContext);
-    const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [vacioIsOpen, setVacioIsOpen] = useState(false);
-    const [pop, setPop] = useState(false);
-    const navigate = useNavigate();
-  
-    const cortarParteDerecha = (cadena) => {
-      let parteDerecha = "";
-      let i = cadena.length - 1;
-  
-      while (i >= 0 && cadena[i] !== "\\") {
-        parteDerecha = cadena[i] + parteDerecha;
-        i--;
-      }
-  
-      return parteDerecha;
-    };
-  
-    const handleClick = async () => {
+  const cat = useLocation().search;
+  const { currentUser } = useContext(AuthContext);
+  const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [vacioIsOpen, setVacioIsOpen] = useState(false);
+  const [pop, setPop] = useState(false);
+  const navigate = useNavigate();
+
+  const cortarParteDerecha = (cadena) => {
+    let parteDerecha = "";
+    let i = cadena.length - 1;
+
+    while (i >= 0 && cadena[i] !== "\\") {
+      parteDerecha = cadena[i] + parteDerecha;
+      i--;
+    }
+
+    return parteDerecha;
+  };
+
+  const handleClick = async () => {
+    try {
+      await Axios.post(`${API_BASE_URL}/cali`, {
+        notas: elements,
+        EVENTO_ID: 1,
+        CALIFICACION_NOMBRE: "Traje Típico",
+        CALIFICACION_PESO: 100,
+      });
+      setPop(true);
+      console.log("Calificaciones enviadas");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const Enviar = () => {
+    if (elements.includes(0)) {
+      setVacioIsOpen(true);
+    } else {
+      setModalIsOpen(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalIsOpen(false);
+  };
+
+  const handleVacioClose = () => {
+    setVacioIsOpen(false);
+  };
+
+  const setValue = (index, value) => {
+    setElements((prevElements) => {
+      const newElements = [...prevElements];
+      newElements[index] = value;
+      return newElements;
+    });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        await Axios.post(`${API_BASE_URL}/barra/1`, {
-          notas: elements,
-          EVENTO_ID: 3,
-          CALIFICACION_NOMBRE: "Barras",
-          CALIFICACION_PESO: 100,
-        });
-        setPop(true);
+        const response1 = await Axios.get(`${API_BASE_URL}/user/ck1?id=${12}`);
+        if (response1.data[0].total === 0) {
+
+        } else {
+          navigate("/CRG_Gala");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [cat + "ck1"]);
+
+  const [listaCandidatas, setListaCandidatas] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await Axios.get(`${API_BASE_URL}/barra`);
+        setListaCandidatas(res.data);
       } catch (err) {
         console.log(err);
       }
     };
-  
-    const Enviar = () => {
-      if (elements.includes(0)) {
-        setVacioIsOpen(true);
-      } else {
-        setModalIsOpen(true);
+    fetchData();
+  }, [cat + "1"]);
+
+
+  let currentDropdown = null;
+
+  const handleSelectClick = (e) => {
+    e.stopPropagation();
+    if (currentDropdown && currentDropdown !== e.currentTarget) {
+      currentDropdown.querySelector(".menu").classList.remove("menu-open");
+    }
+
+    const dropdown = e.currentTarget.querySelector(".menu");
+    dropdown.classList.toggle("menu-open");
+
+
+    currentDropdown = dropdown.classList.contains("menu-open") ? e.currentTarget : null;
+
+    const handleClickOutside = (event) => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove("menu-open");
+        window.removeEventListener('click', handleClickOutside);
+
+        if (currentDropdown === e.currentTarget) {
+          currentDropdown = null;
+        }
       }
-    };
-  
-    const handleModalClose = () => {
-      setModalIsOpen(false);
-    };
-  
-    const handleVacioClose = () => {
-      setVacioIsOpen(false);
-    };
-  
-    const setValue = (index, value) => {
-      setElements((prevElements) => {
-        const newElements = [...prevElements];
-        newElements[index] = value;
-        return newElements;
-      });
-    };
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`);
-          if (response1.data[0].total === 0) {
-            // Do something
-          } else {
-            navigate("/Gracias");
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  
-      const interval = setInterval(() => {
-        fetchData();
-      }, 5000);
-  
-      return () => {
-        clearInterval(interval);
-      };
-    }, [cat + "ck3"]);
-  
-    const [listaCandidatas, setListaCandidatas] = useState([]);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const res = await Axios.get(`${API_BASE_URL}/barra`);
-          setListaCandidatas(res.data);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      fetchData();
-    }, [cat + "1"]);
-  
-  
-    let currentDropdown = null;
-  
-    const handleSelectClick = (e) => {
-      e.stopPropagation();
-      if (currentDropdown && currentDropdown !== e.currentTarget) {
-        currentDropdown.querySelector(".menu").classList.remove("menu-open");
-      }
-  
-      const dropdown = e.currentTarget.querySelector(".menu");
-      dropdown.classList.toggle("menu-open");
-  
-  
-      currentDropdown = dropdown.classList.contains("menu-open") ? e.currentTarget : null;
-  
-      const handleClickOutside = (event) => {
-        if (!dropdown.contains(event.target)) {
-          dropdown.classList.remove("menu-open");
-          window.removeEventListener('click', handleClickOutside);
-  
-          if (currentDropdown === e.currentTarget) {
-            currentDropdown = null;
-          }
-        }
-      };
-  
-      window.addEventListener('click', handleClickOutside);
     };
 
-    if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
-        return (
-            <div className="App">
-                <main>
-                    <div>
-                        <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
-                    </div>
-                </main>
-            </div>
-        );
-    } else {
-        return (
-            <>
-                <Navbar texto="Etapa 1 - Traje Tradicional" />
-                {pop === true && <Espera />}
-                
-                <div className="main-container">
+    window.addEventListener('click', handleClickOutside);
+  };
+
+  if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
+    return (
+      <div className="App">
+        <main>
+          <div>
+            <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
+          </div>
+        </main>
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <Navbar texto="Etapa 1 - Traje Tradicional" />
+        {pop === true && <Espera />}
+
+        <div className="main-container">
           <div className="reinas-container">
             {listaCandidatas.map((candidata, index) => (
               <div className="item-reina" key={candidata.CANDIDATA_ID}><div className="espacio-imagen">
@@ -174,7 +175,7 @@ function TTipico() {
                   <div className="botones-container">
                     <div className="select">
                       <span className="selected">
-                      {elements[candidata.CANDIDATA_ID - 1] !== 0 ? `${elements[candidata.CANDIDATA_ID - 1]} de 10` : 'Votar'}
+                        {elements[candidata.CANDIDATA_ID - 1] !== 0 ? `${elements[candidata.CANDIDATA_ID - 1]} de 10` : 'Votar'}
                       </span>
 
                     </div>
@@ -208,7 +209,7 @@ function TTipico() {
                   <button onClick={handleModalClose} className="btn-cancelar">
                     Cancelar
                   </button>
-                  <button onClick={handleClick} className="btn-confirmar">
+                  <button onClick={()=> {handleModalClose(); handleClick(); setPop(true);}} className="btn-confirmar">
                     Aceptar
                   </button>
                 </div>
@@ -226,10 +227,10 @@ function TTipico() {
             </Popup>
           </div>
         </div>
-                
-            </>
-        );
-    }
+
+      </>
+    );
+  }
 }
 
 export default TTipico;

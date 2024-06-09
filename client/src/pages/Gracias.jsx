@@ -60,7 +60,6 @@ const Gracias = () => {
               <div id="content">
 
                 <h1 id="title">Equipo de gestión del proyecto</h1>
-                <p id="nombreMiembro">Diego Portilla</p>
                 <p id="nombreMiembro">Dylan Hernández</p>
 
                 <h1 id="title">Equipo de Desarrollo de Interfaces</h1>

@@ -8,7 +8,7 @@ import TrajeTipico from "./pages/TrajeTipico";
 import TTipico from "./pages/TTipico";
 import TrajeGala from "./pages/TrajeGala";
 import TGala from "./pages/TGala";
-import Barra from "./pages/Barra";
+import Preguntas from "./pages/Preguntas";
 import Carrusel from "./pages/Carrusel";
 import CRG_Gala from "./pages/CRG_Gala";
 import CRG_Tipico from "./pages/CRG_Tipico";
@@ -62,8 +62,8 @@ const router = createBrowserRouter([
         element: <TGala />,
       },
       {
-        path: "/Barra",
-        element: <Barra />,
+        path: "/Preguntas",
+        element: <Preguntas />,
       },
       {
         path: "/Carrusel",

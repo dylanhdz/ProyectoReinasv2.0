@@ -8,9 +8,9 @@ import "./popup.scss";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
+import "./Barras.scss";
 
-
-function TGala() {
+function Preguntas() {
 
   const cat = useLocation().search;
   const { currentUser } = useContext(AuthContext);
@@ -36,8 +36,8 @@ function TGala() {
     try {
       await Axios.post(`${API_BASE_URL}/cali`, {
         notas: elements,
-        EVENTO_ID: 2,
-        CALIFICACION_NOMBRE: "Traje Gala",
+        EVENTO_ID: 3,
+        CALIFICACION_NOMBRE: "Preguntas",
         CALIFICACION_PESO: 100,
       });
       setPop(true);
@@ -74,11 +74,11 @@ function TGala() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await Axios.get(`${API_BASE_URL}/user/ck2?id=${12}`);
+        const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`);
         if (response1.data[0].total === 0) {
 
         } else {
-          navigate("/CRG_Barra");
+          navigate("/Gracias");
         }
       } catch (error) {
         console.error(error);
@@ -92,7 +92,7 @@ function TGala() {
     return () => {
       clearInterval(interval);
     };
-  }, [cat + "ck2"]);
+  }, [cat + "ck3"]);
 
   const [listaCandidatas, setListaCandidatas] = useState([]);
 
@@ -150,7 +150,7 @@ function TGala() {
   } else {
     return (
       <>
-        <Navbar texto="Etapa 2 - Traje de Gala" />
+        <Navbar texto="Etapa 3 - Preguntas" />
         {pop === true && <Espera />}
 
         <div className="main-container">
@@ -233,4 +233,4 @@ function TGala() {
   }
 }
 
-export default TGala;
+export default Preguntas;
