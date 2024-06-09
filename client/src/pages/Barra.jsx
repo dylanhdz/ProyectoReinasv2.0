@@ -155,8 +155,7 @@ const Barra = () => {
         <div className="main-container">
           <div className="reinas-container">
             {listaCandidatas.map((candidata, index) => (
-              <div className="item-reina" key={candidata.CANDIDATA_ID}>
-                <div>
+              <div className="item-reina" key={candidata.CANDIDATA_ID}><div className="espacio-imagen">
                   <img
                     alt="Foto candidata"
                     className="foto-candidata"

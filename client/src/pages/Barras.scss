@@ -65,9 +65,36 @@ body {
   flex-direction: column;
   justify-content: center; // Esto ahora controla el alineamiento vertical
   align-items: center; // Esto ahora controla el alineamiento horizontal
-  margin: 1vh;
-  border: 1px solid #393838;
+  margin: 0.8vh;
+  padding: 0.5em;
+  //border: 1px solid #393838;
+  //width: 190px;
+  //height: 254px;
+  border-radius: 1rem;
+  background-color: #FDFFE2;
+  //background-image: linear-gradient(30deg, #B3E2A7 0%, #80B9AD 52%, #6295A2 100%);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px -23px 25px 0px inset,
+   rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset,
+     rgba(0, 0, 0, 0.06) 0px 2px 1px,
+      rgba(0, 0, 0, 0.09) 0px 4px 2px,
+       rgba(0, 0, 0, 0.09) 0px 8px 4px,
+        rgba(0, 0, 0, 0.09) 0px 16px 8px,
+         rgba(0, 0, 0, 0.09) 0px 32px 16px;
   border-radius: 10px;
+  width: 100%;
+  max-width: 30vh; 
+  h3 {
+    font-size: 1em;
+  }
+  h4 {
+    font-size: 0.8em;
+    margin: 0.5em;
+    font-weight: normal;
+  }
+}
+
+.item-reina img {
   width: 100%;
   max-width: 20vh; 
 }
