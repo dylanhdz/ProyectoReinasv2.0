@@ -50,8 +50,8 @@ const Gracias = () => {
               />
             )}
             <section className="intro">
-              Muchas gracias por tu participación en el concurso de la Elección
-              de la Reina ESPE 2023
+              Muchas gracias por su participación en el concurso de la Elección
+              de la Reina ESPE 2024
             </section>
             <section className="logoEspeBarra">
               <img src={logoEspeBarra} alt="Logo de la ESPE de la Reina" />
@@ -59,33 +59,20 @@ const Gracias = () => {
             <div id="scroller">
               <div id="content">
 
-                <h1 id="title">Equipo de gestión del proyecto</h1>
-                <p id="nombreMiembro">Dylan Hernández</p>
-
-                <h1 id="title">Equipo de Desarrollo de Interfaces</h1>
-                <h2 id="subtitle">Coordinadores</h2>
-                <p id="nombreMiembro">Kevin Vargas</p>
-
                 <h1 id="subtitle">Desarrolladores Principales</h1>
-
-                <p id="nombreMiembro">Kevin Vargas</p>
-                <h1 id="title">Equipo de desarrollo de Base de Datos y CRUD</h1>
-                <h2 id="subtitle">Coordinadores</h2>
+                
                 <p id="nombreMiembro">Luca De Veintemilla</p>
-                <p id="nombreMiembro">Dylan Hernandez</p>
-
-                <h1 id="subtitle">Desarrolladores Principales</h1>
                 <p id="nombreMiembro">Dylan Hernández</p>
-                <p id="nombreMiembro">Luca de Veintemilla</p>
-
-                <h1 id="title">Equipo de Redes</h1>
-                <h2 id="subtitle">Coordinadores</h2>
                 <p id="nombreMiembro">Juan Reyes</p>
+                <p id="nombreMiembro">Kevin Vargas</p>
 
-                <h1 id="title">Desarrolladores Principales</h1>
-                <p id="nombreMiembro">Juan Reyes</p>
-                <p id="nombreMiembro">Brandon Masacela</p>
+                <h1 id="subtitle">Equipo de Apoyo del DCCO</h1>
+                
+                <p id="nombreMiembro">PhD. Sonia Cárdenas</p>
+                <p id="nombreMiembro">PhD. Mauricio Loachamín</p>
 
+                <h1 id="subtitle">Arquitectura de Red del Proyecto</h1>
+                <p id="nombreMiembro">PhD. Gustavo Salazar</p>
               </div>
             </div>
           </div>
