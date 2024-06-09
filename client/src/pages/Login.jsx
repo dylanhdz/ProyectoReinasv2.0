@@ -36,7 +36,7 @@ const Login = () => {
         navigate("/PanelAdmin");
       }
       else {
-        navigate("/Carrusel");
+        navigate("/CRG_Tipico");
       }
     } catch (err) {
       setModalIsOpen(true);
