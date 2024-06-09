@@ -174,7 +174,7 @@ const Barra = () => {
                   <div className="botones-container">
                     <div className="select">
                       <span className="selected">
-                        {elements[candidata.CANDIDATA_ID - 1] !== 0 ? elements[candidata.CANDIDATA_ID - 1] : "Votar"}
+                      {elements[candidata.CANDIDATA_ID - 1] !== 0 ? `${elements[candidata.CANDIDATA_ID - 1]} de 10` : 'Votar'}
                       </span>
 
                     </div>
