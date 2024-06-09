@@ -107,11 +107,11 @@ const Barra = () => {
     fetchData();
   }, [cat + "1"]);
 
-  
+
   let currentDropdown = null;
 
   const handleSelectClick = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     if (currentDropdown && currentDropdown !== e.currentTarget) {
       currentDropdown.querySelector(".menu").classList.remove("menu-open");
     }
@@ -119,14 +119,14 @@ const Barra = () => {
     const dropdown = e.currentTarget.querySelector(".menu");
     dropdown.classList.toggle("menu-open");
 
-   
+
     currentDropdown = dropdown.classList.contains("menu-open") ? e.currentTarget : null;
 
     const handleClickOutside = (event) => {
       if (!dropdown.contains(event.target)) {
         dropdown.classList.remove("menu-open");
         window.removeEventListener('click', handleClickOutside);
-       
+
         if (currentDropdown === e.currentTarget) {
           currentDropdown = null;
         }
@@ -154,21 +154,20 @@ const Barra = () => {
         <br />
         <div className="main-container">
           <div className="reinas-container">
-            {listaCandidatas.map((candidata,index) => (
+            {listaCandidatas.map((candidata, index) => (
               <div className="item-reina" key={candidata.CANDIDATA_ID}>
                 
                   <img
                     alt="Foto candidata"
                     className="foto-candidata"
                     src={"/reinas/" + cortarParteDerecha(candidata.FOTO_URL)}
-                    
+
                   />
                   <div className="datos-candidata">
-                  <h3>{candidata.DEPARTMENTO_NOMBRE}</h3>
-
-                    <h4>
-                     {candidata.CANDIDATA_ID}. {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
-                    </h4>
+                    <h3>
+                      {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
+                    </h3>
+                    <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>
                   </div>
                
                 <div className="dropdown" onClick={handleSelectClick}>
@@ -177,7 +176,7 @@ const Barra = () => {
                       <span className="selected">
                         {elements[candidata.CANDIDATA_ID - 1] !== 0 ? elements[candidata.CANDIDATA_ID - 1] : "Votar"}
                       </span>
-                      
+
                     </div>
                     <ul className="menu" aria-label="Action event example">
                       {Array.from({ length: 10 }, (_, i) => (
