@@ -56,43 +56,33 @@ body {
 .reinas-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px; /* Ajusta este valor según sea necesario */
+  gap: 1vh; 
 }
 
 
 .item-reina {
   display: flex;
   flex-direction: column;
-  justify-content: center; // Esto ahora controla el alineamiento vertical
-  align-items: center; // Esto ahora controla el alineamiento horizontal
-  margin: 1vh;
-  border: 1px solid #393838;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 20vh; 
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 0 auto;
 }
 
-.foto-candidata {
-  width: 100px;
-  max-width: 100px; /* Tamaño máximo de la imagen */
-  height: 100px; /* Mantener proporción de aspecto */
-  padding: 10px;
-  border-radius: 10px;
-  object-fit: cover;
-  margin: auto; /* Esto centrará la imagen */
-}
-.datos {
+.item-reina img {
   width: 100%;
-  text-align: left;
-  margin-top: 10px;
+  max-width: 250px;
+  margin: 0 auto 20px;
+}
+
+.datos-candidata {
+  align-self: flex-start;
+  margin-bottom: 10px;
 }
 
 
-.datos {
-  width: 100%;
-  text-align: left;
-  margin-top: 10px;
-}
 
 .menu-dropdown {
   margin-top: 10px;

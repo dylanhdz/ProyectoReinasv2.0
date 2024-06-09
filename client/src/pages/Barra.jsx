@@ -156,7 +156,7 @@ const Barra = () => {
           <div className="reinas-container">
             {listaCandidatas.map((candidata,index) => (
               <div className="item-reina" key={candidata.CANDIDATA_ID}>
-                <div>
+                
                   <img
                     alt="Foto candidata"
                     className="foto-candidata"
@@ -170,7 +170,7 @@ const Barra = () => {
                      {candidata.CANDIDATA_ID}. {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
                     </h4>
                   </div>
-                </div>
+               
                 <div className="dropdown" onClick={handleSelectClick}>
                   <div className="botones-container">
                     <div className="select">
