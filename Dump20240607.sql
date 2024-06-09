@@ -230,7 +230,7 @@ CREATE TABLE `departamento` (
 
 LOCK TABLES `departamento` WRITE;
 /*!40000 ALTER TABLE `departamento` DISABLE KEYS */;
-INSERT INTO `departamento` VALUES (1,'Departamento de Ciencias Económicas, Administrativas y de Comercio','Matriz'),(2,'Departamento de Eléctrica, Electrónica y Telecomunicaciones','Matriz'),(3,'Departamento de Ciencias Humanas y Sociales','Matriz'),(4,'Departamento de Ciencias de la Energía y Mecánica','Matriz'),(5,'Departamento de Ciencias de la Vida','Santo Domingo'),(6,'Departamento de Ciencias de la Energía y Mecánica','Latacunga'),(7,'Departamento de Ciencias Médicas','Matriz'),(8,'Departamento de Ciencias de la Computación','Matriz'),(9,'Departamento de Ciencias de la Vida y Agricultura','Matriz'),(10,'Departamento de Ciencias de la Tierra y la Construcción ','Matriz'),(11,'Departamento de Seguridad y Defensa','Matriz'),(12,'Departamento de Ciencias Exactas','Matriz');
+INSERT INTO `departamento` VALUES (1,'Ciencias Económicas, Administrativas y de Comercio','Matriz'),(2,'Eléctrica, Electrónica y Telecomunicaciones','Matriz'),(3,'Ciencias Humanas y Sociales','Matriz'),(4,'Ciencias de la Energía y Mecánica','Matriz'),(5,'Sede Santo Domingo','Santo Domingo'),(6,'Sede Latacunga','Latacunga'),(7,'Ciencias Médicas','Matriz'),(8,'Ciencias de la Computación','Matriz'),(9,'Ciencias de la Vida y Agricultura','Matriz'),(10,'Ciencias de la Tierra y la Construcción ','Matriz'),(11,'Seguridad y Defensa','Matriz'),(12,'Ciencias Exactas','Matriz');
 /*!40000 ALTER TABLE `departamento` ENABLE KEYS */;
 UNLOCK TABLES;
 
