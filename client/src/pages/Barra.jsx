@@ -164,15 +164,15 @@ const Barra = () => {
                     
                   />
                   <div className="datos-candidata">
-                  <h3>{candidata.DEPARTMENTO_NOMBRE}</h3>
+                  <h2>{candidata.DEPARTMENTO_NOMBRE}</h2>
 
-                    <h4>
+                    <h3>
                      {candidata.CANDIDATA_ID}. {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
-                    </h4>
+                    </h3>
                   </div>
                
                 <div className="dropdown" onClick={handleSelectClick}>
-                  <div className="botones-container">
+                 
                     <div className="select">
                       <span className="selected">
                         {elements[candidata.CANDIDATA_ID - 1] !== 0 ? elements[candidata.CANDIDATA_ID - 1] : "Votar"}
@@ -192,7 +192,7 @@ const Barra = () => {
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  
                 </div>
               </div>
             ))}
