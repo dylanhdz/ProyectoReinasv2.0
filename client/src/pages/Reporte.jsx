@@ -168,13 +168,13 @@ function Reporte() {
                                                 <View style={styles.contenedorColumna} key={reina.CANDIDATA_ID}>
                                                     <View style={styles.columna}>
                                                         {index === 0 && (
-                                                            <Text style={styles.bold}>Reina Ganadora</Text>
+                                                            <Text style={styles.bold}>Reina ESPE</Text>
                                                         )}
                                                         {index === 1 && (
-                                                            <Text style={styles.bold}>Candidata Confraternidad</Text>
+                                                            <Text style={styles.bold}>Srta. Confraternidad</Text>
                                                         )}
                                                         {index === 2 && (
-                                                            <Text style={styles.bold}>Candidata Simpatía</Text>
+                                                            <Text style={styles.bold}>Srta. Simpatía</Text>
                                                         )}
                                                         {reina.ID_ELECCION === 1 && (
                                                             <Text style={styles.bold}>Candidata Amistad</Text>
@@ -253,10 +253,10 @@ function Reporte() {
                                                             <Text style={styles.title}>Reina 2024</Text>
                                                         )}
                                                         {index === 1 && (
-                                                            <Text style={styles.title}>Candidata Confraternidad</Text>
+                                                            <Text style={styles.title}>Srta. Confraternidad</Text>
                                                         )}
                                                         {index === 2 && (
-                                                            <Text style={styles.title}>Candidata Simpatía</Text>
+                                                            <Text style={styles.title}>Srta. Simpatía</Text>
                                                         )}
                                                         {reina.ID_ELECCION === 1 && (
                                                             <Text style={styles.bold}>Candidata Amistad</Text>
