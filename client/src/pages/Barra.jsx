@@ -8,7 +8,7 @@ import "./popup.scss";
 import Espera from "../components/Espera.jsx";
 import Navbar from "../components/Navbar";
 import { API_BASE_URL } from "./ip.js";
-import "./Barras.scss";
+import "./Barras.scss";handleClick
 import { Image } from "@nextui-org/react";
 
 const Barra = () => {
@@ -163,7 +163,6 @@ const Barra = () => {
 
                 />
                 <div className="datos-candidata">
-
                   <h3>
                     {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
                   </h3>
@@ -174,11 +173,11 @@ const Barra = () => {
                   <div className="botones-container">
                     <div className="select">
                       <span className="selected">
-                      {elements[candidata.CANDIDATA_ID - 1] !== 0 ? `${elements[candidata.CANDIDATA_ID - 1]} de 10` : 'Votar'}
+                        {elements[candidata.CANDIDATA_ID - 1] !== 0 ? elements[candidata.CANDIDATA_ID - 1] : "Votar"}
                       </span>
 
                     </div>
-                    <ul className="menu" aria-label="Action event example">
+                    <ul className="menu menu-grid" aria-label="Action event example">
                       {Array.from({ length: 10 }, (_, i) => (
                         <li
                           key={i + 1}
@@ -191,6 +190,7 @@ const Barra = () => {
                         </li>
                       ))}
                     </ul>
+
                   </div>
                 </div>
               </div>
@@ -203,7 +203,7 @@ const Barra = () => {
 
             <Popup open={modalIsOpen} onClose={handleModalClose}>
               <div className="modal">
-                <h2 className="modal-title">¿Desea enviar las calificaciones?</h2>
+                <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
                 <div className="botones-modal">
                   <button onClick={handleModalClose} className="btn-cancelar">
                     Cancelar
@@ -216,7 +216,7 @@ const Barra = () => {
             </Popup>
             <Popup open={vacioIsOpen} onClose={handleVacioClose}>
               <div className="modal">
-                <h2 className="modal-title">Por favor, ingrese todas las calificaciones.</h2>
+                <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
                 <div className="botones-modal">
                   <button onClick={handleVacioClose} className="btn-confirmar">
                     Aceptar

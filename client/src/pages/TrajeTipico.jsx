@@ -146,7 +146,7 @@ function Traje() {
     } else {
         return (
             <>
-                <Navbar texto="Etapa 1 - Traje Tradicional" />
+                <Navbar texto="Evento - Traje Típico" />
                 {pop === true && <Espera />}
                 <div className="gridCentrao">
                     {listaReinas.length > 0 ? (
@@ -203,7 +203,7 @@ function Traje() {
 
                         <Popup open={modalIsOpen} onClose={handleModalClose}>
                             <div className="modal">
-                                <h2 className="modal-title">¿Desea enviar las calificaciones?</h2>
+                                <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
                                 <h2 className="modal-title">
                                     Traje: {nota1} Actitud: {nota2}
                                 </h2>

@@ -150,7 +150,7 @@ function Preguntas() {
   } else {
     return (
       <>
-        <Navbar texto="Etapa 3 - Preguntas" />
+        <Navbar texto="Evento - Preguntas" />
         {pop === true && <Espera />}
 
         <div className="main-container">
@@ -204,20 +204,21 @@ function Preguntas() {
 
             <Popup open={modalIsOpen} onClose={handleModalClose}>
               <div className="modal">
-                <h2 className="modal-title">¿Desea enviar las calificaciones?</h2>
+                <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
                 <div className="botones-modal">
+                <button onClick={()=> {handleModalClose(); handleClick(); setPop(true);}} className="btn-confirmar">
+                    Si
+                  </button>
                   <button onClick={handleModalClose} className="btn-cancelar">
-                    Cancelar
+                    No
                   </button>
-                  <button onClick={()=> {handleModalClose(); handleClick(); setPop(true);}} className="btn-confirmar">
-                    Aceptar
-                  </button>
+                  
                 </div>
               </div>
             </Popup>
             <Popup open={vacioIsOpen} onClose={handleVacioClose}>
               <div className="modal">
-                <h2 className="modal-title">Por favor, ingrese todas las calificaciones.</h2>
+                <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
                 <div className="botones-modal">
                   <button onClick={handleVacioClose} className="btn-confirmar">
                     Aceptar
