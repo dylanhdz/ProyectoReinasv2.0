@@ -127,9 +127,16 @@ DELIMITER ;;
   -- Verificar si todos los jueces ya votaron
   IF total_jueces = jueces_votados THEN
     -- Insertar la fila nueva de calificacion final
-    INSERT INTO finales (candidata_id, usuario_id, evento_id, calificacion_nombre, calificacion_peso, calificacion_valor) 
-    VALUES (NEW.candidata_id, 20, NEW.evento_id, CONCAT(NEW.calificacion_nombre, '_FINAL'), NEW.calificacion_peso, (select avg(calificacion_valor) from calificacion where candidata_id = new.CANDIDATA_ID and EVENTO_ID = new.EVENTO_ID and CALIFICACION_NOMBRE = new.CALIFICACION_NOMBRE));
-  END IF;
+   INSERT INTO finales (candidata_id, usuario_id, evento_id, calificacion_nombre, calificacion_peso, calificacion_valor) 
+VALUES (
+    NEW.candidata_id, 
+    20, 
+    NEW.evento_id, 
+    CONCAT(NEW.calificacion_nombre, '_FINAL'), 
+    NEW.calificacion_peso, 
+    (select sum(calificacion_valor) from calificacion where candidata_id = new.CANDIDATA_ID and EVENTO_ID = new.EVENTO_ID and CALIFICACION_NOMBRE = new.CALIFICACION_NOMBRE)
+);
+END IF;
 
 END */;;
 DELIMITER ;
@@ -285,7 +292,7 @@ CREATE TABLE `evento` (
 
 LOCK TABLES `evento` WRITE;
 /*!40000 ALTER TABLE `evento` DISABLE KEYS */;
-INSERT INTO `evento` VALUES (1,1,'Traje Típico',35,1,'si'),(2,1,'Traje Gala',35,1,'si'),(3,1,'Preguntas',30,1,'si');
+INSERT INTO `evento` VALUES (1,1,'Traje Típico',100,1,'si'),(2,1,'Traje Gala',100,1,'si'),(3,1,'Preguntas',100,1,'si');
 /*!40000 ALTER TABLE `evento` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,7 +361,7 @@ DELIMITER ;;
   IF calificaciones_realizadas = total_notas THEN
   set calificacion_ponderada = 0;
   while contador <= total_eventos do
-	set calificacion_ponderada = calificacion_ponderada + (select sum((CALIFICACION_PESO/100)*CALIFICACION_VALOR*((select evento_peso from evento where evento_id = contador)/100)) as suma from finales where candidata_id= new.CANDIDATA_ID and EVENTO_ID=contador);
+  set calificacion_ponderada = calificacion_ponderada + (SELECT SUM(CALIFICACION_VALOR) AS suma FROM finales where candidata_id= new.CANDIDATA_ID and EVENTO_ID=contador );
     set contador = contador + 1;
   end while;
   update candidata set cand_nota_final = calificacion_ponderada where candidata_id = new.candidata_id;
@@ -425,7 +432,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,'Juez1',NULL,'$2a$10$F4IojLNcgsfQCwruggqgDe7GEyG4qmWXwdn94RfC0.XqxzKbeqT46','Monserrath','Mejía de Molina','juez',0),(2,1,'Juez2',NULL,'$2a$10$eX6uL5CRS3phJH1gHK2TiuylPamL7wnXSrDfpFT5avuEXeNdGMgeG','Victoria','García de Proaño','juezx',0),(3,1,'Juez3',NULL,'$2a$10$IsxENTUmumv93Elw61AISeXSJASgV5aWNMinVhAYaBFWCVyQsbV0G','Cumandá','Sarmiento de Velasco','juezx',0),(4,1,'Juez4',NULL,'$2a$10$QqR6eG0ln.tIQTw8Y0bO0OSG56RDX6xhp8ADmckKSnt/HtS7jXBc6','Irene','Ocaña de Villavicencio','juezx',0),(5,1,'Juez5',NULL,'$2a$10$iA6wDU48sc/uZHy2lgifPu8yqqRlMClDjVZrLH8.vKlDIbMNevksS','Fabián','Iza Marcillo','juezx',0),(6,1,'Veedor',NULL,'$2a$10$Tr3ifQmgZYwoZZtOCrpWcOz3jPiNOHTFnlPviy1kLiFWZAdXOxWSO','Marcelo','Mejía Mena','Notario',0),(7,1,'admin','','$2a$10$rAuZfWne.JEOVb05mpXvheZp59F8qJxA3j7oBH/ruQ4ZJP1kPolDG','Dylan','Hernández','admin',0),(8,1,'luca',NULL,'$2a$10$6RpFCoR2MHDR0wAi7/f7OeNtlZ5gBXxEU62UZz4bgoOszNEjVHRPm','Luca','De Veintemilla','admin',0),(9,1,'juan',NULL,'$2a$10$r4vMi4U3tAnt/BEwDAda5OatG8DCfI3LbVEyXS7iWsSX2.1g1VIuW','Juan','Reyes','admin',0),(10,1,'kevin',NULL,'$2a$10$D71aXX4ggNlI50PHu.1Iver7lFlcYHJmSzLdU29Jmup.Gti2E.L9u','Kevin','Vargas','admin',0);
+INSERT INTO `users` VALUES (1,1,'Juez1',NULL,'$2a$10$F4IojLNcgsfQCwruggqgDe7GEyG4qmWXwdn94RfC0.XqxzKbeqT46','Flor','De Vela','juez',0),(2,1,'Juez2',NULL,'$2a$10$eX6uL5CRS3phJH1gHK2TiuylPamL7wnXSrDfpFT5avuEXeNdGMgeG','Irene','Ocaña de Villavicencio','juezx',0),(3,1,'Juez3',NULL,'$2a$10$IsxENTUmumv93Elw61AISeXSJASgV5aWNMinVhAYaBFWCVyQsbV0G','Juez3','Juez3','juezx',0),(4,1,'Juez4',NULL,'$2a$10$QqR6eG0ln.tIQTw8Y0bO0OSG56RDX6xhp8ADmckKSnt/HtS7jXBc6','Juez4','Juez4','juezx',0),(5,1,'Juez5',NULL,'$2a$10$iA6wDU48sc/uZHy2lgifPu8yqqRlMClDjVZrLH8.vKlDIbMNevksS','Juez5','Juez5','juezx',0),(6,1,'Veedor',NULL,'$2a$10$Tr3ifQmgZYwoZZtOCrpWcOz3jPiNOHTFnlPviy1kLiFWZAdXOxWSO','Marcelo','Mejía Mena','Notario',0),(7,1,'admin','','$2a$10$rAuZfWne.JEOVb05mpXvheZp59F8qJxA3j7oBH/ruQ4ZJP1kPolDG','Dylan','Hernández','admin',0),(8,1,'luca',NULL,'$2a$10$6RpFCoR2MHDR0wAi7/f7OeNtlZ5gBXxEU62UZz4bgoOszNEjVHRPm','Luca','De Veintemilla','admin',0),(9,1,'juan',NULL,'$2a$10$r4vMi4U3tAnt/BEwDAda5OatG8DCfI3LbVEyXS7iWsSX2.1g1VIuW','Juan','Reyes','admin',0),(10,1,'kevin',NULL,'$2a$10$D71aXX4ggNlI50PHu.1Iver7lFlcYHJmSzLdU29Jmup.Gti2E.L9u','Kevin','Vargas','admin',0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

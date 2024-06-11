@@ -181,7 +181,7 @@ function Reporte() {
                                                         )};
                                                         <Text style={styles.text}>Lugar {index + 1}: {reina.CAND_NOMBRE1 + " " + reina.CAND_APELLIDOPATERNO}</Text>
                                                         <Text style={styles.text}>Puntuación Ponderada: </Text>
-                                                        <Text style={styles.text}>{(reina.CAND_NOTA_FINAL*10).toFixed(2)}/100</Text>
+                                                        <Text style={styles.text}>{reina.CAND_NOTA_FINAL}/150</Text>
                                                     </View>
                                                     <View style={styles.columna}>
                                                         {reina.CAND_NOMBRE1 === "Stefany" && (
@@ -263,7 +263,7 @@ function Reporte() {
                                                         )};
                                                         <Text style={styles.title}>{reina.CAND_NOMBRE1 + " " + reina.CAND_APELLIDOPATERNO}</Text>
                                                         <Text style={styles.subtitle}>{reina.DEPARTMENTO_NOMBRE}</Text>
-                                                        <Text style={styles.tituloreina}>Puntuación Final de: {(reina.CAND_NOTA_FINAL*10).toFixed(2)}/100</Text>
+                                                        <Text style={styles.tituloreina}>Puntuación Final de: {reina.CAND_NOTA_FINAL}/150</Text>
                                                     </View>
                                                     <View style={styles.section_ganadoras}>
                                                         {reina.CAND_NOMBRE1 === "Stefany" && (
