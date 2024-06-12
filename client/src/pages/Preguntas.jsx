@@ -116,6 +116,7 @@ function Preguntas() {
   }, [cat + "1"]);
 
 
+
   let currentDropdown = null;
 
   const handleSelectClick = (e) => {
