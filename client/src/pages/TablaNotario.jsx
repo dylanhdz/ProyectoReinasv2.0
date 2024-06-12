@@ -21,7 +21,7 @@ const TablaNotario = () => {
             try {
                 const res = await Axios.get(`${API_BASE_URL}/candidatas`);
                 setListaReinas(res.data);
-                const resDesempate = await Axios.get(`${API_BASE_URL}/verificarDesempate`);
+                const resDesempate = await Axios.get(`${API_BASE_URL}/candidatas/verificarDesempate`);
                 setDesempateTerminado(resDesempate.data.desempate);
                 //console.log(listaReinas);
             } catch (err) {

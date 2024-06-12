@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import Axios from 'axios';
 import { AuthContext } from "../context/authContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import Popup from "reactjs-popup";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
@@ -17,6 +19,8 @@ function Desempate() {
   const [pop, setPop] = useState(false);
   const [candidatasEmpatadas, setCandidatasEmpatadas] = useState([]);
   const [candidatasDetalles, setCandidatasDetalles] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +70,7 @@ const handleClick = async () => {
     await Axios.post(`${API_BASE_URL}/cali/desempate`, { notas });
     setPop(true);
     console.log("Calificaciones enviadas");
+    navigate("/Gracias");
   } catch (err) {
     console.log(err);
   }
