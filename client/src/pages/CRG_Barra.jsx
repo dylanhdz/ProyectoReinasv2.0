@@ -55,15 +55,15 @@ const CRG_Barra = () => {
             <figure className="cortina_izquierda"></figure>
             <figure className="cortina_derecha"></figure>
             <img src={logoBarra} alt="logo" className="logoespereinaBarra" />
-            <h1 className="tituloBarra" contenteditable data-heading="Barras">
+            <h1 className="tituloBarra" contenteditable data-heading="Preguntas">
               Preguntas
             </h1>
             {listaEvento.map((evento, eventoIndex) => {
               if (evento.EVENTO_ID === 3 && evento.EVENTO_ESTADO === "si" ) {
                 return (
-                  <div className="boton-crg" id="btn-crg">
+                  <div className="btn-dorado" id="btn-crg">
                     <Link to="/Preguntas">
-                      <button className="btn" >INICIAR VOTACIÓN</button>
+                      <button className="golden-btn" >INICIAR VOTACIÓN</button>
                     </Link>
                   </div>
                 );

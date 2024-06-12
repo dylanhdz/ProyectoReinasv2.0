@@ -57,9 +57,9 @@ const CRG_Tipico = () => {
             {listaEvento.map((evento, eventoIndex) => {
               if (evento.EVENTO_ID === 1 && evento.EVENTO_ESTADO === "si") {
                 return (
-                  <div class="boton-crg" id="btn-crg">
+                  <div class="btn-dorado" id="btn-crg">
                     <Link to="/TrajeTipico">
-                      <button className='btn'>Iniciar Votación</button>
+                      <button className="golden-btn">Iniciar Votación</button>
                     </Link>
                   </div>
                 );

@@ -63,9 +63,9 @@ const CRG_Gala = () => {
             {listaEvento.map((evento, eventoIndex) => {
               if (evento.EVENTO_ID === 2 && evento.EVENTO_ESTADO === "si") {
                 return (
-                  <div className="boton-crg" id="btn-crg">
+                  <div className="btn-dorado" id="btn-crg">
                     <Link to="/TrajeGala">
-                      <button className="btn" >INICIAR VOTACIÓN</button>
+                      <button className="golden-btn" >INICIAR VOTACIÓN</button>
                     </Link>
                   </div>
                 );
