@@ -13,7 +13,7 @@ const Espera = () => {
                 </span>
                 <br />
                 <span id="wait">
-                    Espere por favor.
+                    Procesando la información...
                 </span>
             </div>
         </div>
