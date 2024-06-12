@@ -197,7 +197,7 @@ const PanelAdmin = () => {
                         <div>Loading...</div>
                     )
                     }
-                    {votacionTerminada || desempateTerminado ? <div class="boton">
+                    {votacionTerminada ? <div class="boton">
                         <Link to="/reporte">
                             <button className='btn-reporte'>¡Verificar Reporte 📄!</button>
                         </Link>
