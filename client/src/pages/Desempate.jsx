@@ -1,22 +1,23 @@
 import React, { useEffect, useState, useContext } from "react";
 import Axios from 'axios';
 import { AuthContext } from "../context/authContext";
-
 import Popup from "reactjs-popup";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import "./popup.scss";
 
 function Desempate() {
   const { currentUser } = useContext(AuthContext);
-  const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
+  const [elements, setElements] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
   const [candidatasEmpatadas, setCandidatasEmpatadas] = useState([]);
   const [candidatasDetalles, setCandidatasDetalles] = useState([]);
 
-  // Función para obtener las candidatas empatadas
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,10 +25,9 @@ function Desempate() {
         setCandidatasEmpatadas(response.data.candidatasEmpatadas);
         setElements(Array(response.data.candidatasEmpatadas.length).fill({ nota: 0, nota_final: 0 }));
 
-        // Obtener los detalles de cada candidata empatada
         const detallesPromises = response.data.candidatasEmpatadas.map(async (candidataId) => {
           const candidataResponse = await Axios.get(`${API_BASE_URL}/candidatas/${candidataId}`);
-          return candidataResponse.data; // Suponiendo que devuelve los detalles de la candidata
+          return candidataResponse.data;
         });
 
         const detalles = await Promise.all(detallesPromises);
@@ -39,20 +39,31 @@ function Desempate() {
     fetchData();
   }, []);
 
+  const cortarParteDerecha = (cadena) => {
+    if (typeof cadena !== 'string') {
+      console.error("La cadena no es válida");
+      return "";
+    }
 
-  
+    let parteDerecha = "";
+    let i = cadena.length - 1;
+
+    while (i >= 0 && cadena[i] !== "\\") {
+      parteDerecha = cadena[i] + parteDerecha;
+      i--;
+    }
+
+    return parteDerecha;
+  };
 
   const handleClick = async () => {
     try {
-      // Obtener las candidatas en empate y sus notas actuales
       const response = await Axios.get(`${API_BASE_URL}/user/verificar_empate`);
       const candidatasEmpate = response.data.candidatas;
 
-      // Obtener las notas actuales de la tabla desempate
       const desempateResponse = await Axios.get(`${API_BASE_URL}/cali/desempate_notas`);
       const desempateNotas = desempateResponse.data;
 
-      // Mapear las nuevas notas sumando a las existentes
       const updatedElements = elements.map((element) => {
         const candidataDesempate = desempateNotas.find(c => c.candidata_id === element.candidata_id);
         return {
@@ -61,7 +72,6 @@ function Desempate() {
         };
       });
 
-      // Enviar las calificaciones actualizadas
       await Axios.post(`${API_BASE_URL}/cali/desempate`, { notas: updatedElements });
       setPop(true);
       console.log("Calificaciones enviadas");
@@ -69,8 +79,6 @@ function Desempate() {
       console.log(err);
     }
   };
-
-  
 
   const Enviar = () => {
     if (elements.some(element => element.nota === 0)) {
@@ -97,24 +105,6 @@ function Desempate() {
   };
 
   let currentDropdown = null;
-
-  const cortarParteDerecha = (cadena) => {
-    if (typeof cadena !== 'string') {
-      console.error("La cadena no es válida");
-      return "";
-    }
-  
-    let parteDerecha = "";
-    let i = cadena.length - 1;
-  
-    while (i >= 0 && cadena[i] !== "\\") {
-      parteDerecha = cadena[i] + parteDerecha;
-      i--;
-    }
-  
-    return parteDerecha;
-  };
-  
 
   const handleSelectClick = (e) => {
     e.stopPropagation();
@@ -143,75 +133,93 @@ function Desempate() {
 
   if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
     return (
-      <div className="App">
-        <main>
-          <div>
-            <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
-          </div>
-        </main>
-      </div>
+        <div className="App">
+          <main>
+            <div>
+              <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
+            </div>
+          </main>
+        </div>
     );
   } else {
     return (
-      <>
-        <Navbar texto="Desempate" />
-        {pop && <Espera />}
-        <div className="main-container">
-          <div className="reinas-container">
-          {candidatasEmpatadas.map((candidata, index) => (
-  <div className="item-reina" key={index}>
-    <img
-                  alt="Foto candidata"
-                  className="foto-candidata"
-                  src={"/reinas/" + cortarParteDerecha(candidata.FOTO_URL)}
-
-                />
-    {/* Imprimir datos de la candidata */}
-    <div className="datos-candidata">
-  {/* Imprimir información de la candidata */}
-  {console.log("Nombre completo:", candidata.CAND_NOMBRE1, candidata.CAND_APELLIDOPATERNO)}
-  {console.log("Departamento:", candidata.DEPARTMENTO_NOMBRE)}
-
-  <h3>
-    {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
-  </h3>
-  <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>
-</div>
-
-  </div>
-))}
-
-          </div>
-          <div id="enviarbarra" className="enviar">
-            <button type="button" className="btn-enviar" onClick={Enviar}>
-              ENVIAR
-            </button>
-            <Popup open={modalIsOpen} onClose={handleModalClose}>
-              <div className="modal">
-                <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
-                <div className="botones-modal">
-                  <button onClick={() => { handleModalClose(); handleClick(); setPop(true); }} className="btn-confirmar">
-                    Si
-                  </button>
-                  <button onClick={handleModalClose} className="btn-cancelar">
-                    No
-                  </button>
+        <>
+          <Navbar texto="Desempate" />
+          {pop && <Espera />}
+          <div className="main-container">
+            <div className="reinas-container">
+              {candidatasEmpatadas.map((candidata, index) => (
+                  <div className="item-reina" key={candidata.CANDIDATA_ID}>
+                    <div className="espacio-imagen">
+                      <img
+                          alt="Foto candidata"
+                          className="foto-candidata"
+                          src={
+                            candidata.FOTO_URL
+                                ? "/reinas/" + cortarParteDerecha(candidata.FOTO_URL)
+                                : '/reinas/default.jpg'
+                          }
+                      />
+                      <div className="datos-candidata">
+                        <h3>{candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}</h3>
+                        <h4>{candidata.DEPARTAMENTO_NOMBRE}</h4>
+                      </div>
+                    </div>
+                    <div className="dropdown" onClick={handleSelectClick}>
+                      <div className="botones-container">
+                        <div className="select">
+                      <span className="selected">
+                        {elements[index].nota !== 0 ? `${elements[index].nota} de 10` : 'Votar'}
+                      </span>
+                        </div>
+                        <ul className="menu" aria-label="Action event example">
+                          {Array.from({ length: 10 }, (_, i) => (
+                              <li
+                                  key={i + 1}
+                                  onClick={() => setValue(index, i + 1)}
+                                  className={elements[index].nota === i + 1 ? "active" : ""}
+                              >
+                                {i + 1}
+                              </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+              ))}
+            </div>
+            <div id="enviarbarra" className="enviar">
+              <Button type="button" className="btn-enviar" onClick={Enviar}>
+                ENVIAR
+              </Button>
+              <Popup open={modalIsOpen} onClose={handleModalClose}>
+                <div className="modal">
+                  <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
+                  <div className="botones-modal">
+                    <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
+                      <Button color="success" variant="contained" onClick={() => { handleModalClose(); handleClick(); setPop(true); }} className="btn-confirmar">
+                        Si
+                      </Button>
+                      <Button color="error" variant="outlined" onClick={handleModalClose} className="btn-cancelar">
+                        No
+                      </Button>
+                    </Stack>
+                  </div>
                 </div>
-              </div>
-            </Popup>
-            <Popup open={vacioIsOpen} onClose={handleVacioClose}>
-              <div className="modal">
-                <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
-                <div className="botones-modal">
-                  <button onClick={handleVacioClose} className="btn-confirmar">
-                    Aceptar
-                  </button>
+              </Popup>
+              <Popup open={vacioIsOpen} onClose={handleVacioClose}>
+                <div className="modal">
+                  <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
+                  <div className="botones-modal">
+                    <Button onClick={handleVacioClose} className="btn-confirmar">
+                      Aceptar
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </Popup>
+              </Popup>
+            </div>
           </div>
-        </div>
-      </>
+        </>
     );
   }
 }
