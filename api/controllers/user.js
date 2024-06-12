@@ -44,7 +44,8 @@ export const limpiarVotaciones = (req, res) => {
     "UPDATE candidata SET cand_nota_final = 0;",
     "UPDATE candidata SET id_eleccion = 0;",
     "TRUNCATE TABLE calificacion;",
-    "TRUNCATE TABLE finales;"
+    "TRUNCATE TABLE finales;",
+    "TRUNCATE TABLE desempate;"
   ];
 
   sqlLimpiar.forEach((sql) => {

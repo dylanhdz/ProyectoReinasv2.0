@@ -162,8 +162,7 @@ function Desempate() {
                       />
                       <div className="datos-candidata">
                         <h3>{candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}</h3>
-                        <h4>{candidata.DEPARTAMENTO_NOMBRE}</h4>
-                      </div>
+                        <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>                      </div>
                     </div>
                     <div className="dropdown" onClick={handleSelectClick}>
                       <div className="botones-container">
