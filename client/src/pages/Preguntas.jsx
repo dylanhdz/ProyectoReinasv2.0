@@ -9,7 +9,8 @@ import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
 import "./Barras.scss";
-
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 function Preguntas() {
 
   const cat = useLocation().search;
@@ -198,20 +199,22 @@ function Preguntas() {
             ))}
           </div>
           <div id="enviarbarra" className="enviar">
-            <button type="button" className="btn-enviar" onClick={Enviar}>
+            <Button type="button" className="btn-enviar" onClick={Enviar}>
               ENVIAR
-            </button>
+            </Button>
 
             <Popup open={modalIsOpen} onClose={handleModalClose}>
               <div className="modal">
                 <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
                 <div className="botones-modal">
-                <button onClick={()=> {handleModalClose(); handleClick(); setPop(true);}} className="btn-confirmar">
-                    Si
-                  </button>
-                  <button onClick={handleModalClose} className="btn-cancelar">
-                    No
-                  </button>
+                <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
+                        <Button color="success" variant="contained" onClick={()=> {handleModalClose(); handleClick(); setPop(true);}} className="btn-confirmar">
+                            Si
+                        </Button>
+                        <Button color="error" variant="outlined" onClick={handleModalClose} className="btn-cancelar">
+                            No
+                        </Button>
+                    </Stack>
                   
                 </div>
               </div>
