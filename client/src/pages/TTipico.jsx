@@ -212,7 +212,6 @@ function TTipico() {
                   <button onClick={handleModalClose} className="btn-cancelar">
                     No
                   </button>
-                  
                 </div>
               </div>
             </Popup>

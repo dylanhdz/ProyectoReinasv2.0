@@ -150,7 +150,7 @@ function Desempate() {
   } else {
     return (
       <>
-        <Navbar texto="Etapa 1 - Traje Tradicional" />
+        <Navbar texto="Desempate" />
         {pop === true && <Espera />}
 
         <div className="main-container">

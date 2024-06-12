@@ -24,6 +24,7 @@ import Footer from "./components/Footer";
 import "./style.scss";
 import TablaNotario from "./pages/TablaNotario";
 import PanelAdmin from "./pages/PanelAdmin";
+import Desempate from "./pages/Desempate";
 // import SlideShow from "./Carrusel2";
 
 const Layout = () => {
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "/TrajeGala",
         element: <TGala />,
+      },
+      {
+        path: "/Desempate",
+        element: <Desempate />,
       },
       {
         path: "/Preguntas",
