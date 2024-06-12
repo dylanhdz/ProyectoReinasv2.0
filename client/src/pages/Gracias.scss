@@ -89,20 +89,23 @@
 
 
 #scroller {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: sans-serif;
   font-weight: bold;
   font-size: 350%;
   text-align: justify;
   overflow: hidden;
   height: 50em;
-  width: 100vw; /* Cambia a 100vw para abarcar toda la ventana */
+  width: 100vw; 
   position: absolute;
   bottom: 0;
   left: 0;
   z-index: 0;
   transform: perspective(350px) rotateX(25deg);
   transform-origin: 50% 100%;
-  overflow: hidden; /* Cambia overflow-y a overflow */
+  overflow: hidden; 
   text-align: center;
 }
 

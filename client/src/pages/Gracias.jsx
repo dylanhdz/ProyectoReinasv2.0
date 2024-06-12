@@ -4,6 +4,7 @@ import { AuthContext } from "../context/authContext";
 import "./Gracias.scss";
 import logoEspeBarra from "../img/logoespereina.png";
 import Confetti from "react-confetti";
+import { Box } from "@mui/material";
 const Gracias = () => {
   const { currentUser } = useContext(AuthContext);
   const [showConfetti, setShowConfetti] = useState(true);
@@ -56,6 +57,7 @@ const Gracias = () => {
             <section className="logoEspeBarra">
               <img src={logoEspeBarra} alt="Logo de la ESPE de la Reina" />
             </section>
+            <Box sx={{ justifyContent: 'flex-end' }}>
             <div id="scroller">
               <div id="content">
 
@@ -75,6 +77,8 @@ const Gracias = () => {
                 <p id="nombreMiembro">PhD. Gustavo Salazar</p>
               </div>
             </div>
+            </Box>
+            
           </div>
         }
       </>
