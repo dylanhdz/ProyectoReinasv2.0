@@ -160,6 +160,12 @@ function Desempate() {
           <div className="reinas-container">
           {candidatasEmpatadas.map((candidata, index) => (
   <div className="item-reina" key={index}>
+    <img
+                  alt="Foto candidata"
+                  className="foto-candidata"
+                  src={"/reinas/" + cortarParteDerecha(candidata.FOTO_URL)}
+
+                />
     {/* Imprimir datos de la candidata */}
     <div className="datos-candidata">
   {/* Imprimir información de la candidata */}
