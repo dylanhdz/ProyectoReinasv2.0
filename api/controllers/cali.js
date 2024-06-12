@@ -78,18 +78,31 @@ export const getDesempateNotas = (req, res) => {
 
 export const getCandidatasEmpatadas = (req, res) => {
     const sql = `
-        SELECT candidata_id
-        FROM desempate;
+        SELECT 
+            ca.CANDIDATA_ID,
+            ca.CAND_NOMBRE1, 
+            ca.CAND_APELLIDOPATERNO,
+            dpto.DEPARTAMENTO_SEDE,
+            dpto.DEPARTMENTO_NOMBRE, 
+            fc.FOTO_URL 
+        FROM 
+            desempate d
+            INNER JOIN candidata ca ON d.candidata_id = ca.CANDIDATA_ID
+            INNER JOIN carrera car ON ca.CARRERA_ID = car.CARRERA_ID
+            INNER JOIN departamento dpto ON car.DEPARTAMENTO_ID = dpto.DEPARTAMENTO_ID
+            INNER JOIN foto_candidata fc ON ca.CANDIDATA_ID = fc.CANDIDATA_ID AND fc.FOTO_DESCRIPCION = 'FX';
     `;
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).json({ error: 'An error occurred' });
         } else {
-            const candidatasEmpatadas = result.map(row => row.candidata_id);
-            res.status(200).json({ candidatasEmpatadas });
+            res.status(200).json({ candidatasEmpatadas: result });
         }
     });
 };
+
+
+
 
 // res.status(500).json(err)

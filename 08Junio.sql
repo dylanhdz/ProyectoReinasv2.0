@@ -465,7 +465,7 @@ UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS desempate (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    candidata_id INT,
+    CANDIDATA_ID INT,
     nota_final DECIMAL(10, 2),
     FOREIGN KEY (candidata_id) REFERENCES candidata(candidata_id)
 );

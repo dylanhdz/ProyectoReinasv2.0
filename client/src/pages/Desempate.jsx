@@ -9,11 +9,12 @@ import Navbar from "../components/Navbar";
 
 function Desempate() {
   const { currentUser } = useContext(AuthContext);
-  const [elements, setElements] = useState([]);
+  const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
   const [candidatasEmpatadas, setCandidatasEmpatadas] = useState([]);
+  const [candidatasDetalles, setCandidatasDetalles] = useState([]);
 
   // Función para obtener las candidatas empatadas
   useEffect(() => {
@@ -22,12 +23,24 @@ function Desempate() {
         const response = await Axios.get(`${API_BASE_URL}/cali/verificar_empate`);
         setCandidatasEmpatadas(response.data.candidatasEmpatadas);
         setElements(Array(response.data.candidatasEmpatadas.length).fill({ nota: 0, nota_final: 0 }));
+
+        // Obtener los detalles de cada candidata empatada
+        const detallesPromises = response.data.candidatasEmpatadas.map(async (candidataId) => {
+          const candidataResponse = await Axios.get(`${API_BASE_URL}/candidatas/${candidataId}`);
+          return candidataResponse.data; // Suponiendo que devuelve los detalles de la candidata
+        });
+
+        const detalles = await Promise.all(detallesPromises);
+        setCandidatasDetalles(detalles);
       } catch (err) {
         console.log(err);
       }
     };
     fetchData();
   }, []);
+
+
+  
 
   const handleClick = async () => {
     try {
@@ -57,6 +70,8 @@ function Desempate() {
     }
   };
 
+  
+
   const Enviar = () => {
     if (elements.some(element => element.nota === 0)) {
       setVacioIsOpen(true);
@@ -82,6 +97,24 @@ function Desempate() {
   };
 
   let currentDropdown = null;
+
+  const cortarParteDerecha = (cadena) => {
+    if (typeof cadena !== 'string') {
+      console.error("La cadena no es válida");
+      return "";
+    }
+  
+    let parteDerecha = "";
+    let i = cadena.length - 1;
+  
+    while (i >= 0 && cadena[i] !== "\\") {
+      parteDerecha = cadena[i] + parteDerecha;
+      i--;
+    }
+  
+    return parteDerecha;
+  };
+  
 
   const handleSelectClick = (e) => {
     e.stopPropagation();
@@ -125,11 +158,23 @@ function Desempate() {
         {pop && <Espera />}
         <div className="main-container">
           <div className="reinas-container">
-            {candidatasEmpatadas.map((candidataId, index) => (
-              <div className="item-reina" key={candidataId}>
-                {/* Aquí renderizas cada candidata empatada */}
-              </div>
-            ))}
+          {candidatasEmpatadas.map((candidata, index) => (
+  <div className="item-reina" key={index}>
+    {/* Imprimir datos de la candidata */}
+    <div className="datos-candidata">
+  {/* Imprimir información de la candidata */}
+  {console.log("Nombre completo:", candidata.CAND_NOMBRE1, candidata.CAND_APELLIDOPATERNO)}
+  {console.log("Departamento:", candidata.DEPARTMENTO_NOMBRE)}
+
+  <h3>
+    {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
+  </h3>
+  <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>
+</div>
+
+  </div>
+))}
+
           </div>
           <div id="enviarbarra" className="enviar">
             <button type="button" className="btn-enviar" onClick={Enviar}>

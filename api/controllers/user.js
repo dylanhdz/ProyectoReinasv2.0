@@ -236,5 +236,3 @@ export const verificarEmpate = (req, res) => {
     }
   });
 };
-
-
