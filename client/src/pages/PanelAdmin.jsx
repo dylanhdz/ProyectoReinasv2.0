@@ -15,6 +15,7 @@ const PanelAdmin = () => {
     const [votacionTerminada, isVotacionTerminada] = useState(false);
     const [mostrarPopUp, setMostrarPopUp] = useState(false);
     const cat = useLocation().search;
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -133,6 +134,9 @@ const PanelAdmin = () => {
                         <h2>Votaciones</h2>
                         <div className="carousel-item-text">
                             <button className="btn" onClick={() => setMostrarPopUp(true)}>Reiniciar Votaciones</button>
+                        </div>
+                        <div className="carousel-item-text">
+                            <button className="btn" onClick={() => setMostrarPopUp(true)}>Desempate</button>
                         </div>
                     </div>
                     <h1 className="reina-informacion"><br></br>Tabla de Notario</h1>
