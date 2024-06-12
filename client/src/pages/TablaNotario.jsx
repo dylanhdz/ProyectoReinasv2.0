@@ -12,6 +12,8 @@ const TablaNotario = () => {
     const [listaJueces, setListaJueces] = useState([]);
     const [listaReinas, setListaReinas] = useState([]);
     const [votacionTerminada, isVotacionTerminada] = useState(false);
+    const [desempateTerminado, setDesempateTerminado] = useState(false);
+
     const cat = useLocation().search;
 
     useEffect(() => {
@@ -19,6 +21,8 @@ const TablaNotario = () => {
             try {
                 const res = await Axios.get(`${API_BASE_URL}/candidatas`);
                 setListaReinas(res.data);
+                const resDesempate = await Axios.get(`${API_BASE_URL}/verificarDesempate`);
+                setDesempateTerminado(resDesempate.data.desempate);
                 //console.log(listaReinas);
             } catch (err) {
                 console.log(err);
@@ -145,7 +149,7 @@ const TablaNotario = () => {
                         <div>Loading...</div>
                     )
                     }
-                    {votacionTerminada? <div class="boton">
+                    {votacionTerminada && desempateTerminado ? <div class="boton">
                         <Link to="/reporte">
                             <button className='btn-reporte'>¡Verificar Reporte 📄!</button>
                         </Link>

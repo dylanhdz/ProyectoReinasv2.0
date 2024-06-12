@@ -77,23 +77,29 @@ function Preguntas() {
       try {
         const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`);
         if (response1.data[0].total === 0) {
-
+          // Maneja el caso donde total es 0 si es necesario
         } else {
-          navigate("/Gracias");
+          const response2 = await Axios.get(`${API_BASE_URL}/user/verificar_empate`);
+          if (response2.data.empate) {
+            navigate("/Desempate");
+          } else {
+            navigate("/Gracias");
+          }
         }
       } catch (error) {
         console.error(error);
       }
     };
-
+  
     const interval = setInterval(() => {
       fetchData();
     }, 5000);
-
+  
     return () => {
       clearInterval(interval);
     };
-  }, [cat + "ck3"]);
+  }, []);
+  
 
   const [listaCandidatas, setListaCandidatas] = useState([]);
 

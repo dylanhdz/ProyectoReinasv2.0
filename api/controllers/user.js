@@ -107,3 +107,97 @@ export const checkVotes3 = (req, res) => {
     }
   })
 }
+
+export const verificarEmpate = (req, res) => {
+  const sqlSelect = `
+    SELECT candidata_id, SUM(calificacion_valor) AS suma
+    FROM finales
+    GROUP BY candidata_id
+    ORDER BY suma DESC
+    LIMIT 3;`;
+
+  db.query(sqlSelect, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: 'An error occurred' });
+    } else {
+      if (result.length >= 3) {
+        const primeraCandidataId = result[0].candidata_id;
+        const segundaCandidataId = result[1].candidata_id;
+        const terceraCandidataId = result[2].candidata_id;
+        const primeraPuntuacion = result[0].suma;
+        const segundaPuntuacion = result[1].suma;
+        const terceraPuntuacion = result[2].suma;
+
+        const sqlInsert = "INSERT INTO desempate (candidata_id, nota_final) VALUES (?, ?)";
+
+        if (primeraPuntuacion === segundaPuntuacion && segundaPuntuacion === terceraPuntuacion) {
+          // Empate entre las tres primeras candidatas
+          db.query(sqlInsert, [primeraCandidataId, primeraPuntuacion], (err, result) => {
+            if (err) {
+              console.log(err);
+              res.status(500).json({ error: 'An error occurred' });
+            } else {
+              db.query(sqlInsert, [segundaCandidataId, segundaPuntuacion], (err, result) => {
+                if (err) {
+                  console.log(err);
+                  res.status(500).json({ error: 'An error occurred' });
+                } else {
+                  db.query(sqlInsert, [terceraCandidataId, terceraPuntuacion], (err, result) => {
+                    if (err) {
+                      console.log(err);
+                      res.status(500).json({ error: 'An error occurred' });
+                    } else {
+                      res.status(200).json({ empate: true, tipo: 'tres' });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        } else if (primeraPuntuacion === segundaPuntuacion) {
+          // Empate entre la primera y segunda candidatas
+          db.query(sqlInsert, [primeraCandidataId, primeraPuntuacion], (err, result) => {
+            if (err) {
+              console.log(err);
+              res.status(500).json({ error: 'An error occurred' });
+            } else {
+              db.query(sqlInsert, [segundaCandidataId, segundaPuntuacion], (err, result) => {
+                if (err) {
+                  console.log(err);
+                  res.status(500).json({ error: 'An error occurred' });
+                } else {
+                  res.status(200).json({ empate: true, tipo: 'primera-segunda' });
+                }
+              });
+            }
+          });
+        } else if (segundaPuntuacion === terceraPuntuacion) {
+          // Empate entre la segunda y tercera candidatas
+          db.query(sqlInsert, [segundaCandidataId, segundaPuntuacion], (err, result) => {
+            if (err) {
+              console.log(err);
+              res.status(500).json({ error: 'An error occurred' });
+            } else {
+              db.query(sqlInsert, [terceraCandidataId, terceraPuntuacion], (err, result) => {
+                if (err) {
+                  console.log(err);
+                  res.status(500).json({ error: 'An error occurred' });
+                } else {
+                  res.status(200).json({ empate: true, tipo: 'segunda-tercera' });
+                }
+              });
+            }
+          });
+        } else {
+          // No hay empate
+          res.status(200).json({ empate: false });
+        }
+      } else {
+        // Si no hay suficientes candidatas calificadas, no puede haber empate
+        res.status(200).json({ empate: false });
+      }
+    }
+  });
+};
+

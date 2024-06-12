@@ -91,3 +91,22 @@ export const getCandidataCarrusel = (req, res) => {
         return res.status(200).json(data);
     });
 }
+
+// Backend: Verificar si hay registros en la tabla de desempate y si el proceso de desempate ha terminado
+export const verificarDesempate = (req, res) => {
+    const sqlSelect = `SELECT COUNT(*) AS count FROM desempate;`;
+    db.query(sqlSelect, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'An error occurred' });
+        } else {
+            const desempateCount = result[0].count;
+            if (desempateCount > 0) {
+                res.status(200).json({ desempate: true });
+            } else {
+                res.status(200).json({ desempate: false });
+            }
+        }
+    });
+};
+
