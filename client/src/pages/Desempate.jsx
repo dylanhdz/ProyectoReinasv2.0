@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import Axios from 'axios';
 import { AuthContext } from "../context/authContext";
-import { useNavigate } from "react-router-dom"; // Importar useNavigate
 
 import Popup from "reactjs-popup";
 import Espera from "../components/Espera.jsx";
@@ -15,7 +14,6 @@ function Desempate() {
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
   const [candidatasEmpatadas, setCandidatasEmpatadas] = useState([]);
-  const navigate = useNavigate();
 
   // Función para obtener las candidatas empatadas
   useEffect(() => {

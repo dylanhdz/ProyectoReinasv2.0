@@ -76,6 +76,20 @@ export const getDesempateNotas = (req, res) => {
 };
 
 
-
+export const getCandidatasEmpatadas = (req, res) => {
+    const sql = `
+        SELECT candidata_id
+        FROM desempate;
+    `;
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'An error occurred' });
+        } else {
+            const candidatasEmpatadas = result.map(row => row.candidata_id);
+            res.status(200).json({ candidatasEmpatadas });
+        }
+    });
+};
 
 // res.status(500).json(err)
