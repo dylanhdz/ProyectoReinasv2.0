@@ -463,6 +463,14 @@ INSERT INTO `votaciones` VALUES (1,1,1,1,'si'),(2,1,1,2,'si'),(3,1,1,3,'si'),(4,
 /*!40000 ALTER TABLE `votaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE TABLE IF NOT EXISTS desempate (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    candidata_id INT,
+    nota_final DECIMAL(10, 2),
+    FOREIGN KEY (candidata_id) REFERENCES candidata(candidata_id)
+);
+
+ALTER TABLE desempate MODIFY nota_final INT;
 --
 -- Dumping events for database 'reinado'
 --
