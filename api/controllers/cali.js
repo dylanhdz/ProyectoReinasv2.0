@@ -47,24 +47,24 @@ export const getCalificacionCandidatas = (req, res) => {
 }
 
 export const updateDesempate = (req, res) => {
-    const token = req.cookies.access_token
-    if (!token) return res.status(401).json("No autenticado!")
+  const token = req.cookies.access_token
+  if (!token) return res.status(401).json("No autenticado!")
 
-    jwt.verify(token, "jwtkey", (err, userInfo) => {
-        if (err) return res.status(403).json("Token no es valido!");
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token no es valido!");
 
-        const q = "INSERT INTO desempate (candidata_id, nota_final) VALUES (?, ?) ON DUPLICATE KEY UPDATE nota_final = nota_final + VALUES(nota_final)";
-        req.body.notas.forEach((nota, index) => {
-            const values = [
-                req.body.candidatas[index].candidata_id,
-                nota
-            ]
-            db.query(q, values, (err, data) => {
-                if (err) return res.status(500).json(err);
-            });
-        });
-        res.status(200).json("Calificaciones de desempate actualizadas exitosamente.");
+    const q = "UPDATE candidata SET CAND_NOTA_FINAL = CAND_NOTA_FINAL + ? WHERE CANDIDATA_ID = ?";
+    req.body.notas.forEach((nota) => {
+      const values = [
+        nota.nota_final,
+        nota.candidata_id
+      ]
+      db.query(q, values, (err, data) => {
+        if (err) return res.status(500).json(err);
+      });
     });
+    res.status(200).json("Calificaciones de desempate actualizadas exitosamente.");
+  });
 }
 
 export const getDesempateNotas = (req, res) => {

@@ -149,8 +149,7 @@ const TablaNotario = () => {
                         <div>Loading...</div>
                     )
                     }
-                    {votacionTerminada && desempateTerminado ? <div class="boton">
-                        <Link to="/reporte">
+                        {votacionTerminada || desempateTerminado ? <div class="boton">                        <Link to="/reporte">
                             <button className='btn-reporte'>¡Verificar Reporte 📄!</button>
                         </Link>
                     </div> : null}

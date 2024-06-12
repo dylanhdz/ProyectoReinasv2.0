@@ -56,29 +56,20 @@ function Desempate() {
     return parteDerecha;
   };
 
-  const handleClick = async () => {
-    try {
-      const response = await Axios.get(`${API_BASE_URL}/user/verificar_empate`);
-      const candidatasEmpate = response.data.candidatas;
+const handleClick = async () => {
+  try {
+    const notas = elements.map((element, index) => ({
+      candidata_id: candidatasEmpatadas[index].CANDIDATA_ID,
+      nota_final: element.nota
+    }));
 
-      const desempateResponse = await Axios.get(`${API_BASE_URL}/cali/desempate_notas`);
-      const desempateNotas = desempateResponse.data;
-
-      const updatedElements = elements.map((element) => {
-        const candidataDesempate = desempateNotas.find(c => c.candidata_id === element.candidata_id);
-        return {
-          ...element,
-          nota_final: candidataDesempate ? element.nota + candidataDesempate.nota_final : element.nota
-        };
-      });
-
-      await Axios.post(`${API_BASE_URL}/cali/desempate`, { notas: updatedElements });
-      setPop(true);
-      console.log("Calificaciones enviadas");
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    await Axios.post(`${API_BASE_URL}/cali/desempate`, { notas });
+    setPop(true);
+    console.log("Calificaciones enviadas");
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   const Enviar = () => {
     if (elements.some(element => element.nota === 0)) {

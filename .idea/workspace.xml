@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0643dae4-ff57-41cf-abd0-174d925499a7" name="Changes" comment="" />
+    <list default="true" id="0643dae4-ff57-41cf-abd0-174d925499a7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/controllers/cali.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/controllers/cali.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/Desempate.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/Desempate.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/TablaNotario.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/TablaNotario.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,7 +69,7 @@
       <option name="presentableId" value="Default" />
       <updated>1718162690050</updated>
       <workItem from="1718162691174" duration="27000" />
-      <workItem from="1718162724845" duration="6769000" />
+      <workItem from="1718162724845" duration="9407000" />
     </task>
     <servers />
   </component>
