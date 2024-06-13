@@ -98,7 +98,7 @@ export const checkVotes2 = (req, res) => {
   })
 }
 export const checkVotes3 = (req, res) => {
-  const sqlSelect = 'SELECT COUNT(*) AS total FROM finales where CANDIDATA_ID = 10 and EVENTO_ID=3;';
+  const sqlSelect = 'SELECT COUNT(*) AS total FROM finales where CANDIDATA_ID = 12 and EVENTO_ID=3;';
   db.query(sqlSelect, (err, result) => {
     if (err) {
       console.log(err);

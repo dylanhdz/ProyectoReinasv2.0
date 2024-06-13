@@ -168,7 +168,7 @@ CREATE TABLE `candidata` (
   `CAND_COLOROJOS` varchar(45) DEFAULT NULL,
   `CAND_COLORCABELLO` varchar(45) DEFAULT NULL,
   `CAND_LOGROS_ACADEMICOS` varchar(900) DEFAULT NULL,
-  `CAND_NOTA_FINAL` decimal(6,4) DEFAULT NULL,
+  `CAND_NOTA_FINAL` int DEFAULT NULL,
   `ID_ELECCION` int NOT NULL,
   `CAND_CALIFICACIONFINAL` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`CANDIDATA_ID`),
@@ -342,7 +342,7 @@ DELIMITER ;;
   DECLARE total_notas INT;
   DECLARE total_eventos INT;
   DECLARE contador int default 1;
-  DECLARE calificacion_ponderada decimal(6,4);
+  DECLARE calificacion_ponderada int;
   
     -- Contar total de candidatas
   SELECT COUNT(DISTINCT candidata_id) INTO total_candidatas 
