@@ -13,6 +13,7 @@ import Carrusel from "./pages/Carrusel";
 import CRG_Gala from "./pages/CRG_Gala";
 import CRG_Tipico from "./pages/CRG_Tipico";
 import CRG_Barra from "./pages/CRG_Barra";
+import CRG_Empate from "./pages/CRG_Empate";
 import Gracias from "./pages/Gracias";
 // import Carrusel2 from "./Carrusel2";
 import Navbar from "./components/Navbar";
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: "/CRG_Barra",
         element: <CRG_Barra />,
+      },
+      {
+        path: "/CRG_Empate",
+        element: <CRG_Empate/>,
       },
       {
         path: "/Gracias",
