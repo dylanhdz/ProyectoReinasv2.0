@@ -33,19 +33,21 @@ function TTipico() {
     return parteDerecha;
   };
 
-  const handleClick = async () => {
-    try {
-      await Axios.post(`${API_BASE_URL}/cali`, {
-        notas: elements,
-        EVENTO_ID: 1,
-        CALIFICACION_NOMBRE: "Traje Típico",
-        CALIFICACION_PESO: 100,
-      });
-      setPop(true);
-      console.log("Calificaciones enviadas");
-    } catch (err) {
-      console.log(err);
-    }
+  const handleClick = () => {
+    setTimeout(async () => {
+      try {
+        await Axios.post(`${API_BASE_URL}/cali`, {
+          notas: elements,
+          EVENTO_ID: 1,
+          CALIFICACION_NOMBRE: "Traje Típico",
+          CALIFICACION_PESO: 100,
+        });
+        setPop(true);
+        console.log("Calificaciones enviadas");
+      } catch (err) {
+        console.log(err);
+      }
+    }, 2000);
   };
 
   const Enviar = () => {
