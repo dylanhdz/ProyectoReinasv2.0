@@ -61,7 +61,7 @@ function Reporte() {
         },
         header: {
             fontSize: 12,
-            marginBottom: 20,
+            marginBottom: 10,
             textAlign: 'center',
             color: 'grey',
         },
@@ -102,7 +102,7 @@ function Reporte() {
             fontFamily: 'Oswald'
         },
         image: {
-            marginVertical: 15,
+            marginVertical: 0,
             marginHorizontal: 100
         },
         imageFoto: {
@@ -168,7 +168,7 @@ function Reporte() {
                                                 <View style={styles.contenedorColumna} key={reina.CANDIDATA_ID}>
                                                     <View style={styles.columna}>
                                                         {index === 0 && (
-                                                            <Text style={styles.bold}>Reina ESPE</Text>
+                                                            <Text style={styles.bold}>Reina ESPE 2024</Text>
                                                         )}
                                                         {index === 1 && (
                                                             <Text style={styles.bold}>Srta. Confraternidad</Text>
@@ -180,7 +180,7 @@ function Reporte() {
                                                             <Text style={styles.bold}>Candidata Amistad</Text>
                                                         )};
                                                         <Text style={styles.text}>Lugar {index + 1}: {reina.CAND_NOMBRE1 + " " + reina.CAND_APELLIDOPATERNO}</Text>
-                                                        <Text style={styles.text}>Puntuación Ponderada: </Text>
+                                                        <Text style={styles.text}>Puntuación Final: </Text>
                                                         <Text style={styles.text}>{reina.CAND_NOTA_FINAL}/150</Text>
                                                     </View>
                                                     <View style={styles.columna}>
@@ -250,7 +250,7 @@ function Reporte() {
                                                 <View style={styles.section_ganadoras} key={reina.CANDIDATA_ID} break={index > 1 ? 'page' : undefined}>
                                                     <View>
                                                         {index === 0 && (
-                                                            <Text style={styles.title}>Reina 2024</Text>
+                                                            <Text style={styles.title}>Reina ESPE 2024</Text>
                                                         )}
                                                         {index === 1 && (
                                                             <Text style={styles.title}>Srta. Confraternidad</Text>
@@ -317,7 +317,7 @@ function Reporte() {
                         <Document>
                             <Page size="A4" style={styles.page}>
                                 <Text style={styles.header} fixed>
-                                    Sistema de Votación - Reina ESPE 2023
+                                    Sistema de Votación - Reina ESPE 2024
                                 </Text>
                                 <View style={styles.section}>
                                     <Text style={styles.title}>No se puede reportar una ganadora. Las votaciones aún no terminan. :(</Text>
