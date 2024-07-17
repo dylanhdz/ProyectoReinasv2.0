@@ -43,5 +43,5 @@ app.use("/api/barra",barraRoutes)
 
 
 app.listen(8800,()=>{
-    console.log("Conectado puerto 8800!")
+    console.log("Conectado puerto 8800!")
 })
