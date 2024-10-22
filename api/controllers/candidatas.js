@@ -2,11 +2,10 @@ import { db } from "../db.js"
 import jwt from "jsonwebtoken";
 
 export const getCandidatas = (req, res) => {
-    const sqlSelect = "SELECT * from candidata"
-
+    const sqlSelect = "SELECT candidata.*, foto_candidata.foto_url FROM candidata NATURAL JOIN foto_candidata;";
+    
     db.query(sqlSelect, (err, data) => {
         if (err) return res.status(500).json(err);
-        // console.log(data);
         return res.status(200).json(data);
     });
 }
@@ -84,13 +83,33 @@ export const getCandidatasBarra = (req, res) => {
 }
 
 export const getCandidataCarrusel = (req, res) => {
-    const sqlSelect = "SELECT c.*, carr.CARRERA_NOMBRE, d.DEPARTMENTO_NOMBRE, d.DEPARTAMENTO_SEDE FROM candidata AS c JOIN carrera AS carr ON c.CARRERA_ID = carr.CARRERA_ID JOIN departamento AS d ON carr.DEPARTAMENTO_ID = d.DEPARTAMENTO_ID;"
+    const sqlSelect = `
+        SELECT 
+            c.*, 
+            carr.CARRERA_NOMBRE, 
+            d.DEPARTMENTO_NOMBRE, 
+            d.DEPARTAMENTO_SEDE, 
+            MIN(fc.foto_url) AS foto_url -- Selecciona solo una foto, puedes usar MIN o MAX
+        FROM 
+            candidata AS c
+        JOIN 
+            carrera AS carr ON c.CARRERA_ID = carr.CARRERA_ID
+        JOIN 
+            departamento AS d ON carr.DEPARTAMENTO_ID = d.DEPARTAMENTO_ID
+        LEFT JOIN 
+            foto_candidata AS fc ON c.CANDIDATA_ID = fc.CANDIDATA_ID
+        GROUP BY 
+            c.CANDIDATA_ID; -- Asegúrate de agrupar por el identificador único de la candidata
+    `;
+    
     db.query(sqlSelect, (err, data) => {
         if (err) return res.status(500).json(err);
-        //console.log(data);
         return res.status(200).json(data);
     });
 }
+
+
+
 
 // Backend: Verificar si hay registros en la tabla de desempate y si el proceso de desempate ha terminado
 export const verificarDesempate = (req, res) => {
