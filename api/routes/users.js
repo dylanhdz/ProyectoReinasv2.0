@@ -8,6 +8,7 @@ import { checkVotes1 } from "../controllers/user.js";
 import { checkVotes2 } from "../controllers/user.js";
 import { checkVotes3 } from "../controllers/user.js";
 import { verificarEmpate } from "../controllers/user.js";
+import { activarEventoPublico } from "../controllers/user.js";
 
 
 const router = express.Router();
@@ -21,6 +22,8 @@ router.put("/:username", actualizarActivo);
 router.put("/cambio/:estado/:idEvento", actualizarEstadoEvento);
 router.post("/limpiarTabla", limpiarTabla);
 router.post("/limpiarVotaciones", limpiarVotaciones);
+router.put("/activarEventoPublico", activarEventoPublico);
+
 // router.post("/", addComments);
 
 export default router;

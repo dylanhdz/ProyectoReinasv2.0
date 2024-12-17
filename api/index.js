@@ -8,6 +8,9 @@ import caliRoutes from "./routes/cali.js"
 import barraRoutes from "./routes/barra.js"
 import cookieParser from "cookie-parser"
 import multer from "multer";
+import emailRoutes from "./routes/email.js";
+
+
 
 const app = express()
 
@@ -40,7 +43,7 @@ app.use("/api/coment",comentRoutes)
 app.use("/api/cali",caliRoutes)
 app.use("/api/candidatas",candidatasRoutes)
 app.use("/api/barra",barraRoutes)
-
+app.use("/api/email", emailRoutes);
 
 app.listen(8800,()=>{
     console.log("Conectado puerto 8800!")

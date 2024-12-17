@@ -8,7 +8,7 @@ import "./popup.scss";
 import Espera from "../components/Espera.jsx";
 import Navbar from "../components/Navbar";
 import { API_BASE_URL } from "./ip.js";
-import "./Barras.scss";handleClick
+import "./Barras.scss";
 import { Image } from "@nextui-org/react";
 
 const Barra = () => {

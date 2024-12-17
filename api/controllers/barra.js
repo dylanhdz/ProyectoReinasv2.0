@@ -56,3 +56,13 @@ export const getEstadoEvento = (req, res) => {
         res.send(result)
     })
 }
+
+
+export const verificarEstadoEventoPublico = (req, res) => {
+    const eventoId = 4; // ID del evento público
+    const sqlSelect = "SELECT EVENTO_ESTADO FROM evento WHERE EVENTO_ID = ?";
+    db.query(sqlSelect, [eventoId], (err, result) => {
+        if (err) return res.status(500).json(err);
+        res.status(200).json(result[0]);
+    });
+};

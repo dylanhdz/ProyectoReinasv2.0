@@ -118,3 +118,27 @@ export const getCandidatasEmpatadas = (req, res) => {
         }
     });
 };
+
+export const votarPublico = (req, res) => {
+    const { usuarioId, candidataId } = req.body;
+    const eventoId = 4; // ID del evento público
+    const sqlInsert = `
+        INSERT INTO calificacion (EVENTO_ID, USUARIO_ID, CANDIDATA_ID, CALIFICACION_NOMBRE, CALIFICACION_PESO, CALIFICACION_VALOR)
+        VALUES (?, ?, ?, 'Voto Público', 100, 1)
+        ON DUPLICATE KEY UPDATE CALIFICACION_VALOR = VALUES(CALIFICACION_VALOR);
+    `;
+    db.query(sqlInsert, [eventoId, usuarioId, candidataId], (err, result) => {
+        if (err) return res.status(500).json(err);
+
+        // Actualizar el estado en la tabla votaciones
+        const sqlUpdateVotaciones = `
+            UPDATE votaciones
+            SET VOT_ESTADO = 'si'
+            WHERE USUARIO_ID = ? AND CANDIDATA_ID = ? AND EVENTO_ID = ?;
+        `;
+        db.query(sqlUpdateVotaciones, [usuarioId, candidataId, eventoId], (err, result) => {
+            if (err) return res.status(500).json(err);
+            res.status(200).json("Voto registrado correctamente.");
+        });
+    });
+};
