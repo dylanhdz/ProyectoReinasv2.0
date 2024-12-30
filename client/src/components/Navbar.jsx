@@ -16,10 +16,10 @@ const Navbar = (props) => {
         <div className="logoContainer" id="logoNav">
           <img src={Logo} alt="Logo Espereina" />
         </div>
-        <div class="titleContainer">
+        <div className="titleContainer">
           <h1>{props.texto}</h1>
         </div>
-        <div class="userContainer">
+        <div className="userContainer">
           {<div className='logueo'>
             <br />
             <span>{currentUser?.name + " " + currentUser?.lastname}</span>

@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import Axios, { all } from 'axios';
-import ReactModal from "react-modal";
+import { useLocation, useNavigate } from "react-router-dom";
+import Axios from 'axios';
 import Popup from "reactjs-popup";
 import "./popup.scss";
 import Espera from "../components/Espera.jsx";
@@ -41,7 +40,7 @@ function TGala() {
           EVENTO_ID: 2,
           CALIFICACION_NOMBRE: "Traje Gala",
           CALIFICACION_PESO: 100,
-        });
+        }, { withCredentials: true }); 
         setPop(true);
         console.log("Calificaciones enviadas");
       } catch (err) {

@@ -27,7 +27,7 @@ export const postBarras = (req, res) => {
     jwt.verify(token, "jwtkey", (err, userInfo) => {
         if (err) return res.status(403).json("Token no es valido!");
 
-        const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`,`CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES (?)";
+        const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`, `CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES (?)";
         for (var i = 0; i < 10; i++) {
             const values = [
                 req.body.EVENTO_ID,
@@ -36,12 +36,9 @@ export const postBarras = (req, res) => {
                 req.body.CALIFICACION_NOMBRE,
                 req.body.CALIFICACION_PESO,
                 2 * Number(req.body.notas[i]), //Hay que multiplicar por 2 para que sea sobre 10
-            ]
-            //console.log(values)
-            //for(var i=0;i<10;i++){
+            ];
             db.query(q, [values], (err, data) => {
                 if (err) return res.status(500).json(err);
-                //return res.json("El comentario ha sido creado")   
             });
         }
     });

@@ -1,53 +1,64 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { FaUser, FaLock } from "react-icons/fa";
-import { API_BASE_URL } from "./ip.js";
-import axios from "axios";
 import Popup from "reactjs-popup";
 import "./login.scss";
 import Logo from "../img/logoespereina.png";
 
 const Login = () => {
-  /*PopUp*/
+  /* PopUp */
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const handleModalClose = () => {
     setModalIsOpen(false);
   };
-  /*Login*/
+
+  /* Login */
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
   });
+
   const [err, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
+
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
-      //await axios.put(`${API_BASE_URL}/user/${inputs.username}`);
-      if (inputs.username === "Veedor") {
-        navigate("/TablaNotario");
-      } else if (inputs.username === "admin" || inputs.username === "dylan" || inputs.username === "mathias") {
-        navigate("/PanelAdmin");
-      }
-      else {
-        navigate("/CRG_Tipico");
+      const user = await login(inputs); // Llama al método login del contexto
+      console.log("Usuario autenticado:", user);
+
+      // Redirige según el rol del usuario
+      switch (user.rol) {
+        case "notario":
+          navigate("/TablaNotario");
+          break;
+        case "admin":
+          navigate("/PanelAdmin");
+          break;
+        case "juez":
+          navigate("/CRG_Tipico");
+          break;
+        case "usuario":
+          navigate("/CRG_Publica");
+          break;
+        default:
+          throw new Error("Rol no válido");
       }
     } catch (err) {
       setModalIsOpen(true);
-      setError(err.response.data);
-      console.log(err.response.data);
+      setError(err.response?.data?.error || "Error al iniciar sesión.");
+      console.error("Error de inicio de sesión:", err.response?.data || err.message);
     }
   };
 
-
   return (
-    <div classNameName="Login">
+    <div className="Login">
       <section className="containerL">
         <div className="card-1">
           <div className="rect-negro">
@@ -56,11 +67,8 @@ const Login = () => {
                 <img src={Logo} alt="Logo Espereina" />
               </div>
             </div>
-            {/* <img className="logoespereina" alt="" src={require("../img/logoespereina.png")}/> */}
-
           </div>
           <h2 className="iniciar-sesion"> Iniciar Sesión </h2>
-
           <div className="contenedorFormulario">
             <div className="input-container">
               <label>
@@ -92,10 +100,11 @@ const Login = () => {
                 onChange={handleChange}
               />
             </div>
-
             <button className="loginBut" value="Iniciar Sesión" onClick={handleSubmit}>
               <p>Iniciar Sesión</p>
             </button>
+            {err && <p>{err}</p>}
+            <Link to="/recovery">Me olvidé la contraseña</Link>
             <p className="iniciar-sesion"> © - Derechos Reservados</p>
             <p className="iniciar-sesion"> Dpto. de Ciencias de la Computación</p>
             <Popup open={modalIsOpen} onClose={handleModalClose}>
@@ -103,7 +112,7 @@ const Login = () => {
                 <h2 className="modal-title">Error de Ingreso</h2>
                 <p className="modal-p">{err}</p>
                 <div className="botones-modal">
-                  <button onClick={() => { handleModalClose();}} className="btn-confirmar">
+                  <button onClick={handleModalClose} className="btn-confirmar">
                     Aceptar
                   </button>
                 </div>
@@ -111,7 +120,6 @@ const Login = () => {
             </Popup>
           </div>
         </div>
-
         <div className="card-2">
           <img className="siluetaReina" alt="" src={require("../img/siluetareina.png")} />
         </div>
@@ -119,4 +127,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

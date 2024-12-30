@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../context/authContext.js";
 import "./CRG_Barra.scss";
 import logoBarra from "../img/logoespereina.png";
 import { API_BASE_URL } from './ip.js';

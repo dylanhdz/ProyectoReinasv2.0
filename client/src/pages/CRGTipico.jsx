@@ -3,7 +3,7 @@ import { API_BASE_URL } from './ip.js';
 import Axios from 'axios';
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../context/authContext.js";
 import "./CRG_Tipico.scss";
 import logoTipico from "../img/logoespereina.png";
 

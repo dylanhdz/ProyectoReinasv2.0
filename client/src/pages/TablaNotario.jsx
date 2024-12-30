@@ -67,7 +67,6 @@ const TablaNotario = () => {
             try {
                 const res = await Axios.get(`${API_BASE_URL}/candidatas/votaciones`);
                 setVotaciones(res.data);
-                //console.log(votaciones);
             } catch (err) {
                 console.log(err);
             }
@@ -75,11 +74,12 @@ const TablaNotario = () => {
         const interval = setInterval(() => {
             fetchData();
         }, 1000);
-
+    
         return () => {
             clearInterval(interval);
         };
     }, [cat]);
+    
 
     if (currentUser === null || (currentUser.rol !== "Notario" && currentUser.rol !== "admin")) {
         return (

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../context/authContext.js";
 import "./CRG_Gala.scss";
 import logoGala from "../img/logoespereina.png";
 import { API_BASE_URL } from './ip.js';
@@ -9,7 +9,7 @@ import Axios from 'axios';
 
 
 
-const CRG_Empate = () => {
+const CRG_Gala = () => {
 
   const [listaEvento, setListaEvento] = useState([]);
   const cat = useLocation().search;
@@ -57,14 +57,14 @@ const CRG_Empate = () => {
             <figure className="cortina_izquierda"></figure>
             <figure className="cortina_derecha"></figure>
             <img src={logoGala} alt="logo" className="logoespereinaGala" />
-            <h1 className="tituloGala" contenteditable data-heading="Empate">
-              Empate
+            <h1 className="tituloGala" contenteditable data-heading="Traje De Gala">
+              Traje De Gala
             </h1>
             {listaEvento.map((evento, eventoIndex) => {
               if (evento.EVENTO_ID === 2 && evento.EVENTO_ESTADO === "si") {
                 return (
                   <div className="btn-dorado" id="btn-crg">
-                    <Link to="/Empate">
+                    <Link to="/TrajeGala">
                       <button className="golden-btn" >INICIAR VOTACIÓN</button>
                     </Link>
                   </div>
@@ -79,4 +79,4 @@ const CRG_Empate = () => {
     );
   }
 };
-export default CRG_Empate;
+export default CRG_Gala;

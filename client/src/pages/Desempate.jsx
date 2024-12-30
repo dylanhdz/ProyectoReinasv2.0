@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import Axios from 'axios';
 import { AuthContext } from "../context/authContext";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Popup from "reactjs-popup";
 import Espera from "../components/Espera.jsx";

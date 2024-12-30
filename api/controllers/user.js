@@ -110,25 +110,17 @@ export const checkVotes3 = (req, res) => {
 }
 
 export const activarEventoPublico = (req, res) => {
-  const eventoId = 4; // ID del evento público
-  const sqlUpdate = "UPDATE evento SET EVENTO_ESTADO = 'si' WHERE EVENTO_ID = ?";
+  const eventoId = 4;
+  const sqlUpdate = "UPDATE evento SET EVENTO_ESTADO = 'activo' WHERE EVENTO_ID = ?";
   
   db.query(sqlUpdate, [eventoId], (err, result) => {
       if (err) return res.status(500).json(err);
-
-      // Asegurarse de generar registros iniciales en la tabla votaciones
-      const sqlInsertVotaciones = `
-          INSERT IGNORE INTO votaciones (USUARIO_ID, EVENTO_ID, CANDIDATA_ID, VOT_ESTADO)
-          SELECT users.id, ?, candidata.CANDIDATA_ID, 'no'
-          FROM users CROSS JOIN candidata
-          WHERE users.rol = 'usuario';
-      `;
-      db.query(sqlInsertVotaciones, [eventoId], (err, result) => {
-          if (err) return res.status(500).json(err);
-          res.status(200).json("Evento público activado y votaciones iniciales creadas.");
-      });
+      res.status(200).json("Evento público activado.");
   });
 };
+
+
+
 
 
 

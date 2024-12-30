@@ -1,32 +1,26 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Write from "./pages/Write";
-import Home from "./pages/Home";
-import Single from "./pages/Single";
-import TrajeTipico from "./pages/TrajeTipico";
+import Recovery from "./pages/Recovery";
+import ResetPassword from "./pages/ResetPassword";
 import TTipico from "./pages/TTipico";
-import TrajeGala from "./pages/TrajeGala";
 import TGala from "./pages/TGala";
 import Preguntas from "./pages/Preguntas";
 import Carrusel from "./pages/Carrusel";
-import CRG_Gala from "./pages/CRG_Gala";
-import CRG_Tipico from "./pages/CRG_Tipico";
-import CRG_Barra from "./pages/CRG_Barra";
-import CRG_Empate from "./pages/CRG_Empate";
+import CRGGala from './pages/CRGGala';
+import CRGTipico from './pages/CRGTipico';
+import CRGBarra from './pages/CRGBarra';
+import CRGEmpate from './pages/CRGEmpate';
+import CRGPublica from './pages/CRGPublica';
+import VotacionPublica from "./pages/VotacionPublica";
 import Gracias from "./pages/Gracias";
-// import Carrusel2 from "./Carrusel2";
 import Navbar from "./components/Navbar";
-import Navbar2 from "./components/Navbar2";
 import Reporte from "./pages/Reporte";
-import { PDFViewer } from "@react-pdf/renderer";
-// import Espera from "./components/Espera";
-import Footer from "./components/Footer";
 import "./style.scss";
 import TablaNotario from "./pages/TablaNotario";
 import PanelAdmin from "./pages/PanelAdmin";
 import Desempate from "./pages/Desempate";
-// import SlideShow from "./Carrusel2";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Layout = () => {
   return (
@@ -48,7 +42,6 @@ const Layout2 = () => {
 const router = createBrowserRouter([
   {
     path: "/",
-
     element: <Layout />,
     children: [
       {
@@ -57,69 +50,126 @@ const router = createBrowserRouter([
       },
       {
         path: "/TrajeTipico",
-        element: <TTipico />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez", "admin"]}>
+            <TTipico />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/TrajeGala",
-        element: <TGala />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez", "admin"]}>
+            <TGala />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/Desempate",
-        element: <Desempate />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez", "admin"]}>
+            <Desempate />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/Preguntas",
-        element: <Preguntas />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez", "admin"]}>
+            <Preguntas />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/Carrusel",
-        element: <Carrusel />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez", "admin"]}>
+            <Carrusel />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/CRG_Gala",
-        element: <CRG_Gala />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez"]}>
+            <CRGGala/>
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/CRG_Tipico",
-        element: <CRG_Tipico />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez"]}>
+            <CRGTipico />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/CRG_Barra",
-        element: <CRG_Barra />,
+        element: (
+          <ProtectedRoute allowedRoles={["juez"]}>
+            <CRGBarra />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/CRG_Empate",
-        element: <CRG_Empate/>,
+        element: (
+          <ProtectedRoute allowedRoles={["juez"]}>
+            <CRGEmpate />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/CRG_Publica",
+        element: (
+          <ProtectedRoute allowedRoles={["usuario"]}>
+            <CRGPublica />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/VotacionPublica",
+        element: (
+          <ProtectedRoute allowedRoles={["usuario"]}>
+            <VotacionPublica />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/Gracias",
         element: <Gracias />,
-      }
+      },
     ],
-    
   },
   {
     path: "/",
-    
     element: <Layout2 />,
     children: [
       {
         path: "/TablaNotario",
-        element: <TablaNotario />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      
+        element: (
+          <ProtectedRoute allowedRoles={["notario", "admin"]}>
+            <TablaNotario />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/Reporte",
-        element: <Reporte />
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Reporte />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/PanelAdmin",
-        element: <PanelAdmin />
-      }  
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <PanelAdmin />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {
@@ -129,16 +179,16 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
-  
   },
-  // {
-  //   path: "/slideshow",
-  //   element: <SlideShow />,
-  
-  // },
+  {
+    path: "/recovery",
+    element: <Recovery />,
+  },
+  {
+    path: "/reset-password/:token",
+    element: <ResetPassword />,
+  },
 ]);
-
-
 
 function App() {
   return (

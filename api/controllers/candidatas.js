@@ -47,17 +47,13 @@ export const getCandidatasTrajeTipico = (req, res) => {
 }
 
 
-export const getVotacionesNotario = (req, res) =>
-{
-    const sqlSelect = "SELECT USUARIO_ID,EVENTO_ID,CANDIDATA_ID,VOT_ESTADO FROM votaciones";
-    db.query(sqlSelect,(err, result) => {
-        if (err) 
-            console.log(err);
-
-        //console.log(result);
-        res.send(result)
-    })
-} 
+export const getVotacionesNotario = (req, res) => {
+    const sqlSelect = "SELECT USUARIO_ID, EVENTO_ID, CANDIDATA_ID, VOT_ESTADO FROM votaciones";
+    db.query(sqlSelect, (err, result) => {
+        if (err) console.log(err);
+        res.send(result);
+    });
+};
 
 
 export const getCandidatasTrajeGala = (req, res) => {

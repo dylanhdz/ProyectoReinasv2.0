@@ -9,14 +9,23 @@ export const AuthContexProvider = ({ children }) => {
   );
 
   const login = async (inputs) => {
-    const res = await axios.post("/auth/login", inputs);
-    setCurrentUser(res.data);
+    try {
+      const res = await axios.post("/auth/login", inputs);
+      setCurrentUser(res.data.user); // Asegúrate de que el backend devuelve un objeto con `user`
+      return res.data.user; // Devuelve los datos del usuario para su manejo en el frontend
+    } catch (err) {
+      throw err; // Propaga el error para manejarlo en el frontend
+    }
   };
 
-  const logout = async (inputs) => {
-    await axios.put(`/auth/${currentUser.username}`)
-    await axios.post("/auth/logout");
-    setCurrentUser(null);
+  const logout = async () => {
+    try {
+      await axios.put(`/auth/${currentUser.username}`); // Cambia estado en el backend si es necesario
+      await axios.post("/auth/logout");
+      setCurrentUser(null);
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+    }
   };
 
   useEffect(() => {

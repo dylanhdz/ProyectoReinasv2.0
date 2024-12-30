@@ -41,7 +41,7 @@ function Preguntas() {
           EVENTO_ID: 3,
           CALIFICACION_NOMBRE: "Preguntas",
           CALIFICACION_PESO: 100,
-        });
+        }, { withCredentials: true }); 
         setPop(true);
         console.log("Calificaciones enviadas");
       } catch (err) {

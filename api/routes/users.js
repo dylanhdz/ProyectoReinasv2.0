@@ -23,7 +23,6 @@ router.put("/cambio/:estado/:idEvento", actualizarEstadoEvento);
 router.post("/limpiarTabla", limpiarTabla);
 router.post("/limpiarVotaciones", limpiarVotaciones);
 router.put("/activarEventoPublico", activarEventoPublico);
-
 // router.post("/", addComments);
 
 export default router;
