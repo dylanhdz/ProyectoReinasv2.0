@@ -5,14 +5,20 @@ import userRoutes from "./routes/users.js";
 import candidatasRoutes from "./routes/candidatas.js";
 import caliRoutes from "./routes/cali.js";
 import barraRoutes from "./routes/barra.js";
+import featuresRoutes from "./routes/features.js";
+import rolesRoutes from "./routes/roles.js";
+import eventsRoutes from "./routes/events.js";
+
 import cookieParser from "cookie-parser";
 import multer from "multer";
 
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:3000", // Cambia por la URL de tu frontend
-  credentials: true, // Permitir cookies y encabezados personalizados
+  origin: true, // Permite todas las conexiones en desarrollo
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -39,6 +45,9 @@ app.use("/api/user", userRoutes);
 app.use("/api/candidatas", candidatasRoutes);
 app.use("/api/cali", caliRoutes);
 app.use("/api/barra", barraRoutes);
+app.use("/api/features", featuresRoutes);
+app.use("/api/roles", rolesRoutes);
+app.use("/api/events", eventsRoutes);
 
 app.listen(8800, () => {
   console.log("Backend server is running!");

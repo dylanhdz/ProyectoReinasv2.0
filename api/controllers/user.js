@@ -1,17 +1,37 @@
 import { db } from "../db.js"
 
 export const getUsuarios = (req, res) => {
-  const id = req.params.id;
-  //console.log(id);
-  const sqlSelect = "SELECT * FROM users WHERE id NOT IN (SELECT id FROM (SELECT users.id FROM users join calificacion join candidata WHERE users.id = calificacion.USUARIO_ID AND calificacion.EVENTO_ID = 1 AND calificacion.CANDIDATA_ID = ? AND users.rol = 'Juez') as aa) AND users.rol = 'Juez';"
-  db.query(sqlSelect, id, (err, result) => {
-    if (err)
-      console.log(err);
+  const id = req.params.id; // ID de la candidata
+  // IMPORTANTE: Asegúrate de que sea un número entero si CANDIDATA_ID es INT
+  const sqlSelect = `
+    SELECT * 
+    FROM users 
+    WHERE id NOT IN (
+      SELECT id 
+      FROM (
+        SELECT users.id 
+        FROM users
+        JOIN calificacion
+        JOIN candidata
+        ON users.id = calificacion.USUARIO_ID
+           AND candidata.CANDIDATA_ID = calificacion.CANDIDATA_ID
+        WHERE calificacion.EVENTO_ID = 1
+          AND calificacion.CANDIDATA_ID = ?
+          AND users.rol = 'juez'
+      ) as aa
+    )
+    AND users.rol = 'juez';
+  `;
 
-    // console.log(result);
-    res.send(result)
-  })
-}
+  db.query(sqlSelect, [id], (err, result) => {
+    if (err) {
+      console.log("Error en getUsuarios:", err);
+      return res.status(500).json(err);
+    }
+    res.send(result);
+  });
+};
+
 
 export const actualizarActivo = (req, res) => {
   const username = req.params.username;
@@ -45,6 +65,7 @@ export const limpiarVotaciones = (req, res) => {
     "UPDATE candidata SET id_eleccion = 0;",
     "TRUNCATE TABLE calificacion;",
     "TRUNCATE TABLE finales;",
+    "TRUNCATE TABLE votaciones;",
     "TRUNCATE TABLE desempate;"
   ];
 
@@ -250,5 +271,80 @@ export const verificarEmpate = (req, res) => {
         res.status(200).json({ empate: false });
       }
     }
+  });
+};
+
+
+ //creación de usuarios
+ export const createUser = (req, res) => {
+  const { username, email, password, name, lastname, role_id } = req.body;
+  // en caso uses enum, rol en lugar de role_id
+  // 1) Revisar si existe username repetido
+  const q = "SELECT * FROM users WHERE username = ?";
+  db.query(q, [username], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length) {
+      return res.status(409).json("El usuario ya existe.");
+    }
+
+    // 2) Hashear password
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    // 3) Insert
+    const sqlInsert = `
+      INSERT INTO users (username, email, password, name, lastname, rol)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
+    // si uses role_id, cambia a: ...VALUES (?, ?, ?, ?, ?, ?)
+    // y en la BDD, 'rol' => 'superadmin' o 'admin' o lo que sea
+    db.query(sqlInsert, [username, email, hash, name, lastname, role_id], (err2, result) => {
+      if (err2) return res.status(500).json(err2);
+      return res.status(200).json("Usuario creado exitosamente.");
+    });
+  });
+};
+
+// READ all users
+export const getAllUsers = (req, res) => {
+  const sql = "SELECT * FROM users";
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+// READ one user
+export const getUserById = (req, res) => {
+  const userId = req.params.id;
+  const sql = "SELECT * FROM users WHERE id = ?";
+  db.query(sql, [userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (!data.length) return res.status(404).json("Usuario no encontrado.");
+    return res.status(200).json(data[0]);
+  });
+};
+
+// UPDATE user (para cambiar rol o email, etc.)
+export const updateUser = (req, res) => {
+  const userId = req.params.id;
+  const { email, name, lastname, role_id } = req.body;
+  const sql = `
+    UPDATE users SET email = ?, name = ?, lastname = ?, rol = ?
+    WHERE id = ?
+  `;
+  db.query(sql, [email, name, lastname, role_id, userId], (err, result) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Usuario actualizado.");
+  });
+};
+
+// DELETE user
+export const deleteUser = (req, res) => {
+  const userId = req.params.id;
+  const sql = "DELETE FROM users WHERE id = ?";
+  db.query(sql, [userId], (err, result) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Usuario eliminado.");
   });
 };

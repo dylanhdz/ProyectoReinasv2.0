@@ -211,6 +211,16 @@ const PanelAdmin = () => {
             </button>
           </div>
 
+          <p>Evento 4 (Publico):</p>
+          <div>
+            <button className="btn" onClick={() => cambiarEvento(4, "si")}>
+              Empezar
+            </button>
+            <button className="btn" onClick={() => cambiarEvento(4, "no")}>
+              Cerrar
+            </button>
+          </div>
+
           <h2>Votaciones</h2>
           <div>
             <button className="btn" onClick={() => setMostrarPopUp(true)}>

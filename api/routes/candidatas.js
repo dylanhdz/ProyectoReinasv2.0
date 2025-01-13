@@ -1,24 +1,41 @@
-import express  from "express";
-import { getCandidatas } from "../controllers/candidatas.js";
-import { getCandidatasFotos } from "../controllers/candidatas.js";
-import { getCandidatasTrajeTipico } from "../controllers/candidatas.js";
-import { getJueces } from "../controllers/candidatas.js";
-import { getVotacionesNotario} from "../controllers/candidatas.js";
-import { getCandidatasTrajeGala } from "../controllers/candidatas.js";
-import { getCandidataCarrusel } from "../controllers/candidatas.js";
-import { verificarDesempate } from "../controllers/candidatas.js";
+// candidatas.js
+import express from "express";
+import { 
+    getCandidatas, 
+    getCandidatasFotos, 
+    getCandidatasTrajeTipico, 
+    getJueces, 
+    getVotacionesNotario, 
+    getCandidatasTrajeGala, 
+    getCandidatasBarra, 
+    getCandidataCarrusel, 
+    verificarDesempate, 
+    getTopCandidatas,
+    createCandidata,
+    updateCandidata,
+    deleteCandidata
+} from "../controllers/candidatas.js";
 
 const router = express.Router();
 
-router.get("/", getCandidatas);
+// Rutas específicas primero
 router.get("/carruselCandidatas", getCandidataCarrusel);
 router.get("/jueces", getJueces);
 router.get("/votaciones", getVotacionesNotario);
 router.get("/tt", getCandidatasTrajeTipico);
 router.get("/tg", getCandidatasTrajeGala);
-router.get("/:id", getCandidatasFotos);
 router.get("/verificarDesempate", verificarDesempate);
+router.get("/topCandidatas", getTopCandidatas); // Nueva ruta específica
 
-// router.post("/", addComments);
+// Rutas genéricas después
+router.get("/:id", getCandidatasFotos);
+router.get("/", getCandidatas);
+
+//obtener candidatas
+// POST -> create
+router.get("/", getCandidatas);
+router.post("/", createCandidata);
+router.put("/:id", updateCandidata);
+router.delete("/:id", deleteCandidata);
 
 export default router;

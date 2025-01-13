@@ -162,21 +162,28 @@ export const getCandidatasEmpatadas = (req, res) => {
 };
 
 export const votarPublico = (req, res) => {
+  // 1) Consultar si votacion_publica está habilitada
+  const checkFeatureSql = "SELECT enabled FROM features WHERE name = 'votacion_publica' LIMIT 1";
+  db.query(checkFeatureSql, (err, featureData) => {
+    if (err) return res.status(500).json(err);
+    if (!featureData.length || featureData[0].enabled === 0) {
+      return res.status(403).json("La votación pública está deshabilitada por el súper admin.");
+    }
+
+    // 2) Si está habilitada, procedemos con la lógica normal
     const { usuarioId, candidataId } = req.body;
     const eventoId = 4; // ID del evento público
-  
-    // 1) Revisar si el evento público (ID=4) está abierto
+
+    // ... Resto de tu código ...
     const sqlCheck = "SELECT EVENTO_ESTADO FROM evento WHERE EVENTO_ID = 4";
     db.query(sqlCheck, (err, checkResult) => {
       if (err) return res.status(500).json(err);
-  
+
       if (!checkResult.length || checkResult[0].EVENTO_ESTADO === "no") {
-        return res
-          .status(403)
-          .json("El evento público ya ha finalizado. No se aceptan más votos.");
+        return res.status(403).json("El evento público está cerrado.");
       }
-  
-      // 2) Evento público abierto => Insertar en 'calificacion'
+
+      // Insertar en calificacion
       const sqlInsertCali = `
         INSERT INTO calificacion (EVENTO_ID, USUARIO_ID, CANDIDATA_ID, CALIFICACION_NOMBRE, CALIFICACION_PESO, CALIFICACION_VALOR)
         VALUES (?, ?, ?, 'Voto Público', 1, 1)
@@ -184,22 +191,22 @@ export const votarPublico = (req, res) => {
       `;
       db.query(sqlInsertCali, [eventoId, usuarioId, candidataId], (err, result) => {
         if (err) return res.status(500).json(err);
-  
-        // 3) Insertar/actualizar en 'votaciones' para marcarlo como "si"
+
+        // |ar/actualizar en 'votaciones'
         const qVot = `
           INSERT INTO votaciones (USUARIO_ID, EVENTO_ID, CANDIDATA_ID, VOT_ESTADO)
           VALUES (?, ?, ?, 'si')
-          ON DUPLICATE KEY UPDATE VOT_ESTADO = 'si'
+          ON DUPLICATE KEY UPDATE VOT_ESTADO = 'si';
         `;
-        const valuesVot = [usuarioId, eventoId, candidataId];
-        db.query(qVot, valuesVot, (err2) => {
+        db.query(qVot, [usuarioId, eventoId, candidataId], (err2) => {
           if (err2) return res.status(500).json(err2);
-  
           res.status(200).json("Voto público registrado correctamente.");
         });
       });
     });
-  };
+  });
+};
+
   
 
   export const cerrarVotaciones = (req, res) => {

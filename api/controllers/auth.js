@@ -49,8 +49,29 @@ export const register = (req, res) => {
                 from: "kalexandervargas@gmail.com",
                 to: email,
                 subject: "Registro Exitoso",
-                text: `Te has registrado exitosamente. Tus credenciales son:\nUsuario: ${email}\nContraseña: ${req.body.password}`,
+                html: `
+                  <div style="background: linear-gradient(0deg, #0D4F02, #002401); padding: 40px; font-family: Arial, sans-serif;">
+                    <div style="max-width: 600px; margin: auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 8px rgba(0,0,0,0.2);">
+                      <h1 style="color: #0D4F02; text-align: center;">¡Registro Exitoso!</h1>
+                      <p style="font-size: 16px; color: #333;">Hola,</p>
+                      <p style="font-size: 16px; color: #333;">
+                        Te has registrado exitosamente en nuestro sistema. Aquí tienes tus credenciales:
+                      </p>
+                      <ul style="font-size: 16px; color: #333; list-style: none; padding: 0;">
+                        <li><strong>Usuario:</strong> ${email}</li>
+                        <li><strong>Contraseña:</strong> ${req.body.password}</li>
+                      </ul>
+                      <p style="font-size: 16px; color: #333;">
+                        Por favor, guarda esta información en un lugar seguro.
+                      </p>
+                      <p style="text-align: center; color: #0D4F02; font-size: 14px;">
+                        © 2025 - Universidad de las Fuerzas Armadas ESPE
+                      </p>
+                    </div>
+                  </div>
+                `,
             };
+            
 
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) return res.status(500).json(error);
@@ -61,36 +82,31 @@ export const register = (req, res) => {
 };
 
 export const login = (req, res) => {
-    const q = "SELECT * FROM users WHERE username = ?";
-  
-    db.query(q, [req.body.username], (err, data) => {
-      if (err) return res.status(500).json({ error: "Error interno del servidor" });
-      if (data.length === 0) return res.status(404).json({ error: "¡Usuario no encontrado!" });
-  
-      // Verifica la contraseña
-      const isPasswordCorrect = bcrypt.compareSync(req.body.password, data[0].password);
-  
-      if (!isPasswordCorrect)
-        return res.status(400).json({ error: "¡Usuario o Contraseña incorrectos!" });
-  
-      if (data[0].activo === 1)
-        return res.status(400).json({ error: "El usuario no puede acceder en dos lugares al mismo tiempo!" });
-  
-      // Crea un token
-      const token = jwt.sign({ id: data[0].id }, "jwtkey");
-  
-      // Excluye la contraseña de la respuesta
-      const { password, ...userData } = data[0];
-  
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-        .status(200)
-        .json({ user: userData }); // Enviar el usuario dentro de un objeto con clave 'user'
+  const q = "SELECT * FROM users WHERE username = ?";
+
+  db.query(q, [req.body.username], (err, data) => {
+    if (err) return res.status(500).json({ error: "Error interno del servidor" });
+    if (data.length === 0) return res.status(404).json({ error: "¡Usuario no encontrado!" });
+
+    // Verifica la contraseña
+    const isPasswordCorrect = bcrypt.compareSync(req.body.password, data[0].password);
+    if (!isPasswordCorrect)
+      return res.status(400).json({ error: "¡Usuario o Contraseña incorrectos!" });
+
+    // Generar un token con JWT
+    const token = jwt.sign({ id: data[0].id }, "jwtkey", { expiresIn: "1h" });
+
+    // Excluir la contraseña del objeto que responderemos
+    const { password, ...userData } = data[0];
+
+    // En vez de setear cookie, respondemos un JSON con token + user
+    res.status(200).json({
+      token,       // Mandamos el token
+      user: userData
     });
-  };
+  });
+};
+
 
 
 export const logout = (req, res) => {
@@ -112,7 +128,6 @@ export const salirDispositivo = (req, res) => {
 };
 
 
-
 export const enviarCorreoRestablecimiento = (req, res) => {
     const { email } = req.body;
 
@@ -126,7 +141,9 @@ export const enviarCorreoRestablecimiento = (req, res) => {
         }
         if (data.length === 0) return res.status(404).json("Usuario no encontrado.");
 
-        const resetToken = Math.random().toString(36).substring(2); // Generar token simple
+        // Generar un token numérico de 4 cifras
+        const resetToken = Math.floor(1000 + Math.random() * 9000).toString();
+
         const sqlUpdate = "UPDATE users SET password_reset_token = ? WHERE email = ?";
         db.query(sqlUpdate, [resetToken, email], (err) => {
             if (err) {
@@ -147,7 +164,26 @@ export const enviarCorreoRestablecimiento = (req, res) => {
                 from: "kalexandervargas@gmail.com",
                 to: email,
                 subject: "Restablecimiento de Contraseña",
-                text: `Para restablecer tu contraseña, haz clic en el siguiente enlace: http://localhost:3000/reset-password/${resetToken}`,
+                html: `
+                  <div style="background: linear-gradient(0deg, #0D4F02, #002401); padding: 40px; font-family: Arial, sans-serif;">
+                    <div style="max-width: 600px; margin: auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 8px rgba(0,0,0,0.2);">
+                      <h1 style="color: #0D4F02; text-align: center;">Restablecimiento de Contraseña</h1>
+                      <p style="font-size: 16px; color: #333;">Hola,</p>
+                      <p style="font-size: 16px; color: #333;">
+                        Hemos recibido una solicitud para restablecer tu contraseña. Por favor, utiliza el siguiente código para completar el proceso:
+                      </p>
+                      <div style="text-align: center; margin: 20px 0;">
+                        <span style="font-size: 20px; font-weight: bold; color: #0D4F02;">${resetToken}</span>
+                      </div>
+                      <p style="font-size: 16px; color: #333;">
+                        Si no solicitaste este restablecimiento, ignora este correo.
+                      </p>
+                      <p style="text-align: center; color: #0D4F02; font-size: 14px;">
+                        © 2025 - Universidad de las Fuerzas Armadas ESPE
+                      </p>
+                    </div>
+                  </div>
+                `,
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
@@ -180,3 +216,56 @@ export const resetPassword = (req, res) => {
         });
     });
 };
+
+export const verifyToken = (req, res) => {
+    const { token } = req.body;
+  
+    const q = "SELECT * FROM users WHERE password_reset_token = ?";
+    db.query(q, [token], (err, data) => {
+      if (err || data.length === 0) return res.status(404).json("Token no válido.");
+      res.status(200).json("Token válido.");
+    });
+  };
+
+
+  export const registerSuperadmin = (req, res) => {
+    const { username, password, name, lastname } = req.body;
+  
+    // 1) Verificar si ya existe el usuario
+    const q = "SELECT * FROM users WHERE username = ?";
+    db.query(q, [username], (err, data) => {
+      if (err) return res.status(500).json(err);
+      if (data.length) {
+        return res.status(409).json("El usuario ya existe.");
+      }
+  
+      // 2) Encriptar la contraseña con bcrypt
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(password, salt);
+  
+      // 3) Insertar en la BD con rol superadmin
+      const sqlInsert = `
+        INSERT INTO users (username, email, password, name, lastname, rol)
+        VALUES (?, ?, ?, ?, ?, ?);
+      `;
+  
+      // Puedes usar el mismo valor para 'username' y 'email'
+      // o poner un correo dummy. Lo importante es cumplir el esquema de tu BD.
+      const values = [
+        username,          // username
+        `${username}@espe.edu.ec`, // email (o lo que gustes)
+        hash,             // contraseña encriptada
+        name,
+        lastname,
+        "superadmin"      // Rol final que queremos
+      ];
+  
+      db.query(sqlInsert, values, (err, result) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("Usuario superadmin creado con éxito.");
+      });
+    });
+  };
+
+
+ 
