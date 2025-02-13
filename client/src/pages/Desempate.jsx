@@ -32,21 +32,21 @@ function Desempate() {
         if (response.data.candidatasEmpatadas) {
           setCandidatasEmpatadas(response.data.candidatasEmpatadas);
           setElements(Array(response.data.candidatasEmpatadas.length).fill({ nota: 0, nota_final: 0 }));
-
+          
           // Configurar información del empate
           console.log("Datos de empate:", response.data);
-
+          
           const tipo = response.data.candidatasEmpatadas[0].tipo;
           setTipoEmpate(tipo);
-
+          
           const mensaje = {
             'primer-lugar': 'primer lugar',
-            'segundo-lugar': 'segundo lugar',
+            'segundo-lugar': 'segundo lugar', 
             'tercer-lugar': 'tercer lugar'
           }[tipo];
 
           setEmpateInfo({
-            candidatas: response.data.candidatasEmpatadas.map(c =>
+            candidatas: response.data.candidatasEmpatadas.map(c => 
               `${c.CAND_NOMBRE1} ${c.CAND_APELLIDOPATERNO}`
             ).join(', '),
             tipo: mensaje
@@ -77,30 +77,30 @@ function Desempate() {
     return parteDerecha;
   };
 
-  const handleClick = async () => {
-    try {
-      const notas = elements.map((element, index) => ({
-        candidata_id: parseInt(candidatasEmpatadas[index].CANDIDATA_ID || candidatasEmpatadas[index]),
-        nota_final: parseFloat(element.nota)
-      }));
+const handleClick = async () => {
+  try {
+    const notas = elements.map((element, index) => ({
+      candidata_id: parseInt(candidatasEmpatadas[index].CANDIDATA_ID || candidatasEmpatadas[index]),
+      nota_final: parseFloat(element.nota)
+    }));
 
-      const response = await Axios.post(`${API_BASE_URL}/cali/desempate`, {
-        notas,
-        CALIFICACION_NOMBRE: 'Desempate',
-        EVENTO_ID: 1
-      });
+    const response = await Axios.post(`${API_BASE_URL}/cali/desempate`, {
+      notas,
+      CALIFICACION_NOMBRE: 'Desempate',
+      EVENTO_ID: 1
+    });
 
-      if (response.data.message === "Esperando a que todos los jueces voten") {
-        alert(`${response.data.message} (${response.data.votosActuales}/${response.data.totalJueces})`);
-      } else {
-        setPop(true);
-        navigate("/Gracias");
-      }
-    } catch (err) {
-      console.error("Error detallado:", err.response?.data || err);
-      alert("Error al enviar las calificaciones");
+    if (response.data.message === "Esperando a que todos los jueces voten") {
+      alert(`${response.data.message} (${response.data.votosActuales}/${response.data.totalJueces})`);
+    } else {
+      setPop(true);
+      navigate("/Gracias");
     }
-  };
+  } catch (err) {
+    console.error("Error detallado:", err.response?.data || err);
+    alert("Error al enviar las calificaciones");
+  }
+};
 
   const Enviar = () => {
     if (elements.some(element => element.nota === 0)) {
@@ -178,99 +178,99 @@ function Desempate() {
 
   if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
     return (
-      <div className="App">
-        <main>
-          <div>
-            <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
-          </div>
-        </main>
-      </div>
+        <div className="App">
+          <main>
+            <div>
+              <h1>Lo sentimos, no tienes permiso para ver esta página.</h1>
+            </div>
+          </main>
+        </div>
     );
   } else {
     return (
-      <>
-        <Navbar texto="Desempate" />
-        {pop && <Espera />}
-        <div className="main-container" id="candidatas-container">
-          {empateInfo && (
-            <div className={`empate-banner ${tipoEmpate}`}>
-              <h2>Desempate por {empateInfo.tipo}</h2>
-              <p>Calificación para resolver el empate entre: {empateInfo.candidatas}</p>
-            </div>
-          )}
-          <div className="reinas-container">
-            {candidatasEmpatadas.map((candidata, index) => (
-              <div className="item-reina" key={candidata.CANDIDATA_ID}>
-                <div className="espacio-imagen">
-                  <img
-                    alt="Foto candidata"
-                    className="foto-candidata"
-                    src={
-                      candidata.FOTO_URL
-                        ? "/reinas/" + cortarParteDerecha(candidata.FOTO_URL)
-                        : '/reinas/default.jpg'
-                    }
-                  />
-                  <div className="datos-candidata">
-                    <h3>{candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}</h3>
-                    <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>                      </div>
-                </div>
-                <div className="dropdown" onClick={handleSelectClick}>
-                  <div className="botones-container">
-                    <div className="select">
+        <>
+          <Navbar texto="Desempate" />
+          {pop && <Espera />}
+          <div className="main-container">
+            {empateInfo && (
+              <div className={`empate-banner ${tipoEmpate}`}>
+                <h2>Desempate por {empateInfo.tipo}</h2>
+                <p>Calificación para resolver el empate entre: {empateInfo.candidatas}</p>
+              </div>
+            )}
+            <div className="reinas-container">
+              {candidatasEmpatadas.map((candidata, index) => (
+                  <div className="item-reina" key={candidata.CANDIDATA_ID}>
+                    <div className="espacio-imagen">
+                      <img
+                          alt="Foto candidata"
+                          className="foto-candidata"
+                          src={
+                            candidata.FOTO_URL
+                                ? "/reinas/" + cortarParteDerecha(candidata.FOTO_URL)
+                                : '/reinas/default.jpg'
+                          }
+                      />
+                      <div className="datos-candidata">
+                        <h3>{candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}</h3>
+                        <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>                      </div>
+                    </div>
+                    <div className="dropdown" onClick={handleSelectClick}>
+                      <div className="botones-container">
+                        <div className="select">
                       <span className="selected">
                         {elements[index].nota !== 0 ? `${elements[index].nota} de 10` : 'Votar'}
                       </span>
+                        </div>
+                        <ul className="menu" aria-label="Action event example">
+                          {Array.from({ length: 10 }, (_, i) => (
+                              <li
+                                  key={i + 1}
+                                  onClick={() => setValue(index, i + 1)}
+                                  className={elements[index].nota === i + 1 ? "active" : ""}
+                              >
+                                {i + 1}
+                              </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <ul className="menu" aria-label="Action event example">
-                      {Array.from({ length: 10 }, (_, i) => (
-                        <li
-                          key={i + 1}
-                          onClick={() => setValue(index, i + 1)}
-                          className={elements[index].nota === i + 1 ? "active" : ""}
-                        >
-                          {i + 1}
-                        </li>
-                      ))}
-                    </ul>
+                  </div>
+              ))}
+            </div>
+            <div id="enviarbarra" className="enviar">
+              <Button type="button" className="btn-enviar" onClick={Enviar}>
+                ENVIAR
+              </Button>
+              <Popup open={modalIsOpen} onClose={handleModalClose}>
+                <div className="modal">
+                  <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
+                  <div className="botones-modal">
+                    <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
+                      <Button color="success" variant="contained" onClick={() => { handleModalClose(); handleClick(); setPop(true); }} className="btn-confirmar">
+                        Si
+                      </Button>
+                      <Button color="error" variant="outlined" onClick={handleModalClose} className="btn-cancelar">
+                        No
+                      </Button>
+                    </Stack>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <div id="enviarbarra" className="enviar">
-            <button type="button" className="btn-enviar" onClick={Enviar}>
-              ENVIAR
-            </button>
-            <Popup open={modalIsOpen} onClose={handleModalClose}>
-              <div className="modal">
-                <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
-                <div className="botones-modal">
-                  <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
-                    <Button color="success" variant="contained" onClick={() => { handleModalClose(); handleClick(); setPop(true); }} className="btn-confirmar">
-                      Si
+              </Popup>
+              <Popup open={vacioIsOpen} onClose={handleVacioClose}>
+                <div className="modal">
+                  <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
+                  <div className="botones-modal">
+                    <Button onClick={handleVacioClose} className="btn-confirmar">
+                      Aceptar
                     </Button>
-                    <Button color="error" variant="outlined" onClick={handleModalClose} className="btn-cancelar">
-                      No
-                    </Button>
-                  </Stack>
+                  </div>
                 </div>
-              </div>
-            </Popup>
-            <Popup open={vacioIsOpen} onClose={handleVacioClose}>
-              <div className="modal">
-                <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
-                <div className="botones-modal">
-                  <Button onClick={handleVacioClose} className="btn-confirmar">
-                    Aceptar
-                  </Button>
-                </div>
-              </div>
-            </Popup>
+              </Popup>
+            </div>
+            <EmpateModal />
           </div>
-          <EmpateModal />
-        </div>
-      </>
+        </>
     );
   }
 }
