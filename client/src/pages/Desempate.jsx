@@ -156,14 +156,14 @@ const handleClick = async () => {
   const EmpateModal = () => (
     <Popup open={showEmpatePopup} onClose={() => setShowEmpatePopup(false)}>
       <div className="modal">
-        <h2 className="modal-title">¡Atención! Desempate Detectado</h2>
+        <h2 className="modal-title">¡Atención! Empate Detectado</h2>
         {empateInfo && (
           <div className="modal-content">
             <p>Se ha detectado un empate por el <b>{empateInfo.tipo}</b> entre las siguientes candidatas:</p>
             <br></br>
             <p className="candidatas-empatadas">{empateInfo.candidatas}</p>
             <br></br>
-            <p>Por favor, proceda a calificar a las candidatas para resolver el empate.</p>
+            <p>Por favor, proceda a calificar nuevamente a estas candidatas para resolver el empate.</p>
             <br></br>
           </div>
         )}
