@@ -63,16 +63,25 @@ function Desempate() {
 const handleClick = async () => {
   try {
     const notas = elements.map((element, index) => ({
-      candidata_id: candidatasEmpatadas[index].CANDIDATA_ID,
-      nota_final: element.nota
+      candidata_id: parseInt(candidatasEmpatadas[index].CANDIDATA_ID || candidatasEmpatadas[index]),
+      nota_final: parseFloat(element.nota)
     }));
 
-    await Axios.post(`${API_BASE_URL}/cali/desempate`, { notas });
-    setPop(true);
-    console.log("Calificaciones enviadas");
-    navigate("/Gracias");
+    const response = await Axios.post(`${API_BASE_URL}/cali/desempate`, {
+      notas,
+      CALIFICACION_NOMBRE: 'Desempate',
+      EVENTO_ID: 1
+    });
+
+    if (response.data.message === "Esperando a que todos los jueces voten") {
+      alert(`${response.data.message} (${response.data.votosActuales}/${response.data.totalJueces})`);
+    } else {
+      setPop(true);
+      navigate("/Gracias");
+    }
   } catch (err) {
-    console.log(err);
+    console.error("Error detallado:", err.response?.data || err);
+    alert("Error al enviar las calificaciones");
   }
 };
 

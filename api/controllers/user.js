@@ -110,130 +110,93 @@ export const checkVotes3 = (req, res) => {
 }
 
 export const verificarEmpate = (req, res) => {
+  // Primero obtenemos todas las candidatas ordenadas por puntuación
   const sqlSelect = `
     SELECT candidata_id, SUM(calificacion_valor) AS suma
     FROM finales
     GROUP BY candidata_id
-    ORDER BY suma DESC
-    LIMIT 3;`;
+    ORDER BY suma DESC;`;
 
   db.query(sqlSelect, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).json({ error: 'An error occurred' });
-    } else {
-      if (result.length >= 3) {
-        const primeraCandidataId = result[0].candidata_id;
-        const segundaCandidataId = result[1].candidata_id;
-        const terceraCandidataId = result[2].candidata_id;
-        const primeraPuntuacion = result[0].suma;
-        const segundaPuntuacion = result[1].suma;
-        const terceraPuntuacion = result[2].suma;
+      return;
+    }
 
-        const sqlInsert = "INSERT INTO desempate (candidata_id, nota_final) VALUES (?, ?)";
+    if (result.length < 2) {
+      res.status(200).json({ empate: false });
+      return;
+    }
 
-        if (primeraPuntuacion === segundaPuntuacion && segundaPuntuacion === terceraPuntuacion) {
-          // Empate entre las tres primeras candidatas
-          // Verificar si las candidatas ya existen en la tabla desempate
-          db.query("SELECT * FROM desempate WHERE candidata_id IN (?, ?, ?)", [primeraCandidataId, segundaCandidataId, terceraCandidataId], (err, existingResults) => {
-            if (err) {
-              console.log(err);
-              res.status(500).json({ error: 'An error occurred' });
-            } else {
-              // Filtrar las candidatas que ya existen en la tabla desempate
-              const existingCandidataIds = existingResults.map(result => result.candidata_id);
-
-              // Insertar solo las candidatas que no están presentes en la tabla desempate
-              const candidatasToInsert = [
-                { candidata_id: primeraCandidataId, nota_final: primeraPuntuacion },
-                { candidata_id: segundaCandidataId, nota_final: segundaPuntuacion },
-                { candidata_id: terceraCandidataId, nota_final: terceraPuntuacion }
-              ].filter(candidata => !existingCandidataIds.includes(candidata.candidata_id));
-
-              // Realizar la inserción de las candidatas que no están presentes en la tabla desempate
-              candidatasToInsert.forEach(candidata => {
-                db.query(sqlInsert, [candidata.candidata_id, candidata.nota_final], (err, result) => {
-                  if (err) {
-                    console.log(err);
-                    res.status(500).json({ error: 'An error occurred' });
-                  }
-                });
-              });
-
-              // Responder al cliente
-              res.status(200).json({ empate: true, tipo: 'tres' });
-            }
-          });
-        } 
-          else if (primeraPuntuacion === segundaPuntuacion) {
-          // Verificar si las candidatas ya existen en la tabla desempate
-          db.query("SELECT * FROM desempate WHERE candidata_id IN (?, ?)", [primeraCandidataId, segundaCandidataId], (err, existingResults) => {
-            if (err) {
-              console.log(err);
-              res.status(500).json({ error: 'An error occurred' });
-            } else {
-              // Filtrar las candidatas que ya existen en la tabla desempate
-              const existingCandidataIds = existingResults.map(result => result.candidata_id);
-
-              // Insertar solo las candidatas que no están presentes en la tabla desempate
-              const candidatasToInsert = [
-                { candidata_id: primeraCandidataId, nota_final: primeraPuntuacion },
-                { candidata_id: segundaCandidataId, nota_final: segundaPuntuacion }
-              ].filter(candidata => !existingCandidataIds.includes(candidata.candidata_id));
-
-              // Realizar la inserción de las candidatas que no están presentes en la tabla desempate
-              candidatasToInsert.forEach(candidata => {
-                db.query(sqlInsert, [candidata.candidata_id, candidata.nota_final], (err, result) => {
-                  if (err) {
-                    console.log(err);
-                    res.status(500).json({ error: 'An error occurred' });
-                  }
-                });
-              });
-
-              // Responder al cliente
-              res.status(200).json({ empate: true, tipo: 'primera-segunda' });
-            }
-          });
-        } else if (segundaPuntuacion === terceraPuntuacion) {
-          // Empate entre la segunda y tercera candidatas
-          // Verificar si las candidatas ya existen en la tabla desempate
-          db.query("SELECT * FROM desempate WHERE candidata_id IN (?, ?)", [segundaCandidataId, terceraCandidataId], (err, existingResults) => {
-            if (err) {
-              console.log(err);
-              res.status(500).json({ error: 'An error occurred' });
-            } else {
-              // Filtrar las candidatas que ya existen en la tabla desempate
-              const existingCandidataIds = existingResults.map(result => result.candidata_id);
-
-              // Insertar solo las candidatas que no están presentes en la tabla desempate
-              const candidatasToInsert = [
-                { candidata_id: segundaCandidataId, nota_final: segundaPuntuacion },
-                { candidata_id: terceraCandidataId, nota_final: terceraPuntuacion }
-              ].filter(candidata => !existingCandidataIds.includes(candidata.candidata_id));
-
-              // Realizar la inserción de las candidatas que no están presentes en la tabla desempate
-              candidatasToInsert.forEach(candidata => {
-                db.query(sqlInsert, [candidata.candidata_id, candidata.nota_final], (err, result) => {
-                  if (err) {
-                    console.log(err);
-                    res.status(500).json({ error: 'An error occurred' });
-                  }
-                });
-              });
-
-              // Responder al cliente
-              res.status(200).json({ empate: true, tipo: 'segunda-tercera' });
-            }
-          });
-        } else {
-          // No hay empate
-          res.status(200).json({ empate: false });
-        }
-      } else {
-        // Si no hay suficientes candidatas calificadas, no puede haber empate
-        res.status(200).json({ empate: false });
+    // Agrupar candidatas por puntuación
+    const puntuacionesAgrupadas = result.reduce((acc, curr) => {
+      const puntuacion = curr.suma;
+      if (!acc[puntuacion]) {
+        acc[puntuacion] = [];
       }
+      acc[puntuacion].push(curr.candidata_id);
+      return acc;
+    }, {});
+
+    // Ordenar puntuaciones de mayor a menor
+    const puntuacionesOrdenadas = Object.entries(puntuacionesAgrupadas)
+      .sort(([a], [b]) => parseFloat(b) - parseFloat(a));
+
+    // Verificar empates en las tres primeras posiciones
+    let empatadas = [];
+    let tipoEmpate = '';
+
+    for (let i = 0; i < puntuacionesOrdenadas.length && i < 3; i++) {
+      const [puntuacion, candidatas] = puntuacionesOrdenadas[i];
+      
+      if (candidatas.length > 1) {
+        // Hay empate en esta posición
+        empatadas = candidatas;
+        tipoEmpate = i === 0 ? 'primer-lugar' : 
+                    i === 1 ? 'segundo-lugar' : 'tercer-lugar';
+        break;
+      }
+    }
+
+    if (empatadas.length > 0) {
+      // Verificar si las candidatas ya existen en la tabla desempate
+      const sqlInsert = "INSERT INTO desempate (candidata_id, nota_final, tipo) VALUES ?";
+      
+      db.query(
+        "SELECT * FROM desempate WHERE candidata_id IN (?)", 
+        [empatadas], 
+        (err, existingResults) => {
+          if (err) {
+            console.log(err);
+            res.status(500).json({ error: 'An error occurred' });
+            return;
+          }
+
+          const existingCandidataIds = existingResults.map(r => r.candidata_id);
+          const candidatasToInsert = empatadas
+            .filter(id => !existingCandidataIds.includes(id))
+            .map(id => [id, parseFloat(puntuacionesOrdenadas[0][0]), tipoEmpate]);
+
+          if (candidatasToInsert.length > 0) {
+            db.query(sqlInsert, [candidatasToInsert], (err) => {
+              if (err) {
+                console.log(err);
+                res.status(500).json({ error: 'An error occurred' });
+                return;
+              }
+            });
+          }
+
+          res.status(200).json({ 
+            empate: true, 
+            tipo: tipoEmpate,
+            candidatas: empatadas 
+          });
+        }
+      );
+    } else {
+      res.status(200).json({ empate: false });
     }
   });
 };

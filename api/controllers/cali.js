@@ -55,7 +55,6 @@ export const getCalificacionCandidatas = (req, res) => {
         res.send(result);
     });
 };
-
 export const updateDesempate = (req, res) => {
     const token = req.cookies.access_token;
     if (!token) return res.status(401).json("No autenticado!");
@@ -63,24 +62,54 @@ export const updateDesempate = (req, res) => {
     jwt.verify(token, "jwtkey", (err, userInfo) => {
         if (err) return res.status(403).json("Token no es valido!");
 
-        const q = "UPDATE candidata SET CAND_NOTA_FINAL = CAND_NOTA_FINAL + ? WHERE CANDIDATA_ID = ?";
-        const promises = req.body.notas.map(nota => {
-            const values = [nota.nota_final, nota.candidata_id];
-            return new Promise((resolve, reject) => {
-                db.query(q, values, (err, data) => {
-                    if (err) return reject(err);
-                    resolve(data);
-                });
+        // Validamos los datos de entrada
+        if (!Array.isArray(req.body.notas)) {
+            return res.status(400).json("Formato de notas inválido");
+        }
+
+        const notasValidadas = req.body.notas.map(nota => ({
+            candidata_id: parseInt(nota.candidata_id),
+            nota_final: parseFloat(nota.nota_final)
+        }));
+
+        if (notasValidadas.some(nota => isNaN(nota.candidata_id) || isNaN(nota.nota_final))) {
+            return res.status(400).json("Datos de calificación inválidos");
+        }
+
+        // Primero verificamos si este juez ya votó
+        const checkJuezVoto = `
+            SELECT COUNT(*) as ya_voto 
+            FROM calificacion 
+            WHERE USUARIO_ID = ? 
+            AND EVENTO_ID = 4 
+            AND CALIFICACION_NOMBRE = 'Desempate'`;
+
+        db.query(checkJuezVoto, [userInfo.id], (err, votedResult) => {
+            if (err) {
+                console.error("Error al verificar voto del juez:", err);
+                return res.status(500).json(err);
+            }
+
+            if (votedResult[0].ya_voto > 0) {
+                return res.status(400).json("Ya has emitido tu voto para el desempate");
+            }
+
+            // Si no ha votado, insertamos en la tabla calificacion
+            const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`, `CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES ?";
+            const values = notasValidadas.map(nota => [
+                4, // Evento ID fijo para desempate
+                userInfo.id,
+                nota.candidata_id,
+                'Desempate',
+                100, // Peso del desempate
+                nota.nota_final
+            ]);
+
+            db.query(q, [values], (err, result) => {
+                if (err) return res.status(500).json(err);
+                return res.json("Calificaciones de desempate registradas correctamente");
             });
         });
-
-        Promise.all(promises)
-            .then(() => {
-                res.status(200).json("Calificaciones de desempate actualizadas exitosamente.");
-            })
-            .catch(err => {
-                res.status(500).json(err);
-            });
     });
 };
 

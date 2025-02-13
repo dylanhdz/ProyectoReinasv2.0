@@ -113,31 +113,53 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `pasar_evento` AFTER INSERT ON `calificacion` FOR EACH ROW BEGIN
   DECLARE total_jueces INT;
   DECLARE jueces_votados INT;
+  DECLARE existe_final INT;
   
-  -- Contar total de jueces
-  SELECT COUNT(*) INTO total_jueces 
-  FROM users
-  WHERE users.rol = 'juez';
+  -- Solo proceder si NO es un evento de desempate
+  IF NEW.EVENTO_ID != 4 THEN
+    -- Contar total de jueces
+    SELECT COUNT(*) INTO total_jueces 
+    FROM users
+    WHERE users.rol = 'juez';
 
-  -- Contar el total de jueces que han votado por la candidata actual en la calificacion actual
-  SELECT COUNT(DISTINCT usuario_id) INTO jueces_votados 
-  FROM calificacion 
-  WHERE candidata_id = NEW.candidata_id AND calificacion_nombre = NEW.calificacion_nombre;
+    -- Contar el total de jueces que han votado por la candidata actual en la calificacion actual
+    SELECT COUNT(DISTINCT usuario_id) INTO jueces_votados 
+    FROM calificacion 
+    WHERE candidata_id = NEW.candidata_id 
+    AND calificacion_nombre = NEW.CALIFICACION_NOMBRE;
 
-  -- Verificar si todos los jueces ya votaron
-  IF total_jueces = jueces_votados THEN
-    -- Insertar la fila nueva de calificacion final
-   INSERT INTO finales (candidata_id, usuario_id, evento_id, calificacion_nombre, calificacion_peso, calificacion_valor) 
-VALUES (
-    NEW.candidata_id, 
-    20, 
-    NEW.evento_id, 
-    CONCAT(NEW.calificacion_nombre, '_FINAL'), 
-    NEW.calificacion_peso, 
-    (select sum(calificacion_valor) from calificacion where candidata_id = new.CANDIDATA_ID and EVENTO_ID = new.EVENTO_ID and CALIFICACION_NOMBRE = new.CALIFICACION_NOMBRE)
-);
-END IF;
+    -- Verificar si ya existe un registro final para esta candidata y evento
+    SELECT COUNT(*) INTO existe_final
+    FROM finales
+    WHERE candidata_id = NEW.candidata_id 
+    AND evento_id = NEW.EVENTO_ID
+    AND calificacion_nombre = CONCAT(NEW.CALIFICACION_NOMBRE, '_FINAL');
 
+    -- Verificar si todos los jueces ya votaron y no existe un registro final
+    IF total_jueces = jueces_votados AND existe_final = 0 THEN
+      -- Insertar la fila nueva de calificacion final
+      INSERT INTO finales (
+        candidata_id, 
+        usuario_id, 
+        evento_id, 
+        calificacion_nombre, 
+        calificacion_peso, 
+        calificacion_valor
+      ) 
+      VALUES (
+        NEW.candidata_id, 
+        20, 
+        NEW.evento_id, 
+        CONCAT(NEW.CALIFICACION_NOMBRE, '_FINAL'), 
+        NEW.CALIFICACION_PESO, 
+        (SELECT SUM(calificacion_valor) 
+         FROM calificacion 
+         WHERE candidata_id = NEW.candidata_id 
+         AND EVENTO_ID = NEW.EVENTO_ID 
+         AND CALIFICACION_NOMBRE = NEW.CALIFICACION_NOMBRE)
+      );
+    END IF;
+  END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -168,7 +190,7 @@ CREATE TABLE `candidata` (
   `CAND_COLOROJOS` varchar(45) DEFAULT NULL,
   `CAND_COLORCABELLO` varchar(45) DEFAULT NULL,
   `CAND_LOGROS_ACADEMICOS` varchar(900) DEFAULT NULL,
-  `CAND_NOTA_FINAL` int DEFAULT NULL,
+  `CAND_NOTA_FINAL` decimal(10,2) DEFAULT NULL,
   `ID_ELECCION` int NOT NULL,
   `CAND_CALIFICACIONFINAL` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`CANDIDATA_ID`),
@@ -336,39 +358,58 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `computar_final` AFTER INSERT ON `finales` FOR EACH ROW BEGIN
-  DECLARE calificaciones_realizadas INT;
-  DECLARE total_candidatas INT;
-  DECLARE total_notas INT;
-  DECLARE total_eventos INT;
-  DECLARE contador int default 1;
-  DECLARE calificacion_ponderada int;
-  
-    -- Contar total de candidatas
-  SELECT COUNT(DISTINCT candidata_id) INTO total_candidatas 
-  FROM candidata;
-  
-	-- Contar total de notas de los eventos
-  SELECT sum(calif_por_evento) into total_notas from evento;
-  
-   -- Contar total de eventos
-   SELECT count(distinct evento_id) into total_eventos from evento;
-  
-  -- Contar total de calificaciones finales de la candidata actual
-  SELECT COUNT(*) into calificaciones_realizadas from finales where candidata_id = NEW.CANDIDATA_ID;
-  
-   -- Verificar si la candidata ya tiene todas sus calificaciones
-  IF calificaciones_realizadas = total_notas THEN
-  set calificacion_ponderada = 0;
-  while contador <= total_eventos do
-  set calificacion_ponderada = calificacion_ponderada + (SELECT SUM(CALIFICACION_VALOR) AS suma FROM finales where candidata_id= new.CANDIDATA_ID and EVENTO_ID=contador );
-    set contador = contador + 1;
-  end while;
-  update candidata set cand_nota_final = calificacion_ponderada where candidata_id = new.candidata_id;
-  set contador = 1;
-  END IF;
-
-END */;;
+CREATE TRIGGER `computar_final` AFTER INSERT ON `finales` 
+FOR EACH ROW 
+BEGIN
+    DECLARE calificaciones_realizadas INT;
+    DECLARE total_candidatas INT;
+    DECLARE total_notas INT;
+    DECLARE total_eventos INT;
+    DECLARE contador INT DEFAULT 1;
+    DECLARE calificacion_ponderada DECIMAL(10,4);
+    
+    -- Si es un evento de desempate
+    IF NEW.evento_id = 4 THEN
+        UPDATE candidata 
+        SET cand_nota_final = cand_nota_final + NEW.calificacion_valor
+        WHERE candidata_id = NEW.candidata_id;
+    ELSE
+        -- Lógica existente para otros eventos
+        SELECT COUNT(DISTINCT candidata_id) INTO total_candidatas 
+        FROM candidata;
+        
+        SELECT sum(calif_por_evento) INTO total_notas 
+        FROM evento 
+        WHERE evento_id != 4;
+        
+        SELECT COUNT(DISTINCT evento_id) INTO total_eventos 
+        FROM evento 
+        WHERE evento_id != 4;
+        
+        SELECT COUNT(*) INTO calificaciones_realizadas 
+        FROM finales 
+        WHERE candidata_id = NEW.candidata_id 
+        AND evento_id != 4;
+        
+        IF calificaciones_realizadas = total_notas THEN
+            SET calificacion_ponderada = 0;
+            WHILE contador <= total_eventos DO
+                SET calificacion_ponderada = calificacion_ponderada + (
+                    SELECT SUM((CALIFICACION_PESO/100)*CALIFICACION_VALOR*
+                    ((SELECT evento_peso FROM evento WHERE evento_id = contador)/100)) 
+                    FROM finales 
+                    WHERE candidata_id = NEW.candidata_id 
+                    AND evento_id = contador
+                );
+                SET contador = contador + 1;
+            END WHILE;
+            
+            UPDATE candidata 
+            SET cand_nota_final = calificacion_ponderada 
+            WHERE candidata_id = NEW.candidata_id;
+        END IF;
+    END IF;
+END;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -472,6 +513,9 @@ CREATE TABLE IF NOT EXISTS desempate (
 
 
 ALTER TABLE desempate MODIFY nota_final INT;
+ALTER TABLE desempate ADD COLUMN tipo VARCHAR(20);
+INSERT INTO evento (EVENTO_ID, EVENTO_NOMBRE, EVENTO_PESO, calif_por_evento) 
+VALUES (4, 'Desempate', 100, 1);
 --
 -- Dumping events for database 'reinado'
 --
@@ -490,3 +534,89 @@ ALTER TABLE desempate MODIFY nota_final INT;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-06-09  0:00:02
+
+DELIMITER ;;
+CREATE TRIGGER `manejar_desempate` AFTER INSERT ON `calificacion` 
+FOR EACH ROW 
+BEGIN
+  DECLARE total_jueces INT;
+  DECLARE jueces_votados INT;
+  DECLARE existe_final INT;
+  DECLARE max_puntaje DECIMAL(10,2);
+  DECLARE puntaje_empatadas DECIMAL(10,2);
+  DECLARE diferencia_disponible DECIMAL(10,2);
+  DECLARE factor_escala DECIMAL(10,4);
+  DECLARE suma_calificaciones DECIMAL(10,2);
+  DECLARE puntaje_final DECIMAL(10,2);
+  
+  IF NEW.EVENTO_ID = 4 THEN
+    -- Obtener el puntaje máximo actual
+    SELECT MAX(cand_nota_final) INTO max_puntaje
+    FROM candidata;
+    
+    -- Obtener el puntaje de las candidatas empatadas
+    SELECT cand_nota_final INTO puntaje_empatadas
+    FROM candidata
+    WHERE candidata_id = NEW.candidata_id;
+    
+    -- Calcular la diferencia disponible (95% del máximo disponible para mantener diferencia)
+    SET diferencia_disponible = max_puntaje - puntaje_empatadas;
+    SET factor_escala = (diferencia_disponible * 0.95) / 10; -- Usamos 95% de la diferencia
+    
+    -- Contar total de jueces y votos
+    SELECT COUNT(*) INTO total_jueces 
+    FROM users
+    WHERE users.rol = 'juez';
+
+    SELECT COUNT(DISTINCT usuario_id) INTO jueces_votados 
+    FROM calificacion 
+    WHERE candidata_id = NEW.candidata_id 
+    AND evento_id = 4
+    AND calificacion_nombre = 'Desempate';
+
+    SELECT COUNT(*) INTO existe_final
+    FROM finales
+    WHERE candidata_id = NEW.candidata_id 
+    AND evento_id = 4
+    AND calificacion_nombre = 'Desempate_FINAL';
+
+    IF total_jueces = jueces_votados AND existe_final = 0 THEN
+      -- Calcular la suma de calificaciones
+      SELECT SUM(calificacion_valor) INTO suma_calificaciones
+      FROM calificacion 
+      WHERE candidata_id = NEW.candidata_id 
+      AND evento_id = 4 
+      AND calificacion_nombre = 'Desempate';
+      
+      -- Calcular el puntaje final asegurando que no supere el máximo
+      SET puntaje_final = LEAST(
+        max_puntaje - 0.01, -- Siempre al menos 0.01 menos que el máximo
+        puntaje_empatadas + (suma_calificaciones * factor_escala / total_jueces)
+      );
+      
+      -- Insertar en finales con el valor escalado
+      INSERT INTO finales (
+        candidata_id, 
+        usuario_id, 
+        evento_id, 
+        calificacion_nombre, 
+        calificacion_peso, 
+        calificacion_valor
+      ) 
+      VALUES (
+        NEW.candidata_id, 
+        20, 
+        4,
+        'Desempate_FINAL', 
+        100, 
+        suma_calificaciones
+      );
+      
+      -- Actualizar la nota final de la candidata
+      UPDATE candidata 
+      SET cand_nota_final = puntaje_final
+      WHERE candidata_id = NEW.candidata_id;
+    END IF;
+  END IF;
+END;;
+DELIMITER ;
