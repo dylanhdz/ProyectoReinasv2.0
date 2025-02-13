@@ -591,7 +591,7 @@ BEGIN
           SET puntaje_final = puntaje_final;
           
         WHEN 'segundo-lugar' THEN
-          -- Obtener el mínimo puntaje de primer lugar o el máximo general si no hay primer lugar
+          -- Obtener el mínimo puntaje de primer lugar
           SELECT COALESCE(
             (SELECT MIN(cand_nota_final) 
              FROM candidata c2 
@@ -605,7 +605,7 @@ BEGIN
           SET puntaje_final = LEAST(max_puntaje_superior, puntaje_final);
           
         WHEN 'tercer-lugar' THEN
-          -- Obtener el mínimo puntaje de segundo lugar
+          -- Primero obtener el mínimo puntaje de segundo lugar
           SELECT COALESCE(
             (SELECT MIN(cand_nota_final) 
              FROM candidata c2 
@@ -614,10 +614,23 @@ BEGIN
             (SELECT MIN(cand_nota_final) 
              FROM candidata c2 
              JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
-             WHERE d2.tipo = 'primer-lugar')
-          ) - 0.01 INTO max_puntaje_superior;
+             WHERE d2.tipo = 'primer-lugar') - 0.01
+          ) INTO max_puntaje_superior;
           
-          SET puntaje_final = LEAST(max_puntaje_superior, puntaje_final);
+          IF max_puntaje_superior IS NOT NULL THEN
+            -- Asegurarnos que el puntaje esté por debajo del segundo lugar
+            SET puntaje_final = LEAST(max_puntaje_superior - 0.01, 
+                                    (SELECT MIN(cand_nota_final) 
+                                     FROM candidata c2 
+                                     JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
+                                     WHERE d2.tipo = 'segundo-lugar') - 0.01);
+          ELSE
+            -- Si no hay referencias, usar un valor base
+            SELECT MAX(cand_nota_final) INTO max_puntaje_superior
+            FROM candidata 
+            WHERE candidata_id NOT IN (SELECT candidata_id FROM desempate);
+            SET puntaje_final = LEAST(max_puntaje_superior - 0.03, puntaje_final);
+          END IF;
       END CASE;
       
       -- Insertar en finales

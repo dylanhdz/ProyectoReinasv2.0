@@ -110,7 +110,6 @@ export const checkVotes3 = (req, res) => {
 }
 
 export const verificarEmpate = (req, res) => {
-  // Primero obtenemos todas las candidatas ordenadas por puntuación
   const sqlSelect = `
     SELECT candidata_id, SUM(calificacion_valor) AS suma
     FROM finales
@@ -144,57 +143,72 @@ export const verificarEmpate = (req, res) => {
       .sort(([a], [b]) => parseFloat(b) - parseFloat(a));
 
     // Verificar empates en las tres primeras posiciones
-    let empatadas = [];
-    let tipoEmpate = '';
+    let todosLosEmpates = [];
 
     for (let i = 0; i < puntuacionesOrdenadas.length && i < 3; i++) {
       const [puntuacion, candidatas] = puntuacionesOrdenadas[i];
       
       if (candidatas.length > 1) {
         // Hay empate en esta posición
-        empatadas = candidatas;
-        tipoEmpate = i === 0 ? 'primer-lugar' : 
-                    i === 1 ? 'segundo-lugar' : 'tercer-lugar';
-        break;
+        const tipoEmpate = i === 0 ? 'primer-lugar' : 
+                          i === 1 ? 'segundo-lugar' : 'tercer-lugar';
+        
+        todosLosEmpates.push({
+          candidatas: candidatas,
+          tipo: tipoEmpate,
+          puntuacion: parseFloat(puntuacion)
+        });
       }
     }
 
-    if (empatadas.length > 0) {
-      // Verificar si las candidatas ya existen en la tabla desempate
-      const sqlInsert = "INSERT INTO desempate (candidata_id, nota_final, tipo) VALUES ?";
-      
-      db.query(
-        "SELECT * FROM desempate WHERE candidata_id IN (?)", 
-        [empatadas], 
-        (err, existingResults) => {
-          if (err) {
-            console.log(err);
-            res.status(500).json({ error: 'An error occurred' });
-            return;
-          }
-
-          const existingCandidataIds = existingResults.map(r => r.candidata_id);
-          const candidatasToInsert = empatadas
-            .filter(id => !existingCandidataIds.includes(id))
-            .map(id => [id, parseFloat(puntuacionesOrdenadas[0][0]), tipoEmpate]);
-
-          if (candidatasToInsert.length > 0) {
-            db.query(sqlInsert, [candidatasToInsert], (err) => {
+    if (todosLosEmpates.length > 0) {
+      // Procesar todos los empates encontrados
+      const procesarEmpates = todosLosEmpates.map(empate => {
+        return new Promise((resolve, reject) => {
+          // Verificar si las candidatas ya existen en la tabla desempate
+          db.query(
+            "SELECT * FROM desempate WHERE candidata_id IN (?)", 
+            [empate.candidatas], 
+            (err, existingResults) => {
               if (err) {
-                console.log(err);
-                res.status(500).json({ error: 'An error occurred' });
+                reject(err);
                 return;
               }
-            });
-          }
 
+              const existingCandidataIds = existingResults.map(r => r.candidata_id);
+              const candidatasToInsert = empate.candidatas
+                .filter(id => !existingCandidataIds.includes(id))
+                .map(id => [id, empate.puntuacion, empate.tipo]);
+
+              if (candidatasToInsert.length > 0) {
+                const sqlInsert = "INSERT INTO desempate (candidata_id, nota_final, tipo) VALUES ?";
+                db.query(sqlInsert, [candidatasToInsert], (err) => {
+                  if (err) {
+                    reject(err);
+                    return;
+                  }
+                  resolve();
+                });
+              } else {
+                resolve();
+              }
+            }
+          );
+        });
+      });
+
+      // Ejecutar todas las inserciones
+      Promise.all(procesarEmpates)
+        .then(() => {
           res.status(200).json({ 
             empate: true, 
-            tipo: tipoEmpate,
-            candidatas: empatadas 
+            empates: todosLosEmpates
           });
-        }
-      );
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({ error: 'An error occurred' });
+        });
     } else {
       res.status(200).json({ empate: false });
     }
