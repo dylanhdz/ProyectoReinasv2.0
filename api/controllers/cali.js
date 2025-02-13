@@ -60,48 +60,45 @@ export const updateDesempate = (req, res) => {
     if (!token) return res.status(401).json("No autenticado!");
 
     jwt.verify(token, "jwtkey", (err, userInfo) => {
-        if (err) return res.status(403).json("Token no es valido!");
-
-        // Validamos los datos de entrada
-        if (!Array.isArray(req.body.notas)) {
-            return res.status(400).json("Formato de notas inválido");
-        }
+        if (err) return res.status(403).json("Token no es válido!");
 
         const notasValidadas = req.body.notas.map(nota => ({
             candidata_id: parseInt(nota.candidata_id),
             nota_final: parseFloat(nota.nota_final)
         }));
 
-        if (notasValidadas.some(nota => isNaN(nota.candidata_id) || isNaN(nota.nota_final))) {
-            return res.status(400).json("Datos de calificación inválidos");
-        }
-
-        // Primero verificamos si este juez ya votó
+        // Verificar si el juez ya votó para este tipo específico de desempate
         const checkJuezVoto = `
             SELECT COUNT(*) as ya_voto 
-            FROM calificacion 
-            WHERE USUARIO_ID = ? 
-            AND EVENTO_ID = 4 
-            AND CALIFICACION_NOMBRE = 'Desempate'`;
+            FROM calificacion c
+            JOIN desempate d ON c.CANDIDATA_ID = d.candidata_id
+            WHERE c.USUARIO_ID = ? 
+            AND c.EVENTO_ID = 4 
+            AND c.CALIFICACION_NOMBRE = 'Desempate'
+            AND d.tipo = (
+                SELECT tipo FROM desempate 
+                WHERE candidata_id = ?
+                LIMIT 1
+            )`;
 
-        db.query(checkJuezVoto, [userInfo.id], (err, votedResult) => {
+        db.query(checkJuezVoto, [userInfo.id, notasValidadas[0].candidata_id], (err, votedResult) => {
             if (err) {
                 console.error("Error al verificar voto del juez:", err);
                 return res.status(500).json(err);
             }
 
             if (votedResult[0].ya_voto > 0) {
-                return res.status(400).json("Ya has emitido tu voto para el desempate");
+                return res.status(400).json("Ya has emitido tu voto para este tipo de desempate");
             }
 
-            // Si no ha votado, insertamos en la tabla calificacion
+            // Si no ha votado este tipo de desempate, insertamos en la tabla calificacion
             const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`, `CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES ?";
             const values = notasValidadas.map(nota => [
-                4, // Evento ID fijo para desempate
+                4,
                 userInfo.id,
                 nota.candidata_id,
                 'Desempate',
-                100, // Peso del desempate
+                100,
                 nota.nota_final
             ]);
 
@@ -137,14 +134,70 @@ export const getCandidatasEmpatadas = (req, res) => {
             INNER JOIN candidata ca ON d.candidata_id = ca.CANDIDATA_ID
             INNER JOIN carrera car ON ca.CARRERA_ID = car.CARRERA_ID
             INNER JOIN departamento dpto ON car.DEPARTAMENTO_ID = dpto.DEPARTAMENTO_ID
-            INNER JOIN foto_candidata fc ON ca.CANDIDATA_ID = fc.CANDIDATA_ID AND fc.FOTO_DESCRIPCION = 'FX';
+            INNER JOIN foto_candidata fc ON ca.CANDIDATA_ID = fc.CANDIDATA_ID AND fc.FOTO_DESCRIPCION = 'FX'
+        ORDER BY 
+            CASE d.tipo
+                WHEN 'primer-lugar' THEN 1
+                WHEN 'segundo-lugar' THEN 2
+                WHEN 'tercer-lugar' THEN 3
+            END;
     `;
+    
     db.query(sql, (err, result) => {
         if (err) {
             console.log(err);
-            res.status(500).json({ error: 'An error occurred' });
-        } else {
-            res.status(200).json({ candidatasEmpatadas: result });
+            return res.status(500).json(err);
         }
+
+        // Agrupar por tipo de empate
+        const empatesPorTipo = result.reduce((acc, candidata) => {
+            if (!acc[candidata.tipo]) {
+                acc[candidata.tipo] = [];
+            }
+            acc[candidata.tipo].push(candidata);
+            return acc;
+        }, {});
+
+        // Ordenar los tipos de empate
+        const ordenEmpates = ['primer-lugar', 'segundo-lugar', 'tercer-lugar'];
+        const empatesOrdenados = ordenEmpates
+            .filter(tipo => empatesPorTipo[tipo])
+            .map(tipo => ({
+                tipo: tipo,
+                candidatas: empatesPorTipo[tipo]
+            }));
+
+        res.status(200).json({
+            empates: empatesOrdenados,
+            tieneMultiplesEmpates: empatesOrdenados.length > 1
+        });
+    });
+};
+
+export const checkDesempateStatus = (req, res) => {
+    const token = req.cookies.access_token;
+    if (!token) return res.status(401).json("No autenticado!");
+
+    jwt.verify(token, "jwtkey", (err, userInfo) => {
+        if (err) return res.status(403).json("Token no es valido!");
+
+        const sql = `
+            SELECT DISTINCT tipo
+            FROM calificacion c
+            JOIN desempate d ON c.CANDIDATA_ID = d.candidata_id
+            WHERE c.USUARIO_ID = ? 
+            AND c.CALIFICACION_NOMBRE = 'Desempate'
+        `;
+
+        db.query(sql, [userInfo.id], (err, result) => {
+            if (err) return res.status(500).json(err);
+            
+            const votadosPorTipo = result.map(r => r.tipo);
+            res.status(200).json({
+                primer_lugar: votadosPorTipo.includes('primer_lugar'),
+                segundo_lugar: votadosPorTipo.includes('segundo_lugar'),
+                tercer_lugar: votadosPorTipo.includes('tercer_lugar')
+            });
+        });
     });
 };

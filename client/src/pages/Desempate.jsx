@@ -16,49 +16,34 @@ function Desempate() {
   const [elements, setElements] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
-  const [pop, setPop] = useState(false);
   const [candidatasEmpatadas, setCandidatasEmpatadas] = useState([]);
   const [candidatasDetalles, setCandidatasDetalles] = useState([]);
   const [empateInfo, setEmpateInfo] = useState(null);
   const [showEmpatePopup, setShowEmpatePopup] = useState(true);
   const [tipoEmpate, setTipoEmpate] = useState('');
+  const [empateActual, setEmpateActual] = useState(0);
+  const [listaEmpates, setListaEmpates] = useState([]);
+  const [candidatasActuales, setCandidatasActuales] = useState([]);
   const navigate = useNavigate();
 
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await Axios.get(`${API_BASE_URL}/cali/verificar_empate`);
-        if (response.data.candidatasEmpatadas) {
-          setCandidatasEmpatadas(response.data.candidatasEmpatadas);
-          setElements(Array(response.data.candidatasEmpatadas.length).fill({ nota: 0, nota_final: 0 }));
-          
-          // Configurar información del empate
-          console.log("Datos de empate:", response.data);
-          
-          const tipo = response.data.candidatasEmpatadas[0].tipo;
-          setTipoEmpate(tipo);
-          
-          const mensaje = {
-            'primer-lugar': 'primer lugar',
-            'segundo-lugar': 'segundo lugar', 
-            'tercer-lugar': 'tercer lugar'
-          }[tipo];
-
-          setEmpateInfo({
-            candidatas: response.data.candidatasEmpatadas.map(c => 
-              `${c.CAND_NOMBRE1} ${c.CAND_APELLIDOPATERNO}`
-            ).join(', '),
-            tipo: mensaje
-          });
+        try {
+            const response = await Axios.get(`${API_BASE_URL}/cali/verificar_empate`);
+            if (response.data.empates) {
+                setListaEmpates(response.data.empates);
+                // Iniciar con el primer tipo de empate
+                setEmpateActual(0);
+                actualizarCandidatasActuales(0, response.data.empates);
+            }
+        } catch (err) {
+            console.error("Error al obtener datos de empate:", err);
+            setVacioIsOpen(true);
         }
-      } catch (err) {
-        console.error("Error al obtener datos de empate:", err);
-        setVacioIsOpen(true);
-      }
     };
     fetchData();
-  }, []);
+}, []);
 
   const cortarParteDerecha = (cadena) => {
     if (typeof cadena !== 'string') {
@@ -76,29 +61,61 @@ function Desempate() {
 
     return parteDerecha;
   };
+  const actualizarCandidatasActuales = (index, empates) => {
+    if (index < empates.length) {
+        const empateActual = empates[index];
+        setCandidatasActuales(empateActual.candidatas);
+        setElements(Array(empateActual.candidatas.length).fill({ nota: 0 }));
+        setTipoEmpate(empateActual.tipo);
+        
+        const mensaje = {
+            'primer-lugar': 'primer lugar',
+            'segundo-lugar': 'segundo lugar',
+            'tercer-lugar': 'tercer lugar'
+        }[empateActual.tipo];
+
+        setEmpateInfo({
+            candidatas: empateActual.candidatas.map(c => 
+                `${c.CAND_NOMBRE1} ${c.CAND_APELLIDOPATERNO}`
+            ).join(', '),
+            tipo: mensaje
+        });
+    }
+};
 
 const handleClick = async () => {
   try {
     const notas = elements.map((element, index) => ({
-      candidata_id: parseInt(candidatasEmpatadas[index].CANDIDATA_ID || candidatasEmpatadas[index]),
+      candidata_id: candidatasActuales[index].CANDIDATA_ID,
       nota_final: parseFloat(element.nota)
     }));
 
-    const response = await Axios.post(`${API_BASE_URL}/cali/desempate`, {
+    await Axios.post(`${API_BASE_URL}/cali/desempate`, {
       notas,
       CALIFICACION_NOMBRE: 'Desempate',
-      EVENTO_ID: 1
+      EVENTO_ID: 4
     });
 
-    if (response.data.message === "Esperando a que todos los jueces voten") {
-      alert(`${response.data.message} (${response.data.votosActuales}/${response.data.totalJueces})`);
+    // Si hay más empates por resolver, pasar al siguiente
+    if (empateActual < listaEmpates.length - 1) {
+      setEmpateActual(prev => prev + 1);
+      actualizarCandidatasActuales(empateActual + 1, listaEmpates);
     } else {
-      setPop(true);
       navigate("/Gracias");
     }
   } catch (err) {
-    console.error("Error detallado:", err.response?.data || err);
-    alert("Error al enviar las calificaciones");
+    if (err.response && err.response.status === 400) {
+      // Si el juez ya votó, pasar al siguiente empate si existe
+      if (empateActual < listaEmpates.length - 1) {
+        setEmpateActual(prev => prev + 1);
+        actualizarCandidatasActuales(empateActual + 1, listaEmpates);
+      } else {
+        navigate("/Gracias");
+      }
+    } else {
+      console.error("Error:", err);
+      alert("Error al enviar las calificaciones");
+    }
   }
 };
 
@@ -155,26 +172,33 @@ const handleClick = async () => {
 
   const EmpateModal = () => (
     <Popup open={showEmpatePopup} onClose={() => setShowEmpatePopup(false)}>
-      <div className="modal">
-        <h2 className="modal-title">¡Atención! Empate Detectado</h2>
-        {empateInfo && (
-          <div className="modal-content">
-            <p>Se ha detectado un empate por el <b>{empateInfo.tipo}</b> entre las siguientes candidatas:</p>
-            <br></br>
-            <p className="candidatas-empatadas">{empateInfo.candidatas}</p>
-            <br></br>
-            <p>Por favor, proceda a calificar nuevamente a estas candidatas para resolver el empate.</p>
-            <br></br>
-          </div>
-        )}
-        <div className="botones-modal">
-          <button onClick={() => setShowEmpatePopup(false)} className="btn-confirmar">
-            Entendido
-          </button>
+        <div className="modal">
+            <h2 className="modal-title">¡Atención! Empate Detectado</h2>
+            {empateInfo && (
+                <div className="modal-content">
+                    <p>Se está resolviendo el empate por el <b>{empateInfo.tipo}</b></p>
+                    <br/>
+                    <p>Candidatas empatadas:</p>
+                    <br/>
+                    <p className="candidatas-empatadas">{empateInfo.candidatas}</p>
+                    <br/>
+                    {listaEmpates.length > 1 && (
+                        <p className="empate-info">
+                            (Empate {empateActual + 1} de {listaEmpates.length})
+                        </p>
+                    )}
+                    <br/>
+                    <p>Por favor, proceda a calificar a estas candidatas.</p>
+                </div>
+            )}
+            <div className="botones-modal">
+                <button onClick={() => setShowEmpatePopup(false)} className="btn-confirmar">
+                    Entendido
+                </button>
+            </div>
         </div>
-      </div>
     </Popup>
-  );
+);
 
   if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
     return (
@@ -190,7 +214,6 @@ const handleClick = async () => {
     return (
         <>
           <Navbar texto="Desempate" />
-          {pop && <Espera />}
           <div className="main-container">
             {empateInfo && (
               <div className={`empate-banner ${tipoEmpate}`}>
@@ -199,7 +222,7 @@ const handleClick = async () => {
               </div>
             )}
             <div className="reinas-container">
-              {candidatasEmpatadas.map((candidata, index) => (
+            {candidatasActuales.map((candidata, index) => (
                   <div className="item-reina" key={candidata.CANDIDATA_ID}>
                     <div className="espacio-imagen">
                       <img
@@ -247,7 +270,7 @@ const handleClick = async () => {
                   <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
                   <div className="botones-modal">
                     <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
-                      <Button color="success" variant="contained" onClick={() => { handleModalClose(); handleClick(); setPop(true); }} className="btn-confirmar">
+                      <Button color="success" variant="contained" onClick={() => { handleModalClose(); handleClick();  }} className="btn-confirmar">
                         Si
                       </Button>
                       <Button color="error" variant="outlined" onClick={handleModalClose} className="btn-cancelar">
