@@ -534,7 +534,6 @@ VALUES (4, 'Desempate', 100, 1);
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2024-06-09  0:00:02
-
 DELIMITER ;;
 CREATE TRIGGER `manejar_desempate` AFTER INSERT ON `calificacion` 
 FOR EACH ROW 
@@ -548,6 +547,7 @@ BEGIN
   DECLARE suma_calificaciones DECIMAL(10,2);
   DECLARE puntaje_final DECIMAL(10,2);
   DECLARE max_puntaje_superior DECIMAL(10,2);
+  DECLARE factor_escala DECIMAL(10,2);
   
   IF NEW.EVENTO_ID = 4 THEN
     -- Obtener el puntaje y tipo de empate de la candidata actual
@@ -567,6 +567,7 @@ BEGIN
     AND evento_id = 4
     AND calificacion_nombre = 'Desempate';
 
+    -- Verificar si ya existe un registro final
     SELECT COUNT(*) INTO existe_final
     FROM finales
     WHERE candidata_id = NEW.candidata_id 
@@ -581,17 +582,14 @@ BEGIN
       AND evento_id = 4 
       AND calificacion_nombre = 'Desempate';
       
-      -- Calcular el puntaje base
-      SET puntaje_final = puntaje_empatadas + (suma_calificaciones / total_jueces);
-      
       -- Aplicar reglas según el tipo de empate
       CASE tipo_empate
         WHEN 'primer-lugar' THEN
-          -- Para primer lugar, no hay límite superior
-          SET puntaje_final = puntaje_final;
+          -- Para primer lugar, suma directa sin factor de escala
+          SET puntaje_final = puntaje_empatadas + (suma_calificaciones / total_jueces);
           
         WHEN 'segundo-lugar' THEN
-          -- Obtener el mínimo puntaje de primer lugar
+          -- Obtener el máximo puntaje de referencia (primer lugar o máximo general)
           SELECT COALESCE(
             (SELECT MIN(cand_nota_final) 
              FROM candidata c2 
@@ -600,37 +598,36 @@ BEGIN
             (SELECT MAX(cand_nota_final) 
              FROM candidata 
              WHERE candidata_id NOT IN (SELECT candidata_id FROM desempate))
-          ) - 0.01 INTO max_puntaje_superior;
-          
-          SET puntaje_final = LEAST(max_puntaje_superior, puntaje_final);
-          
-        WHEN 'tercer-lugar' THEN
-          -- Primero obtener el mínimo puntaje de segundo lugar
-          SELECT COALESCE(
-            (SELECT MIN(cand_nota_final) 
-             FROM candidata c2 
-             JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
-             WHERE d2.tipo = 'segundo-lugar'),
-            (SELECT MIN(cand_nota_final) 
-             FROM candidata c2 
-             JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
-             WHERE d2.tipo = 'primer-lugar') - 0.01
           ) INTO max_puntaje_superior;
           
-          IF max_puntaje_superior IS NOT NULL THEN
-            -- Asegurarnos que el puntaje esté por debajo del segundo lugar
-            SET puntaje_final = LEAST(max_puntaje_superior - 0.01, 
-                                    (SELECT MIN(cand_nota_final) 
-                                     FROM candidata c2 
-                                     JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
-                                     WHERE d2.tipo = 'segundo-lugar') - 0.01);
-          ELSE
-            -- Si no hay referencias, usar un valor base
-            SELECT MAX(cand_nota_final) INTO max_puntaje_superior
-            FROM candidata 
-            WHERE candidata_id NOT IN (SELECT candidata_id FROM desempate);
-            SET puntaje_final = LEAST(max_puntaje_superior - 0.03, puntaje_final);
-          END IF;
+          -- Establecer factor de escala para segundo lugar
+          SET factor_escala = 0.5; -- Ajusta este valor según necesites
+          
+          -- Calcular el puntaje final con factor de escala
+          SET puntaje_final = LEAST(
+            max_puntaje_superior - 0.01,
+            puntaje_empatadas + (suma_calificaciones * factor_escala / total_jueces)
+          );
+          
+        WHEN 'tercer-lugar' THEN
+          -- Obtener el segundo valor más alto como referencia
+          SELECT DISTINCT cand_nota_final INTO max_puntaje_superior
+          FROM candidata
+          WHERE cand_nota_final < (
+            SELECT MAX(cand_nota_final)
+            FROM candidata
+          )
+          ORDER BY cand_nota_final DESC
+          LIMIT 1;
+          
+          -- Establecer factor de escala para tercer lugar
+          SET factor_escala = 0.3; -- Ajusta este valor según necesites
+          
+          -- Calcular el puntaje final con factor de escala
+          SET puntaje_final = LEAST(
+            max_puntaje_superior - 0.01,
+            puntaje_empatadas + (suma_calificaciones * factor_escala / total_jueces)
+          );
       END CASE;
       
       -- Insertar en finales
