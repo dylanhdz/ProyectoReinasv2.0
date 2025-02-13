@@ -130,7 +130,8 @@ export const getCandidatasEmpatadas = (req, res) => {
             ca.CAND_APELLIDOPATERNO,
             dpto.DEPARTAMENTO_SEDE,
             dpto.DEPARTMENTO_NOMBRE, 
-            fc.FOTO_URL 
+            fc.FOTO_URL,
+            d.tipo 
         FROM 
             desempate d
             INNER JOIN candidata ca ON d.candidata_id = ca.CANDIDATA_ID

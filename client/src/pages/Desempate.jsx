@@ -19,6 +19,9 @@ function Desempate() {
   const [pop, setPop] = useState(false);
   const [candidatasEmpatadas, setCandidatasEmpatadas] = useState([]);
   const [candidatasDetalles, setCandidatasDetalles] = useState([]);
+  const [empateInfo, setEmpateInfo] = useState(null);
+  const [showEmpatePopup, setShowEmpatePopup] = useState(true);
+  const [tipoEmpate, setTipoEmpate] = useState('');
   const navigate = useNavigate();
 
 
@@ -26,18 +29,32 @@ function Desempate() {
     const fetchData = async () => {
       try {
         const response = await Axios.get(`${API_BASE_URL}/cali/verificar_empate`);
-        setCandidatasEmpatadas(response.data.candidatasEmpatadas);
-        setElements(Array(response.data.candidatasEmpatadas.length).fill({ nota: 0, nota_final: 0 }));
+        if (response.data.candidatasEmpatadas) {
+          setCandidatasEmpatadas(response.data.candidatasEmpatadas);
+          setElements(Array(response.data.candidatasEmpatadas.length).fill({ nota: 0, nota_final: 0 }));
+          
+          // Configurar información del empate
+          console.log("Datos de empate:", response.data);
+          
+          const tipo = response.data.candidatasEmpatadas[0].tipo;
+          setTipoEmpate(tipo);
+          
+          const mensaje = {
+            'primer-lugar': 'primer lugar',
+            'segundo-lugar': 'segundo lugar', 
+            'tercer-lugar': 'tercer lugar'
+          }[tipo];
 
-        const detallesPromises = response.data.candidatasEmpatadas.map(async (candidataId) => {
-          const candidataResponse = await Axios.get(`${API_BASE_URL}/candidatas/${candidataId}`);
-          return candidataResponse.data;
-        });
-
-        const detalles = await Promise.all(detallesPromises);
-        setCandidatasDetalles(detalles);
+          setEmpateInfo({
+            candidatas: response.data.candidatasEmpatadas.map(c => 
+              `${c.CAND_NOMBRE1} ${c.CAND_APELLIDOPATERNO}`
+            ).join(', '),
+            tipo: mensaje
+          });
+        }
       } catch (err) {
-        console.log(err);
+        console.error("Error al obtener datos de empate:", err);
+        setVacioIsOpen(true);
       }
     };
     fetchData();
@@ -136,6 +153,29 @@ const handleClick = async () => {
     window.addEventListener('click', handleClickOutside);
   };
 
+  const EmpateModal = () => (
+    <Popup open={showEmpatePopup} onClose={() => setShowEmpatePopup(false)}>
+      <div className="modal">
+        <h2 className="modal-title">¡Atención! Desempate Detectado</h2>
+        {empateInfo && (
+          <div className="modal-content">
+            <p>Se ha detectado un empate por el <b>{empateInfo.tipo}</b> entre las siguientes candidatas:</p>
+            <br></br>
+            <p className="candidatas-empatadas">{empateInfo.candidatas}</p>
+            <br></br>
+            <p>Por favor, proceda a calificar a las candidatas para resolver el empate.</p>
+            <br></br>
+          </div>
+        )}
+        <div className="botones-modal">
+          <button onClick={() => setShowEmpatePopup(false)} className="btn-confirmar">
+            Entendido
+          </button>
+        </div>
+      </div>
+    </Popup>
+  );
+
   if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
     return (
         <div className="App">
@@ -152,6 +192,12 @@ const handleClick = async () => {
           <Navbar texto="Desempate" />
           {pop && <Espera />}
           <div className="main-container">
+            {empateInfo && (
+              <div className={`empate-banner ${tipoEmpate}`}>
+                <h2>Desempate por {empateInfo.tipo}</h2>
+                <p>Calificación para resolver el empate entre: {empateInfo.candidatas}</p>
+              </div>
+            )}
             <div className="reinas-container">
               {candidatasEmpatadas.map((candidata, index) => (
                   <div className="item-reina" key={candidata.CANDIDATA_ID}>
@@ -222,6 +268,7 @@ const handleClick = async () => {
                 </div>
               </Popup>
             </div>
+            <EmpateModal />
           </div>
         </>
     );

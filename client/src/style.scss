@@ -1200,6 +1200,40 @@ $ligthOrange: #e7d0b9;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
+        .empate-banner {
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          
+            &.primer-lugar {
+              background-color: #ffd700;
+              color: #000;
+            }
+          
+            &.segundo-lugar {
+              background-color: #c0c0c0;
+              color: #000;
+            }
+          
+            &.tercer-lugar {
+              background-color: #cd7f32;
+              color: #fff;
+            }
+          
+            h2 {
+              font-size: 1.5rem;
+              margin-bottom: 0.5rem;
+            }
+          
+            p {
+              font-size: 1rem;
+              opacity: 0.9;
+            }
+          }
+
         .overlay {
             position: fixed;
             top: 0;
