@@ -544,24 +544,17 @@ BEGIN
   DECLARE existe_final INT;
   DECLARE max_puntaje DECIMAL(10,2);
   DECLARE puntaje_empatadas DECIMAL(10,2);
-  DECLARE diferencia_disponible DECIMAL(10,2);
-  DECLARE factor_escala DECIMAL(10,4);
+  DECLARE tipo_empate VARCHAR(20);
   DECLARE suma_calificaciones DECIMAL(10,2);
   DECLARE puntaje_final DECIMAL(10,2);
+  DECLARE max_puntaje_superior DECIMAL(10,2);
   
   IF NEW.EVENTO_ID = 4 THEN
-    -- Obtener el puntaje máximo actual
-    SELECT MAX(cand_nota_final) INTO max_puntaje
-    FROM candidata;
-    
-    -- Obtener el puntaje de las candidatas empatadas
-    SELECT cand_nota_final INTO puntaje_empatadas
-    FROM candidata
-    WHERE candidata_id = NEW.candidata_id;
-    
-    -- Calcular la diferencia disponible (95% del máximo disponible para mantener diferencia)
-    SET diferencia_disponible = max_puntaje - puntaje_empatadas;
-    SET factor_escala = (diferencia_disponible * 0.95) / 10; -- Usamos 95% de la diferencia
+    -- Obtener el puntaje y tipo de empate de la candidata actual
+    SELECT cand_nota_final, d.tipo INTO puntaje_empatadas, tipo_empate
+    FROM candidata c
+    JOIN desempate d ON c.candidata_id = d.candidata_id
+    WHERE c.candidata_id = NEW.candidata_id;
     
     -- Contar total de jueces y votos
     SELECT COUNT(*) INTO total_jueces 
@@ -588,28 +581,52 @@ BEGIN
       AND evento_id = 4 
       AND calificacion_nombre = 'Desempate';
       
-      -- Calcular el puntaje final asegurando que no supere el máximo
-      SET puntaje_final = LEAST(
-        max_puntaje - 0.01, -- Siempre al menos 0.01 menos que el máximo
-        puntaje_empatadas + (suma_calificaciones * factor_escala / total_jueces)
-      );
+      -- Calcular el puntaje base
+      SET puntaje_final = puntaje_empatadas + (suma_calificaciones / total_jueces);
       
-      -- Insertar en finales con el valor escalado
+      -- Aplicar reglas según el tipo de empate
+      CASE tipo_empate
+        WHEN 'primer-lugar' THEN
+          -- Para primer lugar, no hay límite superior
+          SET puntaje_final = puntaje_final;
+          
+        WHEN 'segundo-lugar' THEN
+          -- Obtener el mínimo puntaje de primer lugar o el máximo general si no hay primer lugar
+          SELECT COALESCE(
+            (SELECT MIN(cand_nota_final) 
+             FROM candidata c2 
+             JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
+             WHERE d2.tipo = 'primer-lugar'),
+            (SELECT MAX(cand_nota_final) 
+             FROM candidata 
+             WHERE candidata_id NOT IN (SELECT candidata_id FROM desempate))
+          ) - 0.01 INTO max_puntaje_superior;
+          
+          SET puntaje_final = LEAST(max_puntaje_superior, puntaje_final);
+          
+        WHEN 'tercer-lugar' THEN
+          -- Obtener el mínimo puntaje de segundo lugar
+          SELECT COALESCE(
+            (SELECT MIN(cand_nota_final) 
+             FROM candidata c2 
+             JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
+             WHERE d2.tipo = 'segundo-lugar'),
+            (SELECT MIN(cand_nota_final) 
+             FROM candidata c2 
+             JOIN desempate d2 ON c2.candidata_id = d2.candidata_id 
+             WHERE d2.tipo = 'primer-lugar')
+          ) - 0.01 INTO max_puntaje_superior;
+          
+          SET puntaje_final = LEAST(max_puntaje_superior, puntaje_final);
+      END CASE;
+      
+      -- Insertar en finales
       INSERT INTO finales (
-        candidata_id, 
-        usuario_id, 
-        evento_id, 
-        calificacion_nombre, 
-        calificacion_peso, 
-        calificacion_valor
-      ) 
-      VALUES (
-        NEW.candidata_id, 
-        20, 
-        4,
-        'Desempate_FINAL', 
-        100, 
-        suma_calificaciones
+        candidata_id, usuario_id, evento_id, 
+        calificacion_nombre, calificacion_peso, calificacion_valor
+      ) VALUES (
+        NEW.candidata_id, 20, 4,
+        'Desempate_FINAL', 100, suma_calificaciones
       );
       
       -- Actualizar la nota final de la candidata
