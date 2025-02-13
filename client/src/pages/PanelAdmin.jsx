@@ -139,9 +139,6 @@ const PanelAdmin = () => {
                         <div className="carousel-item-text">
                             <button className="btn" onClick={() => setMostrarPopUp(true)}>Reiniciar Votaciones</button>
                         </div>
-                        <div className="carousel-item-text">
-                            <button className="btn" onClick={() => setMostrarPopUp(true)}>Desempate</button>
-                        </div>
                     </div>
                     <h1 className="reina-informacion"><br></br>Tabla de Notario</h1>
                     {listaReinas.length > 0 ? (
