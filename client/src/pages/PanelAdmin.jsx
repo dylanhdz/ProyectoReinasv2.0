@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/authContext";
 import Popup from "reactjs-popup";
 import Axios from "axios";
@@ -9,6 +10,7 @@ const PanelAdmin = () => {
 
     const { currentUser, logout } = useContext(AuthContext);
     const [votaciones, setVotaciones] = useState([]);
+    const navigate = useNavigate();
     const [datos, setDatos] = useState([]);
     const [listaJueces, setListaJueces] = useState([]);
     const [listaReinas, setListaReinas] = useState([]);
@@ -139,6 +141,9 @@ const PanelAdmin = () => {
                         <div className="carousel-item-text">
                             <button className="btn" onClick={() => setMostrarPopUp(true)}>Reiniciar Votaciones</button>
                         </div>
+                        <div className="carousel-item-text">
+                        <button className="btn" onClick={() => navigate('/register')}>Crear Cuenta Nueva</button>
+                        </div>
                     </div>
                     <h1 className="reina-informacion"><br></br>Tabla de Notario</h1>
                     {listaReinas.length > 0 ? (
@@ -146,6 +151,7 @@ const PanelAdmin = () => {
                             {listaReinas.map((item1, index) => {
                                 return (
                                     <div className="matrix">
+                                        
                                         <div>
                                             <br></br>
                                             <h1>{item1.CAND_NOMBRE1} {item1.CAND_APELLIDOPATERNO}</h1>
