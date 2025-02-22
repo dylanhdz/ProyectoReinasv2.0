@@ -161,6 +161,22 @@
                 padding: 10px 40px 30px 10px;
             }
         }
+        .register-link {
+            text-align: center;
+            margin: 15px 0;
+            
+            a {
+              color: #27ae60;
+              text-decoration: none;
+              font-size: 15px;
+              transition: all 0.2s ease-in-out;
+              
+              &:hover {
+                color: #219a52;
+                text-decoration: underline;
+              }
+            }
+          }
 
         
 
