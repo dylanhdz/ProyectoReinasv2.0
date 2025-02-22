@@ -96,6 +96,9 @@ const Login = () => {
             <button className="loginBut" value="Iniciar Sesión" onClick={handleSubmit}>
               <p>Iniciar Sesión</p>
             </button>
+            <div className="register-link">
+              <Link to="/register">Crear una cuenta nueva</Link>
+            </div>
             <p className="iniciar-sesion"> © - Derechos Reservados</p>
             <p className="iniciar-sesion"> Dpto. de Ciencias de la Computación</p>
             <Popup open={modalIsOpen} onClose={handleModalClose}>
@@ -103,7 +106,7 @@ const Login = () => {
                 <h2 className="modal-title">Error de Ingreso</h2>
                 <p className="modal-p">{err}</p>
                 <div className="botones-modal">
-                  <button onClick={() => { handleModalClose();}} className="btn-confirmar">
+                  <button onClick={() => { handleModalClose(); }} className="btn-confirmar">
                     Aceptar
                   </button>
                 </div>

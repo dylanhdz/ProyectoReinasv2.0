@@ -1,0 +1,193 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #000000;
+  padding: 20px;
+}
+
+.register-card {
+  background-color: #FDFFE2;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+}
+
+.register-header {
+  background-color: black;
+  padding: 20px;
+  text-align: center;
+
+  .logo-container {
+    margin-bottom: 10px;
+    img {
+      height: 80px;
+      object-fit: contain;
+    }
+  }
+
+  h2 {
+    color: #D4AF37;
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.5rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.register-form {
+  padding: 30px;
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; // Changed to show two columns
+    gap: 35px;
+    margin-bottom: 35px;
+  }
+
+  // Add this new class for single column rows (rol and button)
+  .form-row-single {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr; // Stack vertically on mobile
+    }
+  }
+
+  .input-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #2f2f2f;
+    }
+
+    input, .role-select {
+      width: 100%;
+      height: 45px;
+      padding: 12px;
+      border: 2px solid #D4AF37;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: white;
+      outline: none;
+
+      &::placeholder {
+        color: #999;
+        font-size: 14px;
+      }
+
+      &:focus {
+        border-color: #1b7248;
+        box-shadow: 0 0 5px rgba(27, 114, 72, 0.2);
+      }
+
+      &:hover {
+        border-color: #1b7248;
+      }
+    }
+
+    .role-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 40px;
+
+      option {
+        padding: 12px;
+        font-size: 16px;
+        
+        &:first-child {
+          color: #999;
+        }
+        
+        &:hover {
+          background-color: #1b7248;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .error-message {
+    color: #cf3726;
+    text-align: center;
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgba(207, 55, 38, 0.1);
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background-color: #1b7248;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .register-card {
+    max-width: 95%;
+    margin: 10px;
+  }
+
+  .register-header {
+    h2 {
+      font-size: 2rem;
+    }
+  }
+
+  .register-form {
+    padding: 20px;
+
+    .input-group {
+      label {
+        font-size: 14px;
+      }
+
+      input, .role-select {
+        font-size: 14px;
+        height: 40px;
+      }
+    }
+
+    .submit-btn {
+      font-size: 16px;
+      padding: 12px;
+    }
+  }
+}
