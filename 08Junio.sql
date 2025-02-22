@@ -318,6 +318,17 @@ INSERT INTO `evento` VALUES (1,1,'Traje Típico',100,1,'si'),(2,1,'Traje Gala',1
 /*!40000 ALTER TABLE `evento` ENABLE KEYS */;
 UNLOCK TABLES;
 
+-- First create a table to store execution times
+CREATE TABLE trigger_timing (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    trigger_name VARCHAR(50),
+    start_time TIMESTAMP(6),
+    end_time TIMESTAMP(6),
+    execution_time_ms DECIMAL(10,6),
+    candidata_id INT,
+    evento_id INT
+);
+
 --
 -- Table structure for table `finales`
 --
@@ -361,12 +372,17 @@ DELIMITER ;;
 CREATE TRIGGER `computar_final` AFTER INSERT ON `finales` 
 FOR EACH ROW 
 BEGIN
+    -- Timing variables
+    DECLARE start_ts TIMESTAMP(6);
+    DECLARE end_ts TIMESTAMP(6);
+    DECLARE exec_time DECIMAL(10,6);
     DECLARE calificaciones_realizadas INT;
     DECLARE total_candidatas INT;
     DECLARE total_notas INT;
     DECLARE total_eventos INT;
     DECLARE contador INT DEFAULT 1;
     DECLARE calificacion_ponderada DECIMAL(10,4);
+    SET start_ts = CURRENT_TIMESTAMP(6);
     
     -- Si es un evento de desempate
     IF NEW.evento_id = 4 THEN
@@ -409,6 +425,26 @@ BEGIN
             WHERE candidata_id = NEW.candidata_id;
         END IF;
     END IF;
+    -- Store end time and calculate duration
+    SET end_ts = CURRENT_TIMESTAMP(6);
+    SET exec_time = TIMESTAMPDIFF(MICROSECOND, start_ts, end_ts) / 1000.0;
+    
+    -- Log the execution time
+    INSERT INTO trigger_timing (
+        trigger_name, 
+        start_time, 
+        end_time, 
+        execution_time_ms,
+        candidata_id,
+        evento_id
+    ) VALUES (
+        'computar_final',
+        start_ts,
+        end_ts,
+        exec_time,
+        NEW.candidata_id,
+        NEW.evento_id
+    );
 END;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
