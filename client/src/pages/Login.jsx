@@ -28,23 +28,22 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
-      //await axios.put(`${API_BASE_URL}/user/${inputs.username}`);
-      if (inputs.username === "Veedor") {
+      const user = await login(inputs);
+      if (!user) throw new Error('No user data received');
+      
+      if (user.rol === "Notario") {
         navigate("/TablaNotario");
-      } else if (inputs.username === "admin" || inputs.username === "dylan" || inputs.username === "mathias") {
+      } else if (user.rol === "admin") {
         navigate("/PanelAdmin");
-      }
-      else {
+      } else {
         navigate("/CRG_Tipico");
       }
     } catch (err) {
       setModalIsOpen(true);
-      setError(err.response.data);
-      console.log(err.response.data);
+      setError(err.response?.data || "Error al iniciar sesión");
+      console.log(err);
     }
   };
-
 
   return (
     <div classNameName="Login">
@@ -96,9 +95,7 @@ const Login = () => {
             <button className="loginBut" value="Iniciar Sesión" onClick={handleSubmit}>
               <p>Iniciar Sesión</p>
             </button>
-            <div className="register-link">
-              <Link to="/register">Crear una cuenta nueva</Link>
-            </div>
+
             <p className="iniciar-sesion"> © - Derechos Reservados</p>
             <p className="iniciar-sesion"> Dpto. de Ciencias de la Computación</p>
             <Popup open={modalIsOpen} onClose={handleModalClose}>

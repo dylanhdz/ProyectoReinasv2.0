@@ -2,12 +2,16 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Add this import at the top
+
 import "./styleRegister.scss";
 import { API_BASE_URL } from "./ip.js";
 import Logo from "../img/logoespereina.png";
 
 const Register = () => {
   const { currentUser } = React.useContext(AuthContext);
+  const navigate = useNavigate(); // Add this line after the imports
+
   const [inputs, setInputs] = useState({
     id: "",
     username: "",
@@ -27,6 +31,7 @@ const Register = () => {
     e.preventDefault();
     try {
       await axios.post(`${API_BASE_URL}/auth/register`, inputs);
+      navigate("/login"); // Redirect to login page after successful registration
     } catch (err) {
       setError(err.response.data);
     }
@@ -118,6 +123,7 @@ const Register = () => {
 
           <button type="submit" className="submit-btn">
             Registrar Usuario
+    
           </button>
         </form>
       </div>
