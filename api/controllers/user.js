@@ -40,23 +40,104 @@ export const actualizarEstadoEvento = (req, res) => {
 
 export const limpiarVotaciones = (req, res) => {
   const sqlLimpiar = [
-    "UPDATE votaciones SET vot_estado = 'no';",
     "UPDATE candidata SET cand_nota_final = 0;",
     "UPDATE candidata SET id_eleccion = 0;",
     "TRUNCATE TABLE calificacion;",
     "TRUNCATE TABLE finales;",
-    "TRUNCATE TABLE desempate;"
+    "TRUNCATE TABLE desempate;",
+    "TRUNCATE TABLE votaciones;"
   ];
 
-  sqlLimpiar.forEach((sql) => {
-    db.query(sql, (err, result) => {
-      if (err) {
-        console.log(err);
+  // Execute cleanup queries in sequence
+  const executeQueries = async () => {
+    try {
+      for (const sql of sqlLimpiar) {
+        await new Promise((resolve, reject) => {
+          db.query(sql, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+        });
       }
-    });
-  });
+      // After cleanup, generate new voting table
+      await generarTabla();
+      res.status(200).json({ message: "Votaciones limpiadas y regeneradas correctamente" });
+    } catch (err) {
+      console.error("Error en limpiarVotaciones:", err);
+      res.status(500).json({ error: "Error al limpiar votaciones" });
+    }
+  };
 
-  res.send("Votaciones limpiadas correctamente");
+  executeQueries();
+};
+
+const generarTabla = async () => {
+  try {
+    // Get data sequentially with explicit ordering
+    const getDataSequentially = async () => {
+      return new Promise((resolve, reject) => {
+        let jueces, eventos, candidatas;
+        
+        // Get judges first
+        db.query("SELECT id FROM users WHERE rol = 'juez' ORDER BY id", (err, juecesResult) => {
+          if (err) return reject(err);
+          jueces = juecesResult;
+          
+          // Then get events
+          db.query("SELECT evento_id FROM evento WHERE eleccion_id = 1 ORDER BY evento_id", (err, eventosResult) => {
+            if (err) return reject(err);
+            eventos = eventosResult;
+            
+            // Finally get candidates in strict order
+            db.query("SELECT candidata_id FROM candidata ORDER BY candidata_id ASC", (err, candidatasResult) => {
+              if (err) return reject(err);
+              candidatas = candidatasResult;
+              
+              resolve({ jueces, eventos, candidatas });
+            });
+          });
+        });
+      });
+    };
+
+    const { jueces, eventos, candidatas } = await getDataSequentially();
+
+    // Generate ordered combinations
+    const values = [];
+    for (let j = 0; j < jueces.length; j++) {
+      for (let e = 0; e < eventos.length; e++) {
+        for (let c = 0; c < candidatas.length; c++) {
+          values.push([
+            jueces[j].id,
+            eventos[e].evento_id,
+            candidatas[c].candidata_id,
+            'no'
+          ]);
+        }
+      }
+    }
+
+    // Insert in batches to maintain order
+    if (values.length > 0) {
+      const insertSql = `
+        INSERT INTO votaciones 
+        (USUARIO_ID, EVENTO_ID, CANDIDATA_ID, vot_estado) 
+        VALUES ?
+      `;
+
+      return new Promise((resolve, reject) => {
+        db.query(insertSql, [values], (err) => {
+          if (err) return reject(err);
+          resolve(true);
+        });
+      });
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error en generarTabla:', error);
+    throw error;
+  }
 };
 
 
