@@ -90,14 +90,14 @@ http://10.0.0.1:3000
 Usuario: admin
 Contraseña: admin
 ```
-<br><img src="./images/login.png" alt="Login" width="400">
+<img src="./images/login.png" alt="Login" width="400">
 5. Una vez que haya iniciado sesión, haga clic en el botón "Crear Cuenta Nueva" para crear las cuentas de los jueces que participarán en la votación.
-<br><img src="./images/menu.png" alt="Login" width="400">
+<img src="./images/menu.png" alt="Login" width="400">
 6. Complete el formulario con la información del juez y haga clic en "Crear Cuenta".
-<br><img src="./images/juez.png" alt="Login" width="400">
+<img src="./images/juez.png" alt="Login" width="400">
 7. Repita el paso 5 y 6 para cada juez que desee agregar a la votación. Recuerde apuntar las credenciales de cada juez, ya que las necesitará para iniciar sesión en el sistema.
 8. Una vez que haya creado todas las cuentas de los jueces, haga clic en el botón "Gestionar Candidatas" para crear nuevas candidatas para el evento.
-<br><img src="./images/candidata.png" alt="Login" width="400">
+<img src="./images/candidata.png" alt="Login" width="400">
 9. Una vez que haya creado todas las cuentas de las candidatas, haga clic en el botón "Reiniciar Votaciones" para preparar al sistema.
-<br><img src="./images/reiniciar.png" alt="Login" width="400">
+<img src="./images/reiniciar.png" alt="Login" width="400">
 10. Está listo para iniciar la votación.
