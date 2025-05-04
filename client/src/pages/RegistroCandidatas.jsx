@@ -63,11 +63,24 @@ const RegistroCandidatas = () => {
   // Handle candidata deletion
   const handleDelete = async (id) => {
     try {
+      // Confirmar eliminación
+      if (!window.confirm("¿Está seguro que desea eliminar esta candidata? Esta acción no se puede deshacer.")) {
+        return;
+      }
+      
+      // Realizar la eliminación
       await axios.delete(`${API_BASE_URL}/candidatas/${id}`);
+      
+      // Actualizar el estado local para reflejar la eliminación
       setCandidatas(candidatas.filter(c => c.CANDIDATA_ID !== id));
+      
       showModal("Candidata eliminada exitosamente", "success");
     } catch (err) {
-      showModal("Error al eliminar candidata", "error");
+      console.error("Error al eliminar candidata:", err);
+      showModal(
+        err.response?.data?.error || "Error al eliminar la candidata", 
+        "error"
+      );
     }
   };
 

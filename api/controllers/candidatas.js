@@ -225,3 +225,35 @@ export const verificarDesempate = (req, res) => {
     });
 };
 
+export const deleteCandidatas = (req, res) => {
+    const candidataId = req.params.id;
+    
+    // Primero, eliminar registros relacionados en foto_candidata
+    const deletePhotosQuery = "DELETE FROM foto_candidata WHERE CANDIDATA_ID = ?";
+    
+    db.query(deletePhotosQuery, [candidataId], (photoErr, photoResult) => {
+        if (photoErr) {
+            console.error("Error eliminando fotos de candidata:", photoErr);
+            return res.status(500).json({ 
+                error: "Error al eliminar fotos relacionadas a la candidata" 
+            });
+        }
+        
+        // Después, eliminar la candidata
+        const deleteCandidataQuery = "DELETE FROM candidata WHERE CANDIDATA_ID = ?";
+        
+        db.query(deleteCandidataQuery, [candidataId], (candErr, candResult) => {
+            if (candErr) {
+                console.error("Error eliminando candidata:", candErr);
+                return res.status(500).json({ 
+                    error: "Error al eliminar la candidata" 
+                });
+            }
+            
+            return res.status(200).json({ 
+                message: "Candidata y sus fotos eliminadas con éxito" 
+            });
+        });
+    });
+};
+

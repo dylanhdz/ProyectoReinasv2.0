@@ -11,7 +11,8 @@ import {
     getVotacionesNotario,
     getCandidatasTrajeGala,
     getCandidataCarrusel,
-    verificarDesempate
+    verificarDesempate,
+    deleteCandidatas
 } from "../controllers/candidatas.js";
 import multer from 'multer';
 import path from 'path';
@@ -58,6 +59,7 @@ const router = express.Router();
 // Basic routes
 router.get("/", getCandidatas);
 router.post("/", setCandidatas);
+router.delete("/:id", deleteCandidatas);
 
 // File handling routes
 router.post("/fotos", setCandidatasFotos);
