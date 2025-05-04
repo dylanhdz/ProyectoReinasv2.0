@@ -144,6 +144,9 @@ const PanelAdmin = () => {
                         <div className="carousel-item-text">
                         <button className="btn" onClick={() => navigate('/register')}>Crear Cuenta Nueva</button>
                         </div>
+                        <div className="carousel-item-text">
+                        <button className="btn" onClick={() => navigate('/registrarCandidatas')}>Gestionar Candidatas</button>
+                        </div>
                     </div>
                     <h1 className="reina-informacion"><br></br>Tabla de Notario</h1>
                     {listaReinas.length > 0 ? (

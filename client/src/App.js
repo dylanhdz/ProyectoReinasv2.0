@@ -26,6 +26,7 @@ import "./style.scss";
 import TablaNotario from "./pages/TablaNotario";
 import PanelAdmin from "./pages/PanelAdmin";
 import Desempate from "./pages/Desempate";
+import RegistroCandidatas from "./pages/RegistroCandidatas";
 // import SlideShow from "./Carrusel2";
 
 const Layout = () => {
@@ -131,6 +132,10 @@ const router = createBrowserRouter([
     element: <Register />,
   
   },
+  {
+    path: "/registrarCandidatas",
+    element: <RegistroCandidatas />,
+  }
   // {
   //   path: "/slideshow",
   //   element: <SlideShow />,

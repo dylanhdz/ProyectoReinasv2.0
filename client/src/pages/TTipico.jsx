@@ -15,7 +15,7 @@ function TTipico() {
 
   const cat = useLocation().search;
   const { currentUser } = useContext(AuthContext);
-  const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
+  const [elements, setElements] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
@@ -104,6 +104,7 @@ function TTipico() {
       try {
         const res = await Axios.get(`${API_BASE_URL}/barra`);
         setListaCandidatas(res.data);
+        setElements(Array.from({ length: res.data.length }, () => 0));
       } catch (err) {
         console.log(err);
       }

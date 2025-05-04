@@ -14,7 +14,7 @@ import { Image } from "@nextui-org/react";
 const Barra = () => {
   const cat = useLocation().search;
   const { currentUser } = useContext(AuthContext);
-  const [elements, setElements] = useState(Array.from({ length: 12 }, () => 0));
+  const [elements, setElements] = useState([Array.from({ length: 12 }, () => 0)]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [vacioIsOpen, setVacioIsOpen] = useState(false);
   const [pop, setPop] = useState(false);
