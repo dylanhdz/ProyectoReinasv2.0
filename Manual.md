@@ -1,8 +1,9 @@
-# Sistema de Elección de Reinas - v3.0.0
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+# Manual de Usuario - Sistema de Elección de Reinas
+## Versión 3.0.0
+Escritor Técnico: Dylan Hernández
+<br>Fecha de escritura: 3 de mayo de 2025
+<br>Última revisión: 3 de mayo de 2025
+
 ## Índice de Contenidos
 1. [Introducción](#introducción)
 2. [A quién va dirigido este manual](#a-quién-va-dirigido-este-manual)
@@ -11,9 +12,7 @@
 5. [Preparar una Votación](#preparar-una-votación)
 
 ## Introducción
-El sistema de elección de reinas es una aplicación web diseñada para facilitar la elección de una reina universitaria.
-
-Este sistema permite a los administradores crear cuentas para jueces, candidatas y notarios, gestionar votaciones y generar informes de resultados.
+El sistema de elección de reinas es una aplicación web diseñada para facilitar la gestión y organización de eventos de elección de reinas. Este sistema permite a los administradores crear cuentas para jueces y candidatas, gestionar votaciones y generar informes de resultados.
 
 ## A quién va dirigido este manual
 Este manual está diseñado para guiar al <b>administrador del sistema</b> en la instalación y configuración del sistema de elección de reinas.
@@ -90,14 +89,13 @@ http://10.0.0.1:3000
 Usuario: admin
 Contraseña: admin
 ```
-![alt text](./images/login.png)
 5. Una vez que haya iniciado sesión, haga clic en el botón "Crear Cuenta Nueva" para crear las cuentas de los jueces que participarán en la votación.
-![alt text](<./images/menu.png>)
 6. Complete el formulario con la información del juez y haga clic en "Crear Cuenta".
-![alt text](./images/juez.png)
 7. Repita el paso 5 y 6 para cada juez que desee agregar a la votación. Recuerde apuntar las credenciales de cada juez, ya que las necesitará para iniciar sesión en el sistema.
 8. Una vez que haya creado todas las cuentas de los jueces, haga clic en el botón "Gestionar Candidatas" para crear nuevas candidatas para el evento.
-![alt text](./images/candidata.png)
 9. Una vez que haya creado todas las cuentas de las candidatas, haga clic en el botón "Reiniciar Votaciones" para preparar al sistema.
-![alt text](./images/reiniciar.png)
 10. Está listo para iniciar la votación.
+
+
+
+
