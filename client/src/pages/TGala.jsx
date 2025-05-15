@@ -83,6 +83,7 @@ function TGala() {
         if (listaCandidatas.length === 0) {
           const candidatasRes = await Axios.get(`${API_BASE_URL}/barra`);
           setListaCandidatas(candidatasRes.data);
+          setElements(Array.from({ length: candidatasRes.data.length }, () => 0));
         }
         
         // Check if we have candidates to verify
@@ -94,7 +95,7 @@ function TGala() {
           if (response1.data[0].total === 0) {
             // No votes for the last candidate yet, stay on this page
           } else {
-            navigate("/CRG_Gala");
+            navigate("/CRG_Barra");
           }
         }
       } catch (error) {
@@ -109,9 +110,7 @@ function TGala() {
     return () => {
       clearInterval(interval);
     };
-  }, [cat + "ck2"]);
-
-  
+  }, [cat + "ck2", listaCandidatas, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {

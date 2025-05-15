@@ -179,8 +179,9 @@ export const checkVotes2 = (req, res) => {
   })
 }
 export const checkVotes3 = (req, res) => {
-  const sqlSelect = 'SELECT COUNT(*) AS total FROM finales where CANDIDATA_ID = 12 and EVENTO_ID=3;';
-  db.query(sqlSelect, (err, result) => {
+  const { id } = req.query;
+  const sqlSelect = 'SELECT COUNT(*) AS total FROM finales where CANDIDATA_ID = ? and EVENTO_ID=3;';
+  db.query(sqlSelect, [id], (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).json({ error: 'An error occurred' });

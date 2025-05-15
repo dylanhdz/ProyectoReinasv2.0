@@ -74,10 +74,19 @@ function Preguntas() {
     });
   };
 
+  const [listaCandidatas, setListaCandidatas] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Get the candidates first if not already loaded
+        if (listaCandidatas.length === 0) {
+          const candidatasRes = await Axios.get(`${API_BASE_URL}/barra`);
+          setListaCandidatas(candidatasRes.data);
+          setElements(Array.from({ length: candidatasRes.data.length }, () => 0));
+        }
+        
+        // Check if we have candidates to verify
         if (listaCandidatas.length > 0) {
           // Check the last candidate (assumes candidates are numbered sequentially)
           const lastCandidateId = listaCandidatas[listaCandidatas.length - 1].CANDIDATA_ID;
@@ -98,18 +107,15 @@ function Preguntas() {
         console.error(error);
       }
     };
-  
+
     const interval = setInterval(() => {
       fetchData();
     }, 5000);
-  
+
     return () => {
       clearInterval(interval);
     };
-  }, [cat + "ck3", listaCandidatas]);
-  
-
-  const [listaCandidatas, setListaCandidatas] = useState([]);
+  }, [cat + "ck3", listaCandidatas, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,8 +129,6 @@ function Preguntas() {
     };
     fetchData();
   }, [cat + "1"]);
-
-
 
   let currentDropdown = null;
 
