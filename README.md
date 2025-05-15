@@ -63,7 +63,7 @@ npm install
 5. Ejecutar el script de inicialización de la base de datos. Puede hacerlo ejecutando el siguiente comando en la terminal:
 ```bash
 cd ..
-mysql -u root -p password < 08Junio.sql
+mysql -u root -p password < Mayo2025.sql
 ```
 6. Cambiar la ip en el archivo /src/pages/ip.js por la ip de su red local. Reemplace 'localhost' por la dirección IP de su máquina en la red local. Puede encontrar su dirección IP ejecutando el siguiente comando en la terminal:
 ```bash
