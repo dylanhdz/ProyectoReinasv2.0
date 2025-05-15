@@ -74,14 +74,28 @@ function TGala() {
     });
   };
 
+  const [listaCandidatas, setListaCandidatas] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await Axios.get(`${API_BASE_URL}/user/ck2?id=${12}`);
-        if (response1.data[0].total === 0) {
-
-        } else {
-          navigate("/CRG_Barra");
+        // Get the candidates first if not already loaded
+        if (listaCandidatas.length === 0) {
+          const candidatasRes = await Axios.get(`${API_BASE_URL}/barra`);
+          setListaCandidatas(candidatasRes.data);
+        }
+        
+        // Check if we have candidates to verify
+        if (listaCandidatas.length > 0) {
+          // Check the last candidate (assumes candidates are numbered sequentially)
+          const lastCandidateId = listaCandidatas[listaCandidatas.length - 1].CANDIDATA_ID;
+          const response1 = await Axios.get(`${API_BASE_URL}/user/ck2?id=${lastCandidateId}`);
+          
+          if (response1.data[0].total === 0) {
+            // No votes for the last candidate yet, stay on this page
+          } else {
+            navigate("/CRG_Gala");
+          }
         }
       } catch (error) {
         console.error(error);
@@ -97,7 +111,7 @@ function TGala() {
     };
   }, [cat + "ck2"]);
 
-  const [listaCandidatas, setListaCandidatas] = useState([]);
+  
 
   useEffect(() => {
     const fetchData = async () => {

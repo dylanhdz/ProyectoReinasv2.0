@@ -48,7 +48,6 @@ CREATE TABLE `calificacion` (
 
 LOCK TABLES `calificacion` WRITE;
 /*!40000 ALTER TABLE `calificacion` DISABLE KEYS */;
-INSERT INTO `calificacion` VALUES (1,1,1,1,'Traje Típico',100,2),(2,1,1,2,'Traje Típico',100,4),(3,1,1,3,'Traje Típico',100,9),(4,1,1,4,'Traje Típico',100,4),(5,1,1,5,'Traje Típico',100,9),(6,1,1,6,'Traje Típico',100,7),(7,1,1,7,'Traje Típico',100,2),(8,1,1,8,'Traje Típico',100,8),(9,1,1,9,'Traje Típico',100,9),(10,1,1,10,'Traje Típico',100,3),(11,1,1,11,'Traje Típico',100,2),(12,1,1,12,'Traje Típico',100,10),(13,2,1,1,'Traje Gala',100,2),(14,2,1,2,'Traje Gala',100,3),(15,2,1,3,'Traje Gala',100,7),(16,2,1,4,'Traje Gala',100,1),(17,2,1,5,'Traje Gala',100,8),(18,2,1,6,'Traje Gala',100,2),(19,2,1,7,'Traje Gala',100,3),(20,2,1,8,'Traje Gala',100,3),(21,2,1,9,'Traje Gala',100,2),(22,2,1,10,'Traje Gala',100,7),(23,2,1,11,'Traje Gala',100,2),(24,2,1,12,'Traje Gala',100,10),(25,3,1,1,'Preguntas',100,4),(26,3,1,2,'Preguntas',100,7),(27,3,1,3,'Preguntas',100,2),(28,3,1,4,'Preguntas',100,4),(29,3,1,5,'Preguntas',100,3),(30,3,1,6,'Preguntas',100,6),(31,3,1,7,'Preguntas',100,5),(32,3,1,8,'Preguntas',100,6),(33,3,1,9,'Preguntas',100,3),(34,3,1,10,'Preguntas',100,4),(35,3,1,11,'Preguntas',100,6),(36,3,1,12,'Preguntas',100,10);
 /*!40000 ALTER TABLE `calificacion` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -283,7 +282,7 @@ CREATE TABLE `eleccion` (
 
 LOCK TABLES `eleccion` WRITE;
 /*!40000 ALTER TABLE `eleccion` DISABLE KEYS */;
-INSERT INTO `eleccion` VALUES (1,'May2024-Sept2024');
+INSERT INTO `eleccion` VALUES (1,'May2025-Sept2025');
 /*!40000 ALTER TABLE `eleccion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,7 +355,6 @@ CREATE TABLE `finales` (
 
 LOCK TABLES `finales` WRITE;
 /*!40000 ALTER TABLE `finales` DISABLE KEYS */;
-INSERT INTO `finales` VALUES (1,1,20,1,'Traje Típico_FINAL',100,2.0000),(2,1,20,2,'Traje Típico_FINAL',100,4.0000),(3,1,20,3,'Traje Típico_FINAL',100,9.0000),(4,1,20,4,'Traje Típico_FINAL',100,4.0000),(5,1,20,5,'Traje Típico_FINAL',100,9.0000),(6,1,20,6,'Traje Típico_FINAL',100,7.0000),(7,1,20,7,'Traje Típico_FINAL',100,2.0000),(8,1,20,8,'Traje Típico_FINAL',100,8.0000),(9,1,20,9,'Traje Típico_FINAL',100,9.0000),(10,1,20,10,'Traje Típico_FINAL',100,3.0000),(11,1,20,11,'Traje Típico_FINAL',100,2.0000),(12,1,20,12,'Traje Típico_FINAL',100,10.0000),(13,2,20,1,'Traje Gala_FINAL',100,2.0000),(14,2,20,2,'Traje Gala_FINAL',100,3.0000),(15,2,20,3,'Traje Gala_FINAL',100,7.0000),(16,2,20,4,'Traje Gala_FINAL',100,1.0000),(17,2,20,5,'Traje Gala_FINAL',100,8.0000),(18,2,20,6,'Traje Gala_FINAL',100,2.0000),(19,2,20,7,'Traje Gala_FINAL',100,3.0000),(20,2,20,8,'Traje Gala_FINAL',100,3.0000),(21,2,20,9,'Traje Gala_FINAL',100,2.0000),(22,2,20,10,'Traje Gala_FINAL',100,7.0000),(23,2,20,11,'Traje Gala_FINAL',100,2.0000),(24,2,20,12,'Traje Gala_FINAL',100,10.0000),(25,3,20,1,'Preguntas_FINAL',100,4.0000),(26,3,20,2,'Preguntas_FINAL',100,7.0000),(27,3,20,3,'Preguntas_FINAL',100,2.0000),(28,3,20,4,'Preguntas_FINAL',100,4.0000),(29,3,20,5,'Preguntas_FINAL',100,3.0000),(30,3,20,6,'Preguntas_FINAL',100,6.0000),(31,3,20,7,'Preguntas_FINAL',100,5.0000),(32,3,20,8,'Preguntas_FINAL',100,6.0000),(33,3,20,9,'Preguntas_FINAL',100,3.0000),(34,3,20,10,'Preguntas_FINAL',100,4.0000),(35,3,20,11,'Preguntas_FINAL',100,6.0000),(36,3,20,12,'Preguntas_FINAL',100,10.0000);
 /*!40000 ALTER TABLE `finales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -475,7 +473,6 @@ CREATE TABLE `foto_candidata` (
 
 LOCK TABLES `foto_candidata` WRITE;
 /*!40000 ALTER TABLE `foto_candidata` DISABLE KEYS */;
-INSERT INTO `foto_candidata` VALUES (1,1,'FX','C:\\fakepath\\WEMRH.jpg'),(2,2,'FX','C:\\fakepath\\JDRPH.jpg'),(3,3,'FX','C:\\fakepath\\YNEPH.jpg'),(4,4,'FX','C:\\fakepath\\AGMVH.jpg'),(5,5,'FX','C:\\fakepath\\LSFOH.jpg'),(6,6,'FX','C:\\fakepath\\GNAEH.jpg'),(7,7,'FX','C:\\fakepath\\MDSPH.jpg'),(8,8,'FX','C:\\fakepath\\RADPH.jpg'),(9,9,'FX','C:\\fakepath\\ADMMH.jpg'),(10,10,'FX','C:\\fakepath\\KBBMH.jpg'),(11,11,'FX','C:\\fakepath\\RAAAH.jpg'),(12,12,'FX','C:\\fakepath\\ENARH.jpg'),(13,3,'FP','C:\\fakepath\\SYFP.jpg'),(14,4,'FP','C:\\fakepath\\NRFP.jpg'),(15,5,'FP','C:\\fakepath\\DLFP.jpg'),(16,6,'FP','C:\\fakepath\\ABFP.jpg'),(17,7,'FP','C:\\fakepath\\JSFP.jpg'),(18,8,'FP','C:\\fakepath\\BEFP.jpg'),(19,9,'FP','C:\\fakepath\\AEFP.jpg'),(20,10,'FP','C:\\fakepath\\IAFP.jpg');
 /*!40000 ALTER TABLE `foto_candidata` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -508,7 +505,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1,'Juez1',NULL,'$2a$10$F4IojLNcgsfQCwruggqgDe7GEyG4qmWXwdn94RfC0.XqxzKbeqT46','Flor','De Vela','juez',0),(2,1,'Juez2',NULL,'$2a$10$eX6uL5CRS3phJH1gHK2TiuylPamL7wnXSrDfpFT5avuEXeNdGMgeG','Irene','Ocaña de Villavicencio','juezx',0),(3,1,'Juez3',NULL,'$2a$10$IsxENTUmumv93Elw61AISeXSJASgV5aWNMinVhAYaBFWCVyQsbV0G','Juez3','Juez3','juezx',0),(4,1,'Juez4',NULL,'$2a$10$QqR6eG0ln.tIQTw8Y0bO0OSG56RDX6xhp8ADmckKSnt/HtS7jXBc6','Juez4','Juez4','juezx',0),(5,1,'Juez5',NULL,'$2a$10$iA6wDU48sc/uZHy2lgifPu8yqqRlMClDjVZrLH8.vKlDIbMNevksS','Juez5','Juez5','juezx',0),(6,1,'Veedor',NULL,'$2a$10$Tr3ifQmgZYwoZZtOCrpWcOz3jPiNOHTFnlPviy1kLiFWZAdXOxWSO','Marcelo','Mejía Mena','Notario',0),(7,1,'admin','','$2a$10$rAuZfWne.JEOVb05mpXvheZp59F8qJxA3j7oBH/ruQ4ZJP1kPolDG','Dylan','Hernández','admin',0),(8,1,'luca',NULL,'$2a$10$6RpFCoR2MHDR0wAi7/f7OeNtlZ5gBXxEU62UZz4bgoOszNEjVHRPm','Luca','De Veintemilla','admin',0),(9,1,'juan',NULL,'$2a$10$r4vMi4U3tAnt/BEwDAda5OatG8DCfI3LbVEyXS7iWsSX2.1g1VIuW','Juan','Reyes','admin',0),(10,1,'kevin',NULL,'$2a$10$D71aXX4ggNlI50PHu.1Iver7lFlcYHJmSzLdU29Jmup.Gti2E.L9u','Kevin','Vargas','admin',0);
+INSERT INTO `users` VALUES (1,1,'Juez1',NULL,'$2a$10$F4IojLNcgsfQCwruggqgDe7GEyG4qmWXwdn94RfC0.XqxzKbeqT46','Flor','De Vela','juez',0),(2,1,'Juez2',NULL,'$2a$10$eX6uL5CRS3phJH1gHK2TiuylPamL7wnXSrDfpFT5avuEXeNdGMgeG','Irene','Ocaña de Villavicencio','juezx',0),(3,1,'Veedor',NULL,'$2a$10$Tr3ifQmgZYwoZZtOCrpWcOz3jPiNOHTFnlPviy1kLiFWZAdXOxWSO','Marcelo','Mejía Mena','Notario',0),(4,1,'admin','','$2a$10$rAuZfWne.JEOVb05mpXvheZp59F8qJxA3j7oBH/ruQ4ZJP1kPolDG','Dylan','Hernández','admin',0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -535,7 +532,6 @@ CREATE TABLE `votaciones` (
 
 LOCK TABLES `votaciones` WRITE;
 /*!40000 ALTER TABLE `votaciones` DISABLE KEYS */;
-INSERT INTO `votaciones` VALUES (1,1,1,1,'si'),(2,1,1,2,'si'),(3,1,1,3,'si'),(4,1,1,4,'si'),(5,1,1,5,'si'),(6,1,1,6,'si'),(7,1,1,7,'si'),(8,1,1,8,'si'),(9,1,1,9,'si'),(10,1,1,10,'si'),(11,1,1,11,'si'),(12,1,1,12,'si'),(13,1,2,1,'si'),(14,1,2,2,'si'),(15,1,2,3,'si'),(16,1,2,4,'si'),(17,1,2,5,'si'),(18,1,2,6,'si'),(19,1,2,7,'si'),(20,1,2,8,'si'),(21,1,2,9,'si'),(22,1,2,10,'si'),(23,1,2,11,'si'),(24,1,2,12,'si'),(25,1,3,1,'si'),(26,1,3,2,'si'),(27,1,3,3,'si'),(28,1,3,4,'si'),(29,1,3,5,'si'),(30,1,3,6,'si'),(31,1,3,7,'si'),(32,1,3,8,'si'),(33,1,3,9,'si'),(34,1,3,10,'si'),(35,1,3,11,'si'),(36,1,3,12,'si'),(37,2,1,1,'no'),(38,2,1,2,'no'),(39,2,1,3,'no'),(40,2,1,4,'no'),(41,2,1,5,'no'),(42,2,1,6,'no'),(43,2,1,7,'no'),(44,2,1,8,'no'),(45,2,1,9,'no'),(46,2,1,10,'no'),(47,2,1,11,'no'),(48,2,1,12,'no'),(49,2,2,1,'no'),(50,2,2,2,'no'),(51,2,2,3,'no'),(52,2,2,4,'no'),(53,2,2,5,'no'),(54,2,2,6,'no'),(55,2,2,7,'no'),(56,2,2,8,'no'),(57,2,2,9,'no'),(58,2,2,10,'no'),(59,2,2,11,'no'),(60,2,2,12,'no'),(61,2,3,1,'no'),(62,2,3,2,'no'),(63,2,3,3,'no'),(64,2,3,4,'no'),(65,2,3,5,'no'),(66,2,3,6,'no'),(67,2,3,7,'no'),(68,2,3,8,'no'),(69,2,3,9,'no'),(70,2,3,10,'no'),(71,2,3,11,'no'),(72,2,3,12,'no'),(73,3,1,1,'no'),(74,3,1,2,'no'),(75,3,1,3,'no'),(76,3,1,4,'no'),(77,3,1,5,'no'),(78,3,1,6,'no'),(79,3,1,7,'no'),(80,3,1,8,'no'),(81,3,1,9,'no'),(82,3,1,10,'no'),(83,3,1,11,'no'),(84,3,1,12,'no'),(85,3,2,1,'no'),(86,3,2,2,'no'),(87,3,2,3,'no'),(88,3,2,4,'no'),(89,3,2,5,'no'),(90,3,2,6,'no'),(91,3,2,7,'no'),(92,3,2,8,'no'),(93,3,2,9,'no'),(94,3,2,10,'no'),(95,3,2,11,'no'),(96,3,2,12,'no'),(97,3,3,1,'no'),(98,3,3,2,'no'),(99,3,3,3,'no'),(100,3,3,4,'no'),(101,3,3,5,'no'),(102,3,3,6,'no'),(103,3,3,7,'no'),(104,3,3,8,'no'),(105,3,3,9,'no'),(106,3,3,10,'no'),(107,3,3,11,'no'),(108,3,3,12,'no'),(109,4,1,1,'no'),(110,4,1,2,'no'),(111,4,1,3,'no'),(112,4,1,4,'no'),(113,4,1,5,'no'),(114,4,1,6,'no'),(115,4,1,7,'no'),(116,4,1,8,'no'),(117,4,1,9,'no'),(118,4,1,10,'no'),(119,4,1,11,'no'),(120,4,1,12,'no'),(121,4,2,1,'no'),(122,4,2,2,'no'),(123,4,2,3,'no'),(124,4,2,4,'no'),(125,4,2,5,'no'),(126,4,2,6,'no'),(127,4,2,7,'no'),(128,4,2,8,'no'),(129,4,2,9,'no'),(130,4,2,10,'no'),(131,4,2,11,'no'),(132,4,2,12,'no'),(133,4,3,1,'no'),(134,4,3,2,'no'),(135,4,3,3,'no'),(136,4,3,4,'no'),(137,4,3,5,'no'),(138,4,3,6,'no'),(139,4,3,7,'no'),(140,4,3,8,'no'),(141,4,3,9,'no'),(142,4,3,10,'no'),(143,4,3,11,'no'),(144,4,3,12,'no'),(145,5,1,1,'no'),(146,5,1,2,'no'),(147,5,1,3,'no'),(148,5,1,4,'no'),(149,5,1,5,'no'),(150,5,1,6,'no'),(151,5,1,7,'no'),(152,5,1,8,'no'),(153,5,1,9,'no'),(154,5,1,10,'no'),(155,5,1,11,'no'),(156,5,1,12,'no'),(157,5,2,1,'no'),(158,5,2,2,'no'),(159,5,2,3,'no'),(160,5,2,4,'no'),(161,5,2,5,'no'),(162,5,2,6,'no'),(163,5,2,7,'no'),(164,5,2,8,'no'),(165,5,2,9,'no'),(166,5,2,10,'no'),(167,5,2,11,'no'),(168,5,2,12,'no'),(169,5,3,1,'no'),(170,5,3,2,'no'),(171,5,3,3,'no'),(172,5,3,4,'no'),(173,5,3,5,'no'),(174,5,3,6,'no'),(175,5,3,7,'no'),(176,5,3,8,'no'),(177,5,3,9,'no'),(178,5,3,10,'no'),(179,5,3,11,'no'),(180,5,3,12,'no');
 /*!40000 ALTER TABLE `votaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 

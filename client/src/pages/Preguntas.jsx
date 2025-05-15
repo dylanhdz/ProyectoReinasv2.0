@@ -77,15 +77,21 @@ function Preguntas() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${12}`);
-        if (response1.data[0].total === 0) {
-          // Maneja el caso donde total es 0 si es necesario
-        } else {
-          const response2 = await Axios.get(`${API_BASE_URL}/user/verificar_empate`);
-          if (response2.data.empate) {
-            navigate("/Desempate");
+        // Get the candidates first if not already loaded
+        if (listaCandidatas.length > 0) {
+          // Check the last candidate (assumes candidates are numbered sequentially)
+          const lastCandidateId = listaCandidatas[listaCandidatas.length - 1].CANDIDATA_ID;
+          const response1 = await Axios.get(`${API_BASE_URL}/user/ck3?id=${lastCandidateId}`);
+          
+          if (response1.data[0].total === 0) {
+            // Maneja el caso donde total es 0 si es necesario
           } else {
-            navigate("/Gracias");
+            const response2 = await Axios.get(`${API_BASE_URL}/user/verificar_empate`);
+            if (response2.data.empate) {
+              navigate("/Desempate");
+            } else {
+              navigate("/Gracias");
+            }
           }
         }
       } catch (error) {
@@ -100,7 +106,7 @@ function Preguntas() {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [cat + "ck3", listaCandidatas]);
   
 
   const [listaCandidatas, setListaCandidatas] = useState([]);
