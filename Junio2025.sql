@@ -611,7 +611,7 @@ CREATE TABLE `foto_candidata` (
 
 LOCK TABLES `foto_candidata` WRITE;
 /*!40000 ALTER TABLE `foto_candidata` DISABLE KEYS */;
-INSERT INTO `foto_candidata` VALUES (1,1,'FX','C:\\fakepath\\EHVSH.JPG'),(2,2,'FX','C:\\fakepath\\TPRCH.JPG'),(3,3,'FX','C:\\fakepath\\MDTLH.JPG'),(4,4,'FX','C:\\fakepath\\AMZGH.JPG'),(5,5,'FX','C:\\fakepath\\MPAFH.JPG'),(6,6,'FX','C:\\fakepath\\JGNSH.JPG'),(7,7,'FX','C:\\fakepath\\MCBYH.JPG'),(8,8,'FX','C:\\fakepath\\EATAH.JPG'),(9,9,'FX','C:\\fakepath\\WNMSH.JPG'),(10,10,'FX','C:\\fakepath\\EJRSH.JPG'),(11,12,'FX','C:\\fakepath\\SADLH.JPG');
+INSERT INTO `foto_candidata` VALUES (1,1,'FX','C:\\fakepath\\EHVSH.JPG'),(2,2,'FX','C:\\fakepath\\TPRCH.JPG'),(3,3,'FX','C:\\fakepath\\MDTLH.JPG'),(4,4,'FX','C:\\fakepath\\AMZGH.JPG'),(5,5,'FX','C:\\fakepath\\MPAFH.JPG'),(6,6,'FX','C:\\fakepath\\JGNSH.JPG'),(7,7,'FX','C:\\fakepath\\MCBYH.JPG'),(8,8,'FX','C:\\fakepath\\EATAH.JPG'),(9,9,'FX','C:\\fakepath\\WNMSH.JPG'),(10,10,'FX','C:\\fakepath\\EJRSH.JPG'),(11,11,'FX','C:\\fakepath\\RGGUH.JPG'),(12,12,'FX','C:\\fakepath\\SADLH.JPG');
 /*!40000 ALTER TABLE `foto_candidata` ENABLE KEYS */;
 UNLOCK TABLES;
 
