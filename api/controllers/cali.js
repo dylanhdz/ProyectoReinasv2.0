@@ -201,3 +201,132 @@ export const checkDesempateStatus = (req, res) => {
         });
     });
 };
+
+export const addCalificacion = (req, res) => {
+  try {
+    const { notas, EVENTO_ID, CALIFICACION_NOMBRE, CALIFICACION_PESO } = req.body;
+    const USUARIO_ID = req.userId;
+    
+    // Verificar que notas es un objeto o array
+    if (!notas || (typeof notas !== 'object')) {
+      return res.status(400).json({ error: "Formato de calificaciones inválido" });
+    }
+    
+    // Crear un array para almacenar todas las promesas de inserción
+    const insertPromises = [];
+    
+    // Si notas es un objeto (nuevo formato), procesar las claves como IDs de candidata
+    if (!Array.isArray(notas)) {
+      Object.entries(notas).forEach(([candidataId, valor]) => {
+        const CANDIDATA_ID = parseInt(candidataId, 10);
+        const CALIFICACION_VALOR = parseInt(valor, 10);
+        
+        // Verificar que tenemos valores válidos
+        if (isNaN(CANDIDATA_ID) || isNaN(CALIFICACION_VALOR)) {
+          console.warn(`Valores no numéricos para candidata ${candidataId}: ${valor}`);
+          return;
+        }
+        
+        // Solo insertar si el valor es mayor que cero
+        if (CALIFICACION_VALOR > 0) {
+          const insertPromise = new Promise((resolve, reject) => {
+            const query = `
+              INSERT INTO calificacion (
+                EVENTO_ID, 
+                USUARIO_ID, 
+                CANDIDATA_ID, 
+                CALIFICACION_NOMBRE, 
+                CALIFICACION_PESO, 
+                CALIFICACION_VALOR
+              ) VALUES (?, ?, ?, ?, ?, ?)
+            `;
+            
+            db.query(
+              query,
+              [
+                EVENTO_ID,
+                USUARIO_ID,
+                CANDIDATA_ID,
+                CALIFICACION_NOMBRE,
+                CALIFICACION_PESO,
+                CALIFICACION_VALOR
+              ],
+              (err, result) => {
+                if (err) {
+                  console.error("Error en inserción:", err);
+                  reject(err);
+                } else {
+                  resolve(result);
+                }
+              }
+            );
+          });
+          
+          insertPromises.push(insertPromise);
+        }
+      });
+    } else {
+      // Mantener compatibilidad con el formato de array (código anterior)
+      notas.forEach((valor, index) => {
+        const CANDIDATA_ID = index + 1;
+        const CALIFICACION_VALOR = parseInt(valor, 10);
+        
+        if (isNaN(CALIFICACION_VALOR)) {
+          console.warn(`Valor no numérico para candidata ${CANDIDATA_ID}: ${valor}`);
+          return;
+        }
+        
+        if (CALIFICACION_VALOR > 0) {
+          const insertPromise = new Promise((resolve, reject) => {
+            const query = `
+              INSERT INTO calificacion (
+                EVENTO_ID, 
+                USUARIO_ID, 
+                CANDIDATA_ID, 
+                CALIFICACION_NOMBRE, 
+                CALIFICACION_PESO, 
+                CALIFICACION_VALOR
+              ) VALUES (?, ?, ?, ?, ?, ?)
+            `;
+            
+            db.query(
+              query,
+              [
+                EVENTO_ID,
+                USUARIO_ID,
+                CANDIDATA_ID,
+                CALIFICACION_NOMBRE,
+                CALIFICACION_PESO,
+                CALIFICACION_VALOR
+              ],
+              (err, result) => {
+                if (err) {
+                  console.error("Error en inserción:", err);
+                  reject(err);
+                } else {
+                  resolve(result);
+                }
+              }
+            );
+          });
+          
+          insertPromises.push(insertPromise);
+        }
+      });
+    }
+    
+    // Ejecutar todas las inserciones
+    Promise.all(insertPromises)
+      .then(() => {
+        res.status(200).json({ message: "Calificaciones registradas correctamente" });
+      })
+      .catch((error) => {
+        console.error("Error en el proceso de calificación:", error);
+        res.status(500).json({ error: "Error al registrar calificaciones" });
+      });
+      
+  } catch (error) {
+    console.error("Error en addCalificacion:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};

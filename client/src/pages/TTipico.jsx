@@ -36,8 +36,14 @@ function TTipico() {
   const handleClick = () => {
     setTimeout(async () => {
       try {
+        // Crear un objeto con las calificaciones mapeadas por ID de candidata
+        const notasPorCandidataId = {};
+        listaCandidatas.forEach((candidata, index) => {
+          notasPorCandidataId[candidata.CANDIDATA_ID] = parseInt(elements[index], 10) || 0;
+        });
+        
         await Axios.post(`${API_BASE_URL}/cali`, {
-          notas: elements,
+          notas: notasPorCandidataId,
           EVENTO_ID: 1,
           CALIFICACION_NOMBRE: "Traje Típico",
           CALIFICACION_PESO: 100,
@@ -66,10 +72,14 @@ function TTipico() {
     setVacioIsOpen(false);
   };
 
-  const setValue = (index, value) => {
+  const setValue = (candidataId, value) => {
     setElements((prevElements) => {
       const newElements = [...prevElements];
-      newElements[index] = value;
+      // Encontrar el índice real de la candidata en el array
+      const index = listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidataId);
+      if (index !== -1) {
+        newElements[index] = value;
+      }
       return newElements;
     });
   };
@@ -191,18 +201,18 @@ function TTipico() {
                   <div className="botones-container">
                     <div className="select">
                       <span className="selected">
-                        {elements[candidata.CANDIDATA_ID - 1] !== 0 ? `${elements[candidata.CANDIDATA_ID - 1]} de 10` : 'Votar'}
+                        {elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] !== 0 ? 
+                          `${elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)]} de 10` : 'Votar'}
                       </span>
-
                     </div>
                     <ul className="menu" aria-label="Action event example">
                       {Array.from({ length: 10 }, (_, i) => (
                         <li
                           key={i + 1}
                           onClick={() => {
-                            setValue(candidata.CANDIDATA_ID - 1, i + 1);
+                            setValue(candidata.CANDIDATA_ID, i + 1);
                           }}
-                          className={elements[candidata.CANDIDATA_ID - 1] === i + 1 ? "active" : ""}
+                          className={elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] === i + 1 ? "active" : ""}
                         >
                           {i + 1}
                         </li>
