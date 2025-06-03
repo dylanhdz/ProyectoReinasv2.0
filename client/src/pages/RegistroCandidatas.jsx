@@ -272,7 +272,7 @@ const RegistroCandidatas = () => {
 
           <div className="form-row">
             <div className="input-group">
-              <label>Carrera</label>
+              <label>Departamento</label>
               <select
                 name="CARRERA_ID"
                 value={inputs.CARRERA_ID}

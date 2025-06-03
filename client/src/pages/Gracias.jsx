@@ -52,7 +52,7 @@ const Gracias = () => {
             )}
             <section className="intro">
               Muchas gracias por su participación en el concurso de la Elección
-              de la Reina ESPE 2024
+              de la Reina ESPE 2025
             </section>
             <section className="logoEspeBarra">
               <img src={logoEspeBarra} alt="Logo de la ESPE de la Reina" />
