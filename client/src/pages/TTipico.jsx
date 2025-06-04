@@ -36,14 +36,27 @@ function TTipico() {
   const handleClick = () => {
     setTimeout(async () => {
       try {
-        // Crear un objeto con las calificaciones mapeadas por ID de candidata
-        const notasPorCandidataId = {};
-        listaCandidatas.forEach((candidata, index) => {
-          notasPorCandidataId[candidata.CANDIDATA_ID] = parseInt(elements[index], 10) || 0;
+        // Creamos un array de calificaciones en lugar de un objeto
+        // Esto evita problemas con las propiedades de objetos en JavaScript
+        const notasArray = [];
+        
+        listaCandidatas.forEach((candidata) => {
+          const index = listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID);
+          const valor = parseInt(elements[index], 10) || 0;
+          
+          // Guardamos cada calificación como un objeto con ID y valor explícitos
+          notasArray.push({
+            candidataId: String(candidata.CANDIDATA_ID),  // Convertimos a string para evitar problemas
+            valor: String(valor)  // Convertimos a string para evitar problemas de conversión
+          });
+          
+          console.log(`Preparando candidata ${candidata.CANDIDATA_ID}: ${valor}`);
         });
         
+        console.log("Datos a enviar:", notasArray);
+        
         await Axios.post(`${API_BASE_URL}/cali`, {
-          notas: notasPorCandidataId,
+          notasArray: notasArray,  // Enviamos el array en lugar del objeto
           EVENTO_ID: 1,
           CALIFICACION_NOMBRE: "Traje Típico",
           CALIFICACION_PESO: 100,

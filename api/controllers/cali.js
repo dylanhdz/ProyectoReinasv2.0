@@ -20,21 +20,57 @@ export const addCali = (req, res) => {
         const q = "INSERT INTO calificacion(`EVENTO_ID`, `USUARIO_ID`, `CANDIDATA_ID`,`CALIFICACION_NOMBRE`, `CALIFICACION_PESO`, `CALIFICACION_VALOR`) VALUES (?)";
         const promises = [];
 
-        for (let i = 0; i < 12; i++) {
-            const values = [
-                req.body.EVENTO_ID,
-                userInfo.id,
-                1 + i,
-                req.body.CALIFICACION_NOMBRE,
-                req.body.CALIFICACION_PESO,
-                Number(req.body.notas[i]),
-            ];
-            promises.push(new Promise((resolve, reject) => {
-                db.query(q, [values], (err, data) => {
-                    if (err) return reject(err);
-                    resolve(data);
-                });
-            }));
+        // Check if we're receiving the old format or new format
+        if (req.body.notas) {
+            // Old format: array of notes
+            for (let i = 0; i < 12; i++) {
+                const values = [
+                    req.body.EVENTO_ID,
+                    userInfo.id,
+                    1 + i,
+                    req.body.CALIFICACION_NOMBRE,
+                    req.body.CALIFICACION_PESO,
+                    Number(req.body.notas[i] || 0),
+                ];
+                promises.push(new Promise((resolve, reject) => {
+                    db.query(q, [values], (err, data) => {
+                        if (err) return reject(err);
+                        resolve(data);
+                    });
+                }));
+            }
+        } else if (req.body.notasArray && Array.isArray(req.body.notasArray)) {
+            // New format: array of objects with candidataId and valor
+            for (const nota of req.body.notasArray) {
+                if (nota && nota.candidataId && nota.valor) {
+                    const candidataId = parseInt(nota.candidataId, 10);
+                    const valor = parseInt(nota.valor, 10);
+                    
+                    if (!isNaN(candidataId) && !isNaN(valor)) {
+                        const values = [
+                            req.body.EVENTO_ID,
+                            userInfo.id,
+                            candidataId,
+                            req.body.CALIFICACION_NOMBRE,
+                            req.body.CALIFICACION_PESO,
+                            valor
+                        ];
+                        
+                        promises.push(new Promise((resolve, reject) => {
+                            db.query(q, [values], (err, data) => {
+                                if (err) return reject(err);
+                                resolve(data);
+                            });
+                        }));
+                    }
+                }
+            }
+        } else {
+            return res.status(400).json("Formato de datos inválido");
+        }
+
+        if (promises.length === 0) {
+            return res.status(400).json("No hay calificaciones para insertar");
         }
 
         Promise.all(promises)
@@ -42,6 +78,7 @@ export const addCali = (req, res) => {
                 res.status(200).json("Calificación agregada exitosamente");
             })
             .catch((err) => {
+                console.error("Error al insertar calificaciones:", err);
                 res.status(500).json(err);
             });
     });
@@ -203,130 +240,123 @@ export const checkDesempateStatus = (req, res) => {
 };
 
 export const addCalificacion = (req, res) => {
-  try {
-    const { notas, EVENTO_ID, CALIFICACION_NOMBRE, CALIFICACION_PESO } = req.body;
-    const USUARIO_ID = req.userId;
-    
-    // Verificar que notas es un objeto o array
-    if (!notas || (typeof notas !== 'object')) {
-      return res.status(400).json({ error: "Formato de calificaciones inválido" });
-    }
-    
-    // Crear un array para almacenar todas las promesas de inserción
-    const insertPromises = [];
-    
-    // Si notas es un objeto (nuevo formato), procesar las claves como IDs de candidata
-    if (!Array.isArray(notas)) {
-      Object.entries(notas).forEach(([candidataId, valor]) => {
-        const CANDIDATA_ID = parseInt(candidataId, 10);
-        const CALIFICACION_VALOR = parseInt(valor, 10);
-        
-        // Verificar que tenemos valores válidos
-        if (isNaN(CANDIDATA_ID) || isNaN(CALIFICACION_VALOR)) {
-          console.warn(`Valores no numéricos para candidata ${candidataId}: ${valor}`);
-          return;
-        }
-        
-        // Solo insertar si el valor es mayor que cero
-        if (CALIFICACION_VALOR > 0) {
-          const insertPromise = new Promise((resolve, reject) => {
-            const query = `
-              INSERT INTO calificacion (
-                EVENTO_ID, 
-                USUARIO_ID, 
-                CANDIDATA_ID, 
-                CALIFICACION_NOMBRE, 
-                CALIFICACION_PESO, 
-                CALIFICACION_VALOR
-              ) VALUES (?, ?, ?, ?, ?, ?)
-            `;
-            
-            db.query(
-              query,
-              [
-                EVENTO_ID,
-                USUARIO_ID,
-                CANDIDATA_ID,
-                CALIFICACION_NOMBRE,
-                CALIFICACION_PESO,
-                CALIFICACION_VALOR
-              ],
-              (err, result) => {
-                if (err) {
-                  console.error("Error en inserción:", err);
-                  reject(err);
-                } else {
-                  resolve(result);
-                }
-              }
-            );
-          });
-          
-          insertPromises.push(insertPromise);
-        }
-      });
-    } else {
-      // Mantener compatibilidad con el formato de array (código anterior)
-      notas.forEach((valor, index) => {
-        const CANDIDATA_ID = index + 1;
-        const CALIFICACION_VALOR = parseInt(valor, 10);
-        
-        if (isNaN(CALIFICACION_VALOR)) {
-          console.warn(`Valor no numérico para candidata ${CANDIDATA_ID}: ${valor}`);
-          return;
-        }
-        
-        if (CALIFICACION_VALOR > 0) {
-          const insertPromise = new Promise((resolve, reject) => {
-            const query = `
-              INSERT INTO calificacion (
-                EVENTO_ID, 
-                USUARIO_ID, 
-                CANDIDATA_ID, 
-                CALIFICACION_NOMBRE, 
-                CALIFICACION_PESO, 
-                CALIFICACION_VALOR
-              ) VALUES (?, ?, ?, ?, ?, ?)
-            `;
-            
-            db.query(
-              query,
-              [
-                EVENTO_ID,
-                USUARIO_ID,
-                CANDIDATA_ID,
-                CALIFICACION_NOMBRE,
-                CALIFICACION_PESO,
-                CALIFICACION_VALOR
-              ],
-              (err, result) => {
-                if (err) {
-                  console.error("Error en inserción:", err);
-                  reject(err);
-                } else {
-                  resolve(result);
-                }
-              }
-            );
-          });
-          
-          insertPromises.push(insertPromise);
-        }
-      });
-    }
-    
-    // Ejecutar todas las inserciones
-    Promise.all(insertPromises)
-      .then(() => {
-        res.status(200).json({ message: "Calificaciones registradas correctamente" });
-      })
-      .catch((error) => {
-        console.error("Error en el proceso de calificación:", error);
-        res.status(500).json({ error: "Error al registrar calificaciones" });
-      });
+  const token = req.cookies.access_token;
+  if (!token) return res.status(401).json("No autenticado!");
+
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token no es válido!");
+
+    try {
+      // Log para depuración
+      console.log("Request body:", req.body);
       
-  } catch (error) {
-    console.error("Error en addCalificacion:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
+      // Extraer datos de la solicitud con verificaciones
+      const EVENTO_ID = req.body.EVENTO_ID;
+      const CALIFICACION_NOMBRE = req.body.CALIFICACION_NOMBRE;
+      const CALIFICACION_PESO = req.body.CALIFICACION_PESO;
+      const USUARIO_ID = userInfo.id;
+      
+      // Verificar si es el formato antiguo (notas como objeto) o nuevo (notasArray)
+      let votesData = [];
+      
+      if (req.body.notasArray && Array.isArray(req.body.notasArray)) {
+        // Nuevo formato: notasArray
+        console.log("Usando formato notasArray");
+        votesData = req.body.notasArray;
+      } else if (req.body.notas && typeof req.body.notas === 'object') {
+        // Formato anterior: notas como objeto
+        console.log("Usando formato notas (objeto)");
+        votesData = Object.entries(req.body.notas).map(([candidataId, valor]) => ({
+          candidataId: candidataId,
+          valor: valor
+        }));
+      } else {
+        console.error("Formato de datos no reconocido", req.body);
+        return res.status(400).json({ error: "Formato de datos inválido" });
+      }
+      
+      // Verificar que tenemos datos para procesar
+      if (votesData.length === 0) {
+        return res.status(400).json({ error: "No se encontraron calificaciones" });
+      }
+      
+      console.log(`Procesando ${votesData.length} calificaciones`);
+      
+      // Array para almacenar las promesas de inserción
+      const insertPromises = [];
+      
+      // Procesar cada calificación
+      for (const calificacion of votesData) {
+        // Extraer ID y valor con conversión explícita
+        const candidataId = parseInt(calificacion.candidataId, 10);
+        const valor = parseInt(calificacion.valor, 10);
+        
+        console.log(`Procesando: CandidataID=${candidataId}, Valor=${valor}`);
+        
+        // Verificación estricta de valores
+        if (!Number.isInteger(candidataId) || candidataId <= 0) {
+          console.warn(`ID de candidata inválido: ${calificacion.candidataId}`);
+          continue;
+        }
+        
+        if (!Number.isInteger(valor) || valor < 1 || valor > 10) {
+          console.warn(`Valor inválido para candidata ${candidataId}: ${calificacion.valor}`);
+          continue;
+        }
+        
+        // Crear consulta parameterizada
+        const insertPromise = new Promise((resolve, reject) => {
+          const sql = `
+            INSERT INTO calificacion (
+              EVENTO_ID, USUARIO_ID, CANDIDATA_ID, 
+              CALIFICACION_NOMBRE, CALIFICACION_PESO, CALIFICACION_VALOR
+            ) VALUES (?, ?, ?, ?, ?, ?)
+          `;
+          
+          const params = [
+            EVENTO_ID,
+            USUARIO_ID,
+            candidataId,
+            CALIFICACION_NOMBRE,
+            CALIFICACION_PESO,
+            valor
+          ];
+          
+          console.log(`Insertando: ${JSON.stringify(params)}`);
+          
+          db.query(sql, params, (err, result) => {
+            if (err) {
+              console.error(`Error inserting for candidata ${candidataId}:`, err);
+              reject(err);
+            } else {
+              console.log(`Success for candidata ${candidataId}`);
+              resolve(result);
+            }
+          });
+        });
+        
+        insertPromises.push(insertPromise);
+      }
+      
+      // Verificar que tengamos promesas para ejecutar
+      if (insertPromises.length === 0) {
+        return res.status(400).json({ error: "No se encontraron calificaciones válidas" });
+      }
+      
+      // Ejecutar todas las inserciones
+      Promise.all(insertPromises)
+        .then(() => {
+          console.log("Todas las calificaciones insertadas correctamente");
+          res.status(200).json({ message: "Calificaciones registradas correctamente" });
+        })
+        .catch((error) => {
+          console.error("Error al insertar calificaciones:", error);
+          res.status(500).json({ error: "Error al registrar calificaciones" });
+        });
+        
+    } catch (error) {
+      console.error("Error general en addCalificacion:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  });
 };

@@ -48,14 +48,26 @@ function TGala() {
   const handleClick = () => {
     setTimeout(async () => {
       try {
-        // Crear un objeto con las calificaciones mapeadas por ID de candidata
-        const notasPorCandidataId = {};
-        listaCandidatas.forEach((candidata, index) => {
-          notasPorCandidataId[candidata.CANDIDATA_ID] = parseInt(elements[index], 10) || 0;
+        // Creamos un array de calificaciones en lugar de un objeto
+        const notasArray = [];
+        
+        listaCandidatas.forEach((candidata) => {
+          const index = listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID);
+          const valor = parseInt(elements[index], 10) || 0;
+          
+          // Guardamos cada calificación como un objeto con ID y valor explícitos
+          notasArray.push({
+            candidataId: String(candidata.CANDIDATA_ID),
+            valor: String(valor)
+          });
+          
+          console.log(`Preparando candidata ${candidata.CANDIDATA_ID}: ${valor}`);
         });
         
+        console.log("Datos a enviar:", notasArray);
+        
         await Axios.post(`${API_BASE_URL}/cali`, {
-          notas: notasPorCandidataId,
+          notasArray: notasArray,
           EVENTO_ID: 2,
           CALIFICACION_NOMBRE: "Traje Gala",
           CALIFICACION_PESO: 100,

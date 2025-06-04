@@ -103,17 +103,18 @@ function Reporte() {
         },
         image: {
             marginVertical: 0,
+            marginBottom: -10,
             marginHorizontal: 100
         },
         imageFoto: {
             marginVertical: 15,
             marginHorizontal: 100,
-            width: 100,
-            borderRadius: 10
+            width: 160,
+            borderRadius: 5
         },
         imageGanadoras: {
-            marginHorizontal: 155,
-            width: 220,
+            marginHorizontal: 100,
+            width: 300,
         },
         contenedorColumna: {
             flexDirection: 'row',
@@ -123,7 +124,7 @@ function Reporte() {
         },
         columna: {
             width: '40%',
-            marginBottom: 10
+            marginBottom: 5
         },
         pageNumber: {
             position: 'absolute',
