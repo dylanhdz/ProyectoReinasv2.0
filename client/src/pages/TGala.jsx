@@ -5,6 +5,7 @@ import Axios, { all } from 'axios';
 import ReactModal from "react-modal";
 import Popup from "reactjs-popup";
 import "./popup.scss";
+import "./trajes.scss";
 import Espera from "../components/Espera.jsx";
 import { API_BASE_URL } from "./ip";
 import Navbar from "../components/Navbar";
@@ -147,33 +148,66 @@ function TGala() {
     fetchData();
   }, [cat + "1"]);
 
-
-  let currentDropdown = null;
-
   const handleSelectClick = (e) => {
     e.stopPropagation();
-    if (currentDropdown && currentDropdown !== e.currentTarget) {
-      currentDropdown.querySelector(".menu").classList.remove("menu-open");
-    }
-
-    const dropdown = e.currentTarget.querySelector(".menu");
-    dropdown.classList.toggle("menu-open");
-
-
-    currentDropdown = dropdown.classList.contains("menu-open") ? e.currentTarget : null;
-
-    const handleClickOutside = (event) => {
-      if (!dropdown.contains(event.target)) {
-        dropdown.classList.remove("menu-open");
-        window.removeEventListener('click', handleClickOutside);
-
-        if (currentDropdown === e.currentTarget) {
-          currentDropdown = null;
-        }
+    e.preventDefault();
+    
+    const selectButton = e.currentTarget;
+    const dropdown = selectButton.parentNode.querySelector(".dropdown");
+    const card = selectButton.closest('.item-reina');
+    
+    // Cerrar todos los dropdowns abiertos primero
+    document.querySelectorAll('.dropdown.menu-open').forEach(openDropdown => {
+      if (openDropdown !== dropdown) {
+        openDropdown.classList.remove('menu-open');
+        const openCard = openDropdown.closest('.item-reina');
+        if (openCard) openCard.classList.remove('dropdown-active');
       }
-    };
+    });
 
-    window.addEventListener('click', handleClickOutside);
+    const isOpening = !dropdown.classList.contains("menu-open");
+    
+    if (isOpening) {
+      // Calcular posición del botón para dropdown fixed
+      const buttonRect = selectButton.getBoundingClientRect();
+      const dropdownWidth = 120;
+      const dropdownHeight = 150; // Altura más conservadora
+      
+      // Centrar el dropdown respecto al botón y posicionarlo arriba
+      let leftPosition = buttonRect.left + (buttonRect.width / 2) - (dropdownWidth / 2);
+      let topPosition = buttonRect.top - dropdownHeight - 5;
+      
+      // Asegurarse de que no se salga de la pantalla
+      if (leftPosition < 10) leftPosition = 10;
+      if (topPosition < 10) topPosition = buttonRect.bottom + 5; // Si no cabe arriba, ponerlo abajo
+      
+      dropdown.style.left = `${leftPosition}px`;
+      dropdown.style.top = `${topPosition}px`;
+      dropdown.style.transform = 'none'; // Asegurar que no hay transform conflictivo
+      
+      // Abrir dropdown
+      dropdown.classList.add("menu-open");
+      if (card) card.classList.add("dropdown-active");
+      
+      console.log("Dropdown opened at:", { left: leftPosition, top: topPosition });
+      
+      // Manejar clicks fuera del dropdown con un pequeño delay
+      setTimeout(() => {
+        const handleClickOutside = (event) => {
+          if (!selectButton.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.remove("menu-open");
+            if (card) card.classList.remove("dropdown-active");
+            document.removeEventListener('click', handleClickOutside);
+          }
+        };
+        document.addEventListener('click', handleClickOutside);
+      }, 100);
+      
+    } else {
+      // Cerrar dropdown
+      dropdown.classList.remove("menu-open");
+      if (card) card.classList.remove("dropdown-active");
+    }
   };
 
   if (currentUser === null || (currentUser.rol !== "juez" && currentUser.rol !== "admin")) {
@@ -188,89 +222,96 @@ function TGala() {
     );
   } else {
     return (
-      <>
+      <div className="modern-voting-container">
         <Navbar texto="Etapa 2 - Traje de Gala" />
         {pop === true && <Espera />}
 
-        <div className="main-container">
-          <div className="reinas-container">
-            {listaCandidatas.map((candidata, index) => (
-              <div className="item-reina" key={candidata.CANDIDATA_ID}><div className="espacio-imagen">
+        <div className="reinas-container">
+          {listaCandidatas.map((candidata, index) => (
+            <div 
+              className={`item-reina ${elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] !== 0 ? 'calificada' : ''}`} 
+              key={candidata.CANDIDATA_ID}
+            >
+              <div className="espacio-imagen">
                 <img
                   alt="Foto candidata"
                   className="foto-candidata"
                   src={"/reinas/" + cortarParteDerecha(candidata.FOTO_URL)}
-
                 />
                 <div className="datos-candidata">
-
                   <h3>
                     {candidata.CAND_NOMBRE1} {candidata.CAND_APELLIDOPATERNO}
                   </h3>
                   <h4>{candidata.DEPARTMENTO_NOMBRE}</h4>
                 </div>
               </div>
-                <div className="dropdown" onClick={handleSelectClick}>
-                  <div className="botones-container">
-                    <div className="select">
-                      <span className="selected">
-                        {elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] !== 0 ? 
-                          `${elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)]} de 10` : 'Votar'}
-                      </span>
-                    </div>
-                    <ul className="menu" aria-label="Action event example">
-                      {Array.from({ length: 10 }, (_, i) => (
-                        <li
-                          key={i + 1}
-                          onClick={() => {
-                            setValue(candidata.CANDIDATA_ID, i + 1);
-                          }}
-                          className={elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] === i + 1 ? "active" : ""}
-                        >
-                          {i + 1}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              
+              <div className="botones-container">
+                <div className="select" onClick={handleSelectClick}>
+                  <span className="selected">
+                    {elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] !== 0 ? 
+                      `${elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)]} de 10` : 'Seleccionar puntuación'}
+                  </span>
                 </div>
+                <ul className="dropdown" aria-label="Opciones de puntuación">
+                  {Array.from({ length: 10 }, (_, i) => (
+                    <li
+                      key={i + 1}
+                      onClick={() => {
+                        setValue(candidata.CANDIDATA_ID, i + 1);
+                      }}
+                      className={elements[listaCandidatas.findIndex(c => c.CANDIDATA_ID === candidata.CANDIDATA_ID)] === i + 1 ? "active" : ""}
+                    >
+                      {i + 1}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </div>
-          <div id="enviarbarra" className="enviar">
-            <Button type="button" className="btn-enviar" onClick={Enviar}>
-              ENVIAR
-            </Button>
-
-            <Popup open={modalIsOpen} onClose={handleModalClose}>
-              <div className="modal">
-                <h2 className="modal-title">¿Está seguro de registrar su voto?</h2>
-                <div className="botones-modal">
-                <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
-                        <Button color="success" variant="contained" onClick={()=> {handleModalClose(); handleClick(); setPop(true);}} className="btn-confirmar">
-                            Si
-                        </Button>
-                        <Button color="error" variant="outlined" onClick={handleModalClose} className="btn-cancelar">
-                            No
-                        </Button>
-                    </Stack>
-                  
-                </div>
-              </div>
-            </Popup>
-            <Popup open={vacioIsOpen} onClose={handleVacioClose}>
-              <div className="modal">
-                <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
-                <div className="botones-modal">
-                  <button onClick={handleVacioClose} className="btn-confirmar">
-                    Aceptar
-                  </button>
-                </div>
-              </div>
-            </Popup>
-          </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="enviar">
+          <button type="button" className="btn-enviar" onClick={Enviar}>
+            ENVIAR CALIFICACIONES
+          </button>
         </div>
 
-      </>
+        <Popup open={modalIsOpen} onClose={handleModalClose}>
+          {modalIsOpen && <div className="overlay" onClick={handleModalClose}></div>}
+          <div className="modal">
+            <h2 className="modal-title">¿Está seguro de registrar sus votos?</h2>
+            <div className="botones-modal">
+              <button onClick={handleModalClose} className="btn-cancelar">
+                Cancelar
+              </button>
+              <button 
+                onClick={() => {
+                  handleModalClose(); 
+                  handleClick(); 
+                  setPop(true);
+                }} 
+                className="btn-confirmar"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </Popup>
+        
+        <Popup open={vacioIsOpen} onClose={handleVacioClose}>
+          {vacioIsOpen && <div className="overlay" onClick={handleVacioClose}></div>}
+          <div className="modal">
+            <h2 className="modal-title">¡Atención!</h2>
+            <h2 className="modal-title">Por favor, registre su voto por cada candidata.</h2>
+            <div className="botones-modal">
+              <button onClick={handleVacioClose} className="btn-confirmar">
+                Entendido
+              </button>
+            </div>
+          </div>
+        </Popup>
+      </div>
     );
   }
 }

@@ -10,7 +10,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { AuthContext } from "../context/authContext";
 import DOMPurify from "isomorphic-dompurify";
-import { API_BASE_URL } from "./ip";
+import { API_BASE_URL } from "./ip.js";
+import "./single.scss";
 
 const Single = () => {
   const [value, setValue] = useState('');

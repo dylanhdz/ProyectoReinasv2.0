@@ -1,0 +1,615 @@
+//PREGUNTAS - Diseño moderno consistente con trajes
+
+// Variables específicas (heredadas del diseño de trajes)
+$primary-green: #1b7248;
+$secondary-green: #27ae60;
+$accent-gold: #D4AF37;
+$light-cream: #FDFFE2;
+$soft-white: #FAFBFC;
+$shadow-light: rgba(0, 0, 0, 0.08);
+$shadow-medium: rgba(0, 0, 0, 0.12);
+$shadow-heavy: rgba(0, 0, 0, 0.16);
+
+// Contenedor principal moderno - AJUSTADO PARA NUEVA NAVBAR
+.main-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 2rem;
+    padding-top: 120px; // Reducido y fijo para nueva navbar
+    font-family: 'Poppins', sans-serif;
+
+    @media (max-width: 900px) {
+        padding-top: 100px;
+    }
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+        padding-top: 160px;
+    }
+
+    @media (max-width: 480px) {
+        padding-top: 140px;
+    }
+}
+
+// Grid de candidatas mejorado - 2 filas de 6
+.reinas-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 0;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        gap: 0.8rem;
+    }
+}
+
+// Card moderna de candidata - CON ESTADOS CALIFICADOS SIN ÍCONO
+.item-reina {
+    background: $soft-white;
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 8px 20px $shadow-light;
+    border: 1px solid rgba($accent-gold, 0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 320px;
+
+    // Estado cuando está calificada - SIN ÍCONO ✓
+    &.calificada {
+        background: linear-gradient(135deg, rgba($secondary-green, 0.15) 0%, rgba($primary-green, 0.1) 100%);
+        border: 2px solid rgba($secondary-green, 0.4);
+        box-shadow: 0 12px 25px rgba($secondary-green, 0.2);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba($accent-gold, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px $shadow-medium;
+
+        &::before {
+            left: 100%;
+        }
+
+        .foto-candidata {
+            transform: scale(1.03);
+        }
+    }
+
+    .espacio-imagen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex: 1;
+    }
+
+    @media (max-width: 768px) {
+        min-height: 280px;
+        padding: 0.8rem;
+    }
+
+    @media (max-width: 480px) {
+        min-height: 260px;
+        padding: 0.6rem;
+    }
+}
+
+// Foto de candidata mejorada
+.foto-candidata {
+    width: 100%;
+    max-width: 140px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px $shadow-medium;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-bottom: 0.8rem;
+
+    @media (max-width: 1200px) {
+        max-width: 120px;
+        height: 150px;
+    }
+
+    @media (max-width: 768px) {
+        max-width: 100px;
+        height: 130px;
+    }
+
+    @media (max-width: 480px) {
+        max-width: 80px;
+        height: 110px;
+    }
+}
+
+// Datos de candidata mejorados
+.datos-candidata {
+    text-align: center;
+    color: $primary-green;
+    margin-bottom: 0.8rem;
+
+    h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        font-family: 'Poppins', sans-serif;
+        transition: color 0.3s ease;
+        line-height: 1.2;
+
+        &:hover {
+            color: $secondary-green;
+        }
+
+        @media (max-width: 1200px) {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 480px) {
+            font-size: 0.75rem;
+        }
+    }
+
+    h4 {
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: rgba($primary-green, 0.7);
+        margin: 0;
+        line-height: 1.1;
+
+        @media (max-width: 1200px) {
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 480px) {
+            font-size: 0.65rem;
+        }
+    }
+}
+
+// Contenedor de botones - SEPARADO y más pequeño
+.botones-container {
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+}
+
+// Botón de selección - INDEPENDIENTE
+.select {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba($primary-green, 0.3);
+    text-align: center;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba($primary-green, 0.4);
+
+        &::before {
+            left: 100%;
+        }
+    }
+
+    .selected {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    @media (max-width: 1200px) {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.7rem;
+        min-height: 28px;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.35rem 0.45rem;
+        font-size: 0.65rem;
+        min-height: 26px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.3rem 0.4rem;
+        font-size: 0.6rem;
+        min-height: 24px;
+    }
+}
+
+// Dropdown - SOBREPUESTO sobre todo
+.dropdown {
+    position: fixed; // Cambiado a fixed para escapar del contenedor
+    width: 120px;
+    background: white; // Fondo sólido blanco
+    border: 3px solid $primary-green; // Borde más visible
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4); // Sombra más fuerte
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 99999; // Z-index muy alto para sobresalir
+    max-height: 200px;
+    overflow-y: auto;
+
+    &.menu-open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    li {
+        padding: 0.8rem 1rem;
+        margin: 0;
+        color: $primary-green;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-bottom: 1px solid rgba($primary-green, 0.1);
+        text-align: center;
+        font-size: 0.9rem;
+        background: white;
+        list-style: none;
+
+        &:first-child {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        &:last-child {
+            border-bottom: none;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        &:hover {
+            background: linear-gradient(135deg, rgba($primary-green, 0.1) 0%, rgba($secondary-green, 0.1) 100%);
+            color: $secondary-green;
+            transform: scale(1.02);
+        }
+
+        &.active {
+            background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            padding: 0.7rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            padding: 0.6rem 0.7rem;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 480px) {
+            padding: 0.5rem 0.6rem;
+            font-size: 0.75rem;
+        }
+    }
+}
+
+// Botón enviar moderno con border de 10px y centrado
+.enviar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .btn-enviar {
+        background: linear-gradient(135deg, $primary-green 0%, $secondary-green 100%);
+        color: white;
+        border: 10px solid rgba($accent-gold, 0.8);
+        padding: 1.5rem 4rem;
+        border-radius: 30px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba($primary-green, 0.4);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        min-width: 300px;
+        text-align: center;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba($primary-green, 0.6),
+                        0 0 0 5px rgba($accent-gold, 0.5);
+            border-color: $accent-gold;
+
+            &::before {
+                left: 100%;
+            }
+        }
+
+        &:active {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            padding: 1.2rem 2.5rem;
+            font-size: 1.2rem;
+            min-width: 250px;
+            border-width: 8px;
+        }
+
+        @media (max-width: 480px) {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            min-width: 200px;
+            border-width: 6px;
+        }
+    }
+}
+
+// Modal mejorado (heredado de trajes)
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: $soft-white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: modalFadeIn 0.3s ease;
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: $primary-green;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .botones-modal {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+
+        @media (max-width: 480px) {
+            flex-direction: column;
+        }
+    }
+}
+
+.btn-confirmar,
+.btn-cancelar {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-confirmar {
+    background: linear-gradient(135deg, $secondary-green 0%, #2ecc71 100%);
+    color: white;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba($secondary-green, 0.4);
+    }
+}
+
+.btn-cancelar {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(#e74c3c, 0.4);
+    }
+}
+
+// Overlay mejorado
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 999;
+    animation: overlayFadeIn 0.3s ease;
+}
+
+// Animaciones
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+// Empate banner (mantenido del diseño original)
+.empate-banner {
+    width: 100%;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 15px;
+    background: $soft-white;
+    box-shadow: 0 8px 25px $shadow-light;
+    margin-bottom: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+
+    &.primer-lugar {
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+        color: #000;
+    }
+
+    &.segundo-lugar {
+        background: linear-gradient(135deg, #c0c0c0 0%, #e2e8f0 100%);
+        color: #000;
+    }
+
+    &.tercer-lugar {
+        background: linear-gradient(135deg, #cd7f32 0%, #d69e2e 100%);
+        color: #fff;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+    }
+
+    p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+}
+
+// Responsive adicional para evitar problemas de espaciado
+@media (max-width: 1400px) {
+    .main-container {
+        padding: 1.5rem;
+        padding-top: 2.5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        padding: 1.2rem;
+        padding-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        padding: 1rem;
+        padding-top: 1.5rem;
+    }
+    
+    .enviar {
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 0.8rem;
+        padding-top: 1rem;
+    }
+    
+    .enviar {
+        padding: 1.5rem 0.5rem;
+    }
+    
+    .empate-banner {
+        padding: 1rem;
+        
+        h2 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            font-size: 1rem;
+        }
+    }
+} 

@@ -1,0 +1,144 @@
+//TABLA NOTARIO
+.tabla-notario-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .tabla-header {
+        text-align: center;
+        margin-bottom: 30px;
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1b7248;
+            font-family: 'Dancing Script', cursive;
+            margin-bottom: 10px;
+        }
+
+        .exportar-btn {
+            background-color: #1b7248;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: #27ae60;
+            }
+        }
+    }
+
+    .tabla-wrapper {
+        overflow-x: auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+
+            thead {
+                background-color: #1b7248;
+                color: white;
+
+                th {
+                    padding: 15px 10px;
+                    text-align: center;
+                    font-weight: bold;
+                    border-right: 1px solid rgba(255, 255, 255, 0.3);
+
+                    &:last-child {
+                        border-right: none;
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    &:nth-child(even) {
+                        background-color: #f8f9fa;
+                    }
+
+                    &:hover {
+                        background-color: #e8f5e8;
+                    }
+
+                    td {
+                        padding: 12px 10px;
+                        text-align: center;
+                        border-bottom: 1px solid #ddd;
+                        border-right: 1px solid #eee;
+
+                        &:last-child {
+                            border-right: none;
+                        }
+
+                        &.candidata-nombre {
+                            font-weight: bold;
+                            color: #1b7248;
+                            text-align: left;
+                        }
+
+                        &.puntaje {
+                            font-weight: bold;
+                            font-size: 1.1rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .filtros {
+        margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+
+        label {
+            font-weight: bold;
+            color: #1b7248;
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 2px solid #D4AF37;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+
+            &:focus {
+                outline: none;
+                border-color: #1b7248;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .tabla-header h1 {
+            font-size: 2rem;
+        }
+
+        .filtros {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .tabla-wrapper {
+            font-size: 14px;
+
+            table {
+                thead th,
+                tbody td {
+                    padding: 8px 5px;
+                }
+            }
+        }
+    }
+} 
