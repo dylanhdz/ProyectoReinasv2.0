@@ -212,8 +212,8 @@ function Reporte() {
                                             <View style={styles.section}>
                                                 <Text style={styles.subtitle}>____________________</Text>
                                                 <Text style={styles.subtitle}>Veedor</Text>
-                                                <Text style={[styles.subtitle, styles.bold]}>Dr. Marcelo Mejía Mena</Text>
-                                                <Text style={styles.subtitle}>CI: 1803061033</Text>
+                                                <Text style={[styles.subtitle, styles.bold]}>Abg. Jose Mauricio Jaramillo Velasteguí</Text>
+                                                <Text style={styles.subtitle}>CI: 1710044403</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -294,8 +294,8 @@ function Reporte() {
                                             <View style={styles.section}>
                                                 <Text style={styles.subtitle}>____________________</Text>
                                                 <Text style={styles.subtitle}>Veedor</Text>
-                                                <Text style={[styles.subtitle, styles.bold]}>Dr. Marcelo Mejía Mena</Text>
-                                                <Text style={styles.subtitle}>CI: 1803061033</Text>
+                                                <Text style={[styles.subtitle, styles.bold]}>Abg. Jose Mauricio Jaramillo Velasteguí</Text>
+                                                <Text style={styles.subtitle}>CI: 1710044403</Text>
                                             </View>
                                         </View>
                                     </View>
